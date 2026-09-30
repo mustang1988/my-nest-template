@@ -25,10 +25,10 @@ export interface IRedisConfiguration {
   /**
    * Redis库索引
    */
-  db: number;
+  db?: number;
 
   /**
    * Redis事件发布通道
    */
-  eventChannel: string;
+  eventChannel?: string;
 }

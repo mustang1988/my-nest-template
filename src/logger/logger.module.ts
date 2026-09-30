@@ -18,8 +18,8 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const appConfig = configService.getOrThrow<IAppConfiguration>('app');
-        const loggerConfig = configService.getOrThrow<ILoggerConfiguration>('logger');
+        const appConfig = configService.getOrThrow<Required<IAppConfiguration>>('app');
+        const loggerConfig = configService.getOrThrow<Required<ILoggerConfiguration>>('logger');
 
         /**
          * 文件日志格式

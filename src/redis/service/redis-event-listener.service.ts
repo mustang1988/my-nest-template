@@ -28,7 +28,7 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
-    const defaultRedisConf = this.configService.getOrThrow<IRedisConfiguration>('redis.default');
+    const defaultRedisConf = this.configService.getOrThrow<Required<IRedisConfiguration>>('redis.default');
     this.subscriber = createClient({
       socket: {
         host: defaultRedisConf.host,

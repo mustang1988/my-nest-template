@@ -9,7 +9,7 @@ export interface IAppConfiguration {
    * - 文件日志的文件名
    * - 日志中的标题
    */
-  title: string;
+  title?: string;
 
   /**
    * 应用监听端口
