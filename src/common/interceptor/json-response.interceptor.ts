@@ -7,6 +7,13 @@ import { JsonResp } from '../decorator/json-response.decorator';
 import { IJsonResponse } from '../interface/json-response.interface';
 import { Inject, Injectable, CallHandler, NestInterceptor, ExecutionContext } from '@nestjs/common';
 
+/**
+ * JSON响应格式化拦截器
+ *
+ * 用于统一所有接口的HTTP响应格式
+ *
+ * 注意: 本拦截器不处理发生异常时的响应, 异常响应格式化见: [GlobalExceptionFilter](../exception-filter/global.exception-filter.ts)
+ */
 @Injectable()
 export class JsonResponseInterceptor implements NestInterceptor {
   constructor(

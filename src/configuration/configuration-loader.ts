@@ -20,6 +20,7 @@ export default (): IConfiguration => ({
       // username: EnvValueLoadUtil.loadString('DEFAULT_REDIS_USERNAME'),
       password: EnvValueLoadUtil.loadString('DEFAULT_REDIS_PASSWORD', ''),
       db: EnvValueLoadUtil.loadInteger('DEFAULT_REDIS_DB', 0),
+      eventChannel: EnvValueLoadUtil.loadString('DEFAULT_REDIS_EVENT_CHANNEL', 'channel:default'),
     },
   },
   mysql: {
@@ -31,7 +32,7 @@ export default (): IConfiguration => ({
       database: EnvValueLoadUtil.loadString('DEFAULT_MYSQL_DATABASE'),
       charset: EnvValueLoadUtil.loadString('DEFAULT_MYSQL_CHARSET', 'utf8mb4'),
       timezone: EnvValueLoadUtil.loadString('DEFAULT_MYSQL_TIMEZONE', '+08:00'),
-      logger: EnvValueLoadUtil.loadBoolean('DEFAULT_MYSQL_LOGGER', false),
+      enableLogger: EnvValueLoadUtil.loadBoolean('DEFAULT_MYSQL_LOGGER', false),
       sync: EnvValueLoadUtil.loadBoolean('DEFAULT_MYSQL_SYNC', false),
     },
   },

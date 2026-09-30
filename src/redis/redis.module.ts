@@ -7,10 +7,18 @@ import { RedisEventEmitterService } from './service/redis-event-emitter.service'
 import { RedisEventListenerService } from './service/redis-event-listener.service';
 import { IRedisConfiguration } from '../configuration/interface/redis-configuration.interface';
 
+/**
+ * Redis模块
+ *
+ * - 全局模块
+ */
 @Global()
 @Module({
   imports: [EventEmitterModule.forRoot({})],
   providers: [
+    /**
+     * 默认Redis连接客户端
+     */
     {
       provide: DEFAULT_REDIS_CLIENT,
       inject: [ConfigService],

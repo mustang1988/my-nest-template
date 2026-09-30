@@ -7,6 +7,13 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { IJsonResponse } from '../interface/json-response.interface';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Injectable } from '@nestjs/common';
 
+/**
+ * 全局异常过滤器
+ *
+ * 用于全局兜底处理请求内部发生的异常, 并统一响应格式, 可处理异常包括
+ * - HttpException及其子类
+ * - JavaScript Error及其子类
+ */
 @Injectable()
 @Catch(HttpException, Error)
 export class GlobalExceptionFilter implements ExceptionFilter {

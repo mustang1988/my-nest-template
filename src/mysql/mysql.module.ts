@@ -1,6 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { mysqlDataSources } from './service/typeorm-mysql-datasource.service';
 
+/**
+ * MySQL模块
+ *
+ * - 全局模块
+ */
 @Global()
 @Module({
   imports: [],

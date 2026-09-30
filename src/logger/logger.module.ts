@@ -6,6 +6,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IAppConfiguration } from '../configuration/interface/app-configuration.interface';
 import { ILoggerConfiguration } from '../configuration/interface/logger-configuration.interface';
 
+/**
+ * 日志模块
+ *
+ * - 全局模块
+ */
 @Global()
 @Module({
   imports: [
@@ -16,6 +21,9 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
         const appConfig = configService.getOrThrow<IAppConfiguration>('app');
         const loggerConfig = configService.getOrThrow<ILoggerConfiguration>('logger');
 
+        /**
+         * 文件日志格式
+         */
         const fileLoggerFormat = winston.format.combine(
           winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
           winston.format.ms(),
@@ -29,6 +37,11 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
         );
 
         const loggerTrans: winston.transport[] = [
+          /**
+           * 按日切分主文件日志
+           *
+           * 记录配置的level值及以上级别的日志
+           */
           new DailyRotateFile({
             level: loggerConfig.level,
             dirname: loggerConfig.dirname,
@@ -40,6 +53,11 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             zippedArchive: true,
           }),
 
+          /**
+           * 按日切分异常文件日志
+           *
+           * 仅记录error及以上级别的日志
+           */
           new DailyRotateFile({
             level: 'error',
             dirname: loggerConfig.dirname,
@@ -52,6 +70,9 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
           }),
         ];
 
+        /**
+         * 控制台日志
+         */
         if (loggerConfig.enableConsole) {
           const consoleLoggerFormat = winston.format.combine(
             winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
