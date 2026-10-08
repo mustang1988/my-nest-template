@@ -30,4 +30,9 @@ export interface ILoggerConfiguration {
    * 注意: 容器化部署环境下为容器内路基, 需要设置volume映射
    */
   dirname?: string;
+
+  /**
+   * 是否输入json日志
+   */
+  jsonLogger?: boolean;
 }

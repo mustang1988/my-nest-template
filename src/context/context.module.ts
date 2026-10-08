@@ -17,7 +17,9 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../common/common.constant';
       global: true,
       middleware: {
         mount: true,
-        debug: true,
+        debug: false,
+        saveReq: false,
+        saveRes: false,
         setup: (cls: ClsService, req: IncomingMessage) => {
           /**
            * 本次请求ID创建
@@ -35,8 +37,6 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../common/common.constant';
            */
           cls.setIfUndefined(CLS_INSTANCE_ID, Number(process.env.INSTANCE_ID ?? 0));
         },
-        saveReq: false,
-        saveRes: false,
       },
     }),
   ],

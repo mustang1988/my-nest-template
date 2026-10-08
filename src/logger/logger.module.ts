@@ -36,7 +36,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
           }),
         );
 
-        const loggerTrans: winston.transport[] = [
+        const loggerTransports: winston.transport[] = [
           /**
            * 按日切分主文件日志
            *
@@ -49,8 +49,8 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             maxFiles: loggerConfig.maxFile,
             format: fileLoggerFormat,
             filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log`,
-            datePattern: 'YYYY-MM-DD',
-            zippedArchive: true,
+            // datePattern: 'YYYY-MM-DD',
+            // zippedArchive: true,
           }),
 
           /**
@@ -65,17 +65,33 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             maxFiles: loggerConfig.maxFile,
             format: fileLoggerFormat,
             filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-error.log`,
-            datePattern: 'YYYY-MM-DD',
-            zippedArchive: true,
+            // datePattern: 'YYYY-MM-DD',
+            // zippedArchive: true,
           }),
         ];
+
+        /**
+         * JSON日志
+         */
+        if (loggerConfig.jsonLogger) {
+          loggerTransports.push(
+            new DailyRotateFile({
+              level: loggerConfig.level,
+              dirname: loggerConfig.dirname,
+              maxFiles: loggerConfig.maxFile,
+              maxSize: loggerConfig.maxSize,
+              format: winston.format.json(),
+              filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log.json`,
+            }),
+          );
+        }
 
         /**
          * 控制台日志
          */
         if (loggerConfig.enableConsole) {
           const consoleLoggerFormat = winston.format.combine(
-            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
+            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSSZ' }),
             winston.format.ms(),
             winston.format.splat(),
             utilities.format.nestLike(appConfig.title, {
@@ -86,7 +102,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             }),
           );
 
-          loggerTrans.push(
+          loggerTransports.push(
             new winston.transports.Console({
               level: loggerConfig.level,
               format: consoleLoggerFormat,
@@ -96,7 +112,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
 
         return {
           level: loggerConfig.level,
-          transports: loggerTrans,
+          transports: loggerTransports,
         };
       },
     }),

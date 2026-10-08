@@ -12,12 +12,13 @@ export default (): IConfiguration => ({
     maxSize: EnvValueLoadUtil.loadOptionalString('LOGGER_MAX_SIZE', '2g'),
     enableConsole: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_CONSOLE', false),
     dirname: EnvValueLoadUtil.loadOptionalString('LOGGER_DIR', '/tmp'),
+    jsonLogger: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_JSON', true),
   },
   redis: {
     default: {
       host: EnvValueLoadUtil.loadRequiredString('DEFAULT_REDIS_HOST'),
       port: EnvValueLoadUtil.loadOptionalInteger('DEFAULT_REDIS_PORT', 6379),
-      // username: EnvValueLoadUtil.loadString('DEFAULT_REDIS_USERNAME'),
+      username: EnvValueLoadUtil.loadOptionalString('DEFAULT_REDIS_USERNAME'),
       password: EnvValueLoadUtil.loadOptionalString('DEFAULT_REDIS_PASSWORD', ''),
       db: EnvValueLoadUtil.loadOptionalInteger('DEFAULT_REDIS_DB', 0),
       eventChannel: EnvValueLoadUtil.loadOptionalString('DEFAULT_REDIS_EVENT_CHANNEL', 'channel:default'),

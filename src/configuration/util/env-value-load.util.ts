@@ -10,8 +10,8 @@ export class EnvValueLoadUtil {
    * @param defaultValue 默认值
    * @returns 环境变量值
    */
-  static loadOptionalString(name: string, defaultValue: string): string {
-    return process.env[name] ?? defaultValue ?? '';
+  static loadOptionalString(name: string, defaultValue?: string): string | undefined {
+    return process.env[name] ?? defaultValue;
   }
 
   /**
@@ -34,7 +34,7 @@ export class EnvValueLoadUtil {
    * @param defaultValue 默认值
    * @returns 环境变量值
    */
-  static loadOptionalInteger(name: string, defaultValue: number): number {
+  static loadOptionalInteger(name: string, defaultValue?: number): number {
     const envValue = process.env[name] ?? defaultValue;
     if (isInteger(Number(envValue))) {
       return Number(envValue);
@@ -65,7 +65,7 @@ export class EnvValueLoadUtil {
    * @param defaultValue 默认值
    * @returns 环境变量值
    */
-  static loadOptionalBoolean(name: string, defaultValue: boolean): boolean {
+  static loadOptionalBoolean(name: string, defaultValue?: boolean): boolean {
     const envValue = process.env[name] ?? defaultValue;
     if (envValue === 'true' || envValue === 'false') {
       return envValue === 'true';
@@ -96,7 +96,7 @@ export class EnvValueLoadUtil {
    * @param defaultValue 默认值
    * @returns 环境变量值
    */
-  static loadOptionalNumber(name: string, defaultValue: number): number {
+  static loadOptionalNumber(name: string, defaultValue?: number): number {
     const envValue = process.env[name] ?? defaultValue;
     if (isNumber(Number(envValue))) {
       return Number(envValue);
