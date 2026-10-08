@@ -1,114 +1,204 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS 模板项目
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+- [NestJS 模板项目](#nestjs-模板项目)
+  - [模块说明](#模块说明)
+    - [Common](#common)
+      - [模块内容](#模块内容)
+        - [常量](#常量)
+        - [控制器](#控制器)
+        - [装饰器](#装饰器)
+        - [异常过滤器](#异常过滤器)
+        - [拦截器](#拦截器)
+    - [Configuration](#configuration)
+      - [模块内容](#模块内容-1)
+        - [环境变量加载工具](#环境变量加载工具)
+    - [Context](#context)
+      - [模块内容](#模块内容-2)
+        - [服务](#服务)
+    - [Logger](#logger)
+      - [模块内容](#模块内容-3)
+    - [MySQL](#mysql)
+      - [模块内容](#模块内容-4)
+        - [常量](#常量-1)
+    - [Redis](#redis)
+      - [模块内容](#模块内容-5)
+        - [常量](#常量-2)
+        - [服务](#服务-1)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 模块说明
 
-## Description
+### Common
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+全局通用模块
 
-## Project setup
-
-```bash
-$ npm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+模块目录结构
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+📦common
+ ┣ 📂controller
+ ┃ ┗ 📜health-check.controller.ts
+ ┣ 📂decorator
+ ┃ ┗ 📜json-response.decorator.ts
+ ┣ 📂exception-filter
+ ┃ ┗ 📜global.exception-filter.ts
+ ┣ 📂interceptor
+ ┃ ┗ 📜json-response.interceptor.ts
+ ┣ 📂interface
+ ┃ ┗ 📜json-response.interface.ts
+ ┣ 📜common.constant.ts
+ ┗ 📜common.module.ts
 ```
 
-## Deployment
+#### 模块内容
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+##### 常量
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- [CLS_REQUEST_ID](./src/common/common.constant.ts): 请求唯一ID写入请求上下文[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)的Key
+- [CLS_INSTANCE_ID](./src/common/common.constant.ts): 当前请求处理进程实例ID写入请求上下文[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)的Key
+
+##### 控制器
+
+[HealthCheckController](./src/common/controller/health-check.controller.ts): 健康检查接口控制器, 提供以下接口
+
+- GET /api/healthcheck
+
+##### 装饰器
+
+[@JsonResp(options?:boolean)](./src/common/decorator/json-response.decorator.ts): 控制器接口函数装饰器, 用于标记Controller中的Action函数的响应内容是否为JSON
+
+##### 异常过滤器
+
+- [GlobalExceptionFilter](./src/common/exception-filter/global.exception-filter.ts): 全局异常过滤器, 用于全局兜底处理请求内部发生的异常, 并统一响应格式, 可处理异常包括
+  - HttpException及其子类
+  - JavaScript Error及其子类
+
+##### 拦截器
+
+- [JsonResponseInterceptor](./src/common/interceptor/json-response.interceptor.ts): JSON响应格式化拦截器, 用于统一所有接口的HTTP响应格式
+
+### Configuration
+
+全局配置模块
+
+模块目录结构
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+📦configuration
+ ┣ 📂interface
+ ┃ ┣ 📜app-configuration.interface.ts
+ ┃ ┣ 📜configuration.interface.ts
+ ┃ ┣ 📜logger-configuration.interface.ts
+ ┃ ┣ 📜mysql-configuration.interface.ts
+ ┃ ┗ 📜redis-configuration.interface.ts
+ ┣ 📂util
+ ┃ ┗ 📜env-value-load.util.ts
+ ┣ 📜configuration-loader.ts
+ ┗ 📜configuration.module.ts
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### 模块内容
 
-## Observability
+##### 环境变量加载工具
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+[EnvValueLoadUtil](./src/configuration/util/env-value-load.util.ts): 环境变量配置加载工具类, 提供以下静态函数用于加载环境变量配置
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+- loadOptionalString(): 加载指定名称的String类型`可选`环境变量
+- loadRequiredString(): 加载指定名称的String类型`必须`环境变量
+- loadOptionalInteger(): 加载指定名称的Integer类型`可选`环境变量
+- loadRequiredInteger(): 加载指定名称的Integer类型`必须`环境变量
+- loadOptionalBoolean(): 加载指定名称的Boolean类型`可选`环境变量
+- loadRequiredBoolean(): 加载指定名称的Boolean类型`必须`环境变量
+- loadOptionalNumber(): 加载指定名称的Number类型`可选`环境变量
+- loadRequiredNumber(): 加载指定名称的Number类型`必须`环境变量
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+### Context
 
-## Resources
+全局上下文模块
 
-Check out a few resources that may come in handy when working with NestJS:
+模块目录结构
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+📦context
+ ┣ 📂service
+ ┃ ┗ 📜context.service.ts
+ ┗ 📜context.module.ts
+```
 
-## Support
+#### 模块内容
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+##### 服务
 
-## Stay in touch
+[ContextService](./src/context/service/context.service.ts): 基于[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)实现的请求上下文服务, 用于获取当前请求上下文中暂存的信息, 目前提供以下功能
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- getRequestId(): 获取当前请求的唯一ID; 支持上游服务通过请求头参数`x-request-id`透传, 若无上游服务透传则在收到请求后生成随机UUID作为唯一ID
+- getInstanceId(): 获取当前请求处理进程的实例ID(PM2 cluster模式下分配)
 
-## License
+### Logger
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+全局日志模块
+
+模块目录结构
+
+```bash
+📦logger
+ ┗ 📜logger.module.ts
+```
+
+#### 模块内容
+
+全局日志传输器初始化, 提供以下日志传输器
+
+- 按日切分主文件日志: 默认提供, 输出配置项`LOGGER_LEVEL`指定的级别及以上级别的日志
+- 按日切分异常文件日志: 默认提供, 仅输出`ERROR`及以上级别的日志, 用于异常问题排查
+- 按日切分JSON格式文件日志: 仅在配置项`LOGGER_JSON`设置为true时提供, 用于ELK等日志收集服务
+- 控制台日志: 仅在配置项`LOGGER_CONSOLE`设置为true时提供
+
+上述所有按日切分的文件日志的单日志文件大小阈值和日志滚动保留的文件数量均支持配置
+
+### MySQL
+
+全局MySQL数据库模块
+
+模块目录结构
+
+```bash
+📦mysql
+ ┣ 📂service
+ ┃ ┗ 📜typeorm-mysql-datasource.service.ts
+ ┣ 📜mysql.constant.ts
+ ┗ 📜mysql.module.ts
+```
+
+#### 模块内容
+
+##### 常量
+
+[DEFAULT_MYSQL_DATASOURCE](./src/mysql/mysql.constant.ts): 默认MySQL数据库TypeORM的数据源依赖注入Token
+
+### Redis
+
+全局Redis模块
+
+模块目录结构
+
+```bash
+📦redis
+ ┣ 📂interface
+ ┃ ┗ 📜redis-event-message.interface.ts
+ ┣ 📂service
+ ┃ ┣ 📜redis-event-emitter.service.ts
+ ┃ ┗ 📜redis-event-listener.service.ts
+ ┣ 📜redis.constant.ts
+ ┗ 📜redis.module.ts
+```
+
+#### 模块内容
+
+##### 常量
+
+[DEFAULT_REDIS_CLIENT](./src/redis/redis.constant.ts): 默认Redis连接客户端对象依赖注入Token
+
+##### 服务
+
+[RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts): 基于Redis发布订阅实现的事件发布服务
+[RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts): 基于Redis发布订阅实现的事件订阅监听服务
