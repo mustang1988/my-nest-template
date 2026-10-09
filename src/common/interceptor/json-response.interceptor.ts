@@ -26,16 +26,23 @@ export class JsonResponseInterceptor implements NestInterceptor {
     const response = context.switchToHttp().getResponse<FastifyReply>();
     const isJsonResponse = this.reflector.get(JsonResp, context.getHandler()) ?? true;
     return next.handle().pipe(
-      map((controllerReturnData: unknown) => {
+      map((actionReturnData: unknown) => {
+        /**
+         * 处理本次请求的Action函数有@JsonResp(false)注解, 直接返回原始响应
+         */
         if (!isJsonResponse) {
-          return controllerReturnData;
+          return actionReturnData;
         }
+
+        /**
+         * 处理本次请求的Action函数没有@JsonResp注解或注解为@JsonResp(true), 统一响应格式, 将Action返回的JSON数据放入响应的data字段中
+         */
         const formatedResp: IJsonResponse<unknown> = {
           requestId,
-          status: response.statusCode >= 200 && response.statusCode < 300 ? 'success' : 'error',
+          status: response.statusCode >= 200 && response.statusCode < 300 ? 'success' : 'error', // HTTP状态码[200, 300)范围内的响应标记为success, 反之标记为错误
           code: response.statusCode,
           timestamp: Date.now(),
-          data: controllerReturnData,
+          data: actionReturnData,
           error: undefined,
           request: undefined,
         };

@@ -5,9 +5,10 @@ import { LoggerModule } from './logger/logger.module';
 import { CommonModule } from './common/common.module';
 import { ContextModule } from './context/context.module';
 import { ConfigurationModule } from './configuration/configuration.module';
+import { InternationalizationModule } from './internationalization/internationalization.module';
 
 @Module({
-  imports: [ConfigurationModule, LoggerModule, ContextModule, CommonModule, RedisModule, MySQLModule],
+  imports: [ConfigurationModule, LoggerModule, ContextModule, CommonModule, RedisModule, MySQLModule, InternationalizationModule],
   controllers: [],
   providers: [],
 })

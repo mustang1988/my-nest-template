@@ -1,6 +1,7 @@
 # NestJS 模板项目
 
 - [NestJS 模板项目](#nestjs-模板项目)
+  - [项目配置](#项目配置)
   - [模块说明](#模块说明)
     - [Common](#common)
       - [模块内容](#模块内容)
@@ -24,6 +25,10 @@
       - [模块内容](#模块内容-5)
         - [常量](#常量-2)
         - [服务](#服务-1)
+
+## 项目配置
+
+[全量配置示例](./.env)
 
 ## 模块说明
 
@@ -200,5 +205,5 @@
 
 ##### 服务
 
-[RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts): 基于Redis发布订阅实现的事件发布服务
-[RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts): 基于Redis发布订阅实现的事件订阅监听服务
+- [RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts): 基于Redis发布订阅实现的事件发布服务
+- [RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts): 基于Redis发布订阅实现的事件订阅监听服务

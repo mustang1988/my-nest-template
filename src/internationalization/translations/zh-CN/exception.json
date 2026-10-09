@@ -1,0 +1,3 @@
+{
+  "NotFoundException": "未找到指定$t(entity.{entity})"
+}

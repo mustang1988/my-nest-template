@@ -37,5 +37,8 @@ export default (): IConfiguration => ({
       sync: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_SYNC', false),
     },
   },
+  i18n: {
+    fallbackLanguage: EnvValueLoadUtil.loadOptionalString('I18N_FALLBACK_LANGUAGE', 'en-US'),
+  },
   constants: {},
 });
