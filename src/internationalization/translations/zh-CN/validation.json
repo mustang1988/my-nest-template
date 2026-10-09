@@ -1,1 +1,7 @@
-{}
+{
+  "IsIn": "$t(property.{property})应为为以下值之一: {constraints.0}",
+  "IsInt": "$t(property.{property})应为整数",
+  "Length": "$t(property.{property})长度应在[{constraints.0},{constraints.1}]范围内",
+  "IsString": "$t(property.{property})应为字符串",
+  "IsNotEmpty": "$t(property.{property})非空必填"
+}

@@ -4,6 +4,7 @@ import { basename } from 'node:path';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { WINSTON_MODULE_PROVIDER, WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { JsonResponseInterceptor } from './common/interceptor/json-response.interceptor';
@@ -14,7 +15,8 @@ void (async () => {
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   app.useGlobalInterceptors(app.get(JsonResponseInterceptor));
-  app.useGlobalFilters(app.get(GlobalExceptionFilter));
+  app.useGlobalPipes(new I18nValidationPipe());
+  app.useGlobalFilters(new I18nValidationExceptionFilter({ detailedErrors: false }), app.get(GlobalExceptionFilter));
 
   const configService = app.get(ConfigService);
   const appPort = configService.getOrThrow<number>('app.port');

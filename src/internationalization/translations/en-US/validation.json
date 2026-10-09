@@ -1,1 +1,7 @@
-{}
+{
+  "IsIn": "$t(property.{property}) should be one of the following values: {constraints.0}",
+  "IsInt": "$t(property.{property}) should be an integer",
+  "Length": "$t(property.{property}) length shoule between {constraints.0} and {constraints.1}",
+  "IsString": "$t(property.{property}) should be a string",
+  "IsNotEmpty": "$t(property.{property}) is required"
+}

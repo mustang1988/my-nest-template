@@ -2,6 +2,7 @@ import { get } from 'lodash';
 import { Logger } from 'winston';
 import { ClsService } from 'nestjs-cls';
 import { CLS_REQUEST_ID } from '../common.constant';
+import { I18nValidationException } from 'nestjs-i18n';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { IJsonResponse } from '../interface/json-response.interface';
@@ -28,7 +29,21 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = host.switchToHttp().getRequest<FastifyRequest>();
     const response = host.switchToHttp().getResponse<FastifyReply>();
     const requestId = this.cls.get(CLS_REQUEST_ID);
-    const errorMessage = exception instanceof HttpException ? get(exception, 'response.message', '') : exception.message;
+    const errorMessage =
+      exception instanceof I18nValidationException
+        ? /**
+           * DTO参数校验Exception信息
+           */
+          exception.errors.map((err) => Object.values(err.constraints as Record<string, string>))
+        : /**
+           * 其他Exception信息
+           */
+          exception instanceof HttpException
+          ? get(exception, 'response.message', '')
+          : /**
+             * Error信息
+             */
+            exception.message;
     const statusCode = exception instanceof HttpException ? (exception.getStatus() ?? 500) : 500;
     const { method, url, query, params, body, headers } = request;
     this.logger.error('[%s] %o', requestId, exception);

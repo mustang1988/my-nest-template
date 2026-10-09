@@ -35,7 +35,7 @@ export interface IJsonResponse<T> {
    *
    * 仅在异常响应中返回
    */
-  error?: string;
+  error?: unknown;
 
   /**
    * 所有请求参数
