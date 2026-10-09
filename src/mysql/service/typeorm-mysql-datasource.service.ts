@@ -12,16 +12,18 @@ export const mysqlDataSources: Array<Provider> = [
     provide: DEFAULT_MYSQL_DATASOURCE,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService): Promise<DataSource> => {
-      const defaultMySQLConfig = configService.getOrThrow<IMySQLConfiguration>('mysql.default');
+      const defaultMySQLConfig = configService.getOrThrow<Required<IMySQLConfiguration>>('mysql.default');
       const defaultMySQLDataSource = new DataSource({
         type: 'mysql',
         host: defaultMySQLConfig.host,
         port: defaultMySQLConfig.port,
         username: defaultMySQLConfig.username,
         password: defaultMySQLConfig.password,
+        database: defaultMySQLConfig.database,
         charset: defaultMySQLConfig.charset,
         timezone: defaultMySQLConfig.timezone,
         logging: defaultMySQLConfig.enableLogger,
+        synchronize: defaultMySQLConfig.sync,
         logger: 'formatted-console',
         bigNumberStrings: false,
         entities: [__dirname + '/../../**/*.default.entity{.ts,.js}'], // 加载其他模块下 xxx.default.entity文件名的实体
