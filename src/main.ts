@@ -11,13 +11,36 @@ import { JsonResponseInterceptor } from './common/interceptor/json-response.inte
 import { GlobalExceptionFilter } from './common/exception-filter/global.exception-filter';
 
 void (async () => {
+  /**
+   * 初始化IoC容器
+   */
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ bodyLimit: bytes('1GB') as number }));
+
+  /**
+   * 替换全局日志为winston
+   */
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
+  /**
+   * 全局拦截器注册
+   */
   app.useGlobalInterceptors(app.get(JsonResponseInterceptor));
+
+  /**
+   * 全局管道注册
+   */
   app.useGlobalPipes(new I18nValidationPipe());
+
+  /**
+   * 全局异常过滤器注册
+   *
+   * 注意: 多异常过滤器注册时需要注意注册顺序
+   */
   app.useGlobalFilters(new I18nValidationExceptionFilter({ detailedErrors: false }), app.get(GlobalExceptionFilter));
 
+  /**
+   * 启动服务监听
+   */
   const configService = app.get(ConfigService);
   const appPort = configService.getOrThrow<number>('app.port');
   await app.listen(appPort, '0.0.0.0');

@@ -9,7 +9,19 @@ import { ConfigurationModule } from './configuration/configuration.module';
 import { InternationalizationModule } from './internationalization/internationalization.module';
 
 @Module({
-  imports: [ConfigurationModule, LoggerModule, ContextModule, CommonModule, RedisModule, MySQLModule, InternationalizationModule, SampleModule],
+  imports: [
+    // #region 全局模块
+    ConfigurationModule,
+    LoggerModule,
+    ContextModule,
+    CommonModule,
+    RedisModule,
+    MySQLModule,
+    InternationalizationModule,
+    // #endregion
+
+    SampleModule,
+  ],
   controllers: [],
   providers: [],
 })

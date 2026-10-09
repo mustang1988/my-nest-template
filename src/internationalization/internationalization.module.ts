@@ -4,6 +4,11 @@ import { Global, Module } from '@nestjs/common';
 import { Ii18nConfiguration } from '../configuration/interface/i18n-configuration.interface';
 import { AcceptLanguageResolver, CookieResolver, I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n';
 
+/**
+ * 国际化模块
+ *
+ * - 全局模块
+ */
 @Global()
 @Module({
   imports: [
