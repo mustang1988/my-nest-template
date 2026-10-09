@@ -3,6 +3,8 @@ import { Logger } from 'winston';
 import { basename } from 'node:path';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
+import compression from '@fastify/compress';
+import fastifyCookie from '@fastify/cookie';
 import { ConfigService } from '@nestjs/config';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -15,6 +17,16 @@ void (async () => {
    * 初始化IoC容器
    */
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ bodyLimit: bytes('1GB') as number }));
+
+  /**
+   * 注册fastify-compression插件
+   */
+  await app.register(compression);
+
+  /**
+   * 注册fastify-cookie插件   
+   */
+  await app.register(fastifyCookie);
 
   /**
    * 替换全局日志为winston

@@ -74,6 +74,7 @@
 ##### 装饰器
 
 [@JsonResp(options?:boolean)](./src/common/decorator/json-response.decorator.ts): 控制器接口函数装饰器, 用于标记Controller中的Action函数的响应内容是否为JSON
+[@Cookies(name?:string)](./src/common/decorator/cookies.decorator.ts): 控制器接口函数装饰器, 用于获取请求的Cookie参数
 
 ##### 异常过滤器
 
