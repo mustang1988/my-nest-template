@@ -10,6 +10,7 @@
         - [装饰器](#装饰器)
         - [异常过滤器](#异常过滤器)
         - [拦截器](#拦截器)
+        - [工具类](#工具类)
     - [Configuration](#configuration)
       - [模块内容](#模块内容-1)
         - [环境变量加载工具](#环境变量加载工具)
@@ -29,10 +30,13 @@
       - [模块内容](#模块内容-6)
         - [国际化语言包](#国际化语言包)
         - [国际化语言处理器](#国际化语言处理器)
+    - [Rabbitmq](#rabbitmq)
+      - [模块内容](#模块内容-7)
+        - [常量](#常量-3)
 
 ## 项目配置
 
-[全量配置示例](./.env)
+[全量配置示例&配置项说明](./.env)
 
 ## 模块说明
 
@@ -85,6 +89,12 @@
 ##### 拦截器
 
 - [JsonResponseInterceptor](./src/common/interceptor/json-response.interceptor.ts): JSON响应格式化拦截器, 用于统一所有接口的HTTP响应格式
+
+##### 工具类
+
+- [DataMaskingUtil](./src//common/util/data-masking.util.ts): 数据脱敏工具类, 提供以下功能
+  - maskingString(): 字符串内容脱敏
+  - maskingObject(): 对象内容脱敏
 
 ### Configuration
 
@@ -259,3 +269,23 @@
 
 语言处理器优先级
 CookieResolver > QueryResolver > AcceptLanguageResolver
+
+### Rabbitmq
+
+全局Rabbitmq队列模块
+
+模块目录结构
+
+```bash
+📦rabbitmq
+ ┣ 📂service
+ ┃ ┗ 📜rabbitmq-client.ts
+ ┣ 📜rabbitmq.constant.ts
+ ┗ 📜rabbitmq.module.ts
+```
+
+#### 模块内容
+
+##### 常量
+
+- [DEFAULT_RABBIMTMQ_CLIENT](./src/rabbitmq/rabbitmq.constant.ts): Rabbitmq队列消息发送客户端IoC注入Token

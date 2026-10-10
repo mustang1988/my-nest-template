@@ -8,6 +8,7 @@ export interface IDataMaskingOptions {
    * - 整数
    * - 取值范围: [0, 100]
    * - 单位: %
+   * - 默认值: 50
    */
   percent?: number;
 
@@ -15,6 +16,7 @@ export interface IDataMaskingOptions {
    * 需要脱敏的字段名称列表
    *
    * - 仅针对对象类型数据脱敏时使用
+   * - 默认值: []
    */
   fields?: Array<string>;
 
