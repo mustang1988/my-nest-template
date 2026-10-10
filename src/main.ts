@@ -68,23 +68,12 @@ void (async () => {
         app.connectMicroservice<MicroserviceOptions>({
           transport: Transport.RMQ,
           options: {
-            urls: [
-              {
-                protocol: 'amqp',
-                hostname: host,
-                port,
-                username,
-                password,
-                vhost,
-              },
-            ],
+            urls: [{ protocol: 'amqp', hostname: host, port, username, password, vhost }],
             queue,
             prefetchCount: prefetchCount,
             noAck,
             persistent: true,
-            queueOptions: {
-              durable: true,
-            },
+            queueOptions: { durable: true },
           },
         });
       });

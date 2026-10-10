@@ -18,16 +18,7 @@ export const rabbitmqClients: Array<Provider> = [
       const defaultRmqClient = ClientProxyFactory.create({
         transport: Transport.RMQ,
         options: {
-          urls: [
-            {
-              protocol: 'amqp',
-              hostname: host,
-              port,
-              username,
-              password,
-              vhost,
-            },
-          ],
+          urls: [{ protocol: 'amqp', hostname: host, port, username, password, vhost }],
           queue,
           /**
            * 此处需要注意: 发送端必须设置为true
@@ -35,9 +26,7 @@ export const rabbitmqClients: Array<Provider> = [
            */
           noAck: true,
           persistent: true,
-          queueOptions: {
-            durable: true,
-          },
+          queueOptions: { durable: true },
         },
       });
       await defaultRmqClient.connect();

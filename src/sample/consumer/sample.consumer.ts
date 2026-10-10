@@ -19,6 +19,7 @@ export class SampleConsumer {
     try {
       this.logger.info('payload: %o, type: %s', payload, typeof payload);
     } catch (error) {
+      this.logger.error('error: %o', error);
     } finally {
       /**
        * 手动ack消息
