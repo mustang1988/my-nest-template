@@ -38,4 +38,9 @@ export interface IRabbitmqConfiguration {
    * Rabbitmq队列消费预取消息数量
    */
   prefetchCount: number;
+
+  /**
+   * Rabbitmq消息消费后是否自动ACK
+   */
+  noAck: boolean;
 }

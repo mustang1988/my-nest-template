@@ -47,6 +47,7 @@ export default (): IConfiguration => ({
       queue: EnvValueLoadUtil.loadRequiredString('DEFAULT_RABBITMQ_QUEUE'),
       consume: EnvValueLoadUtil.loadRequiredBoolean('DEFAULT_RABBITMQ_CONSUME'),
       prefetchCount: EnvValueLoadUtil.loadOptionalInteger('DEFAULT_RABBITMQ_PREFETCH_COUNT', 1),
+      noAck: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_RABBITMQ_AUTO_ACK', true),
     },
   },
   i18n: {

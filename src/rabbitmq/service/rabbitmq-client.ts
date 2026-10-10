@@ -15,13 +15,25 @@ export const rabbitmqClients: Array<Provider> = [
     inject: [ConfigService],
     useFactory: async (configService: ConfigService): Promise<ClientProxy> => {
       const { username, password, host, port, vhost, queue } = configService.getOrThrow<Required<IRabbitmqConfiguration>>('rabbitmq.default');
-      const rmqUrl = `amqp://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}${encodeURIComponent(vhost)}`;
       const defaultRmqClient = ClientProxyFactory.create({
         transport: Transport.RMQ,
         options: {
-          urls: [rmqUrl],
-          queue: queue,
-          noAck: true, // 此处需要注意, rabbitmq发送端必须设置为true, 消费端无限制
+          urls: [
+            {
+              protocol: 'amqp',
+              hostname: host,
+              port,
+              username,
+              password,
+              vhost,
+            },
+          ],
+          queue,
+          /**
+           * 此处需要注意: 发送端必须设置为true
+           * @see https://github.com/nestjs/nest/issues/11966
+           */
+          noAck: true,
           persistent: true,
           queueOptions: {
             durable: true,

@@ -10,6 +10,9 @@ import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { IRedisEventMessage } from '../../redis/interface/redis-event-message.interface';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
 
+/**
+ * 示例服务
+ */
 @Injectable()
 export class SampleService {
   private readonly sampleRepo: Repository<SampleEntity>;

@@ -6,6 +6,7 @@ import { NestFactory } from '@nestjs/core';
 import compression from '@fastify/compress';
 import fastifyCookie from '@fastify/cookie';
 import { ConfigService } from '@nestjs/config';
+import { DataMaskingUtil } from './common/util/data-masking.util';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -62,16 +63,24 @@ void (async () => {
     Object.values(rabbitmqConfig)
       .filter((rmqConfig) => rmqConfig.consume)
       .forEach((rmqConfig) => {
-        const { username, password, host, port, vhost, queue, prefetchCount } = rmqConfig;
-        const rmqUrl = `amqp://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}${encodeURIComponent(vhost)}`;
-        logger.info('Rabbitmq队列监听: url = %s', rmqUrl);
+        const { username, password, host, port, vhost, queue, prefetchCount, noAck } = rmqConfig;
+        logger.info('Rabbitmq队列消费: rmqConfig = %j', DataMaskingUtil.maskingObject(rmqConfig, { fields: ['username', 'password'] }));
         app.connectMicroservice<MicroserviceOptions>({
           transport: Transport.RMQ,
           options: {
-            urls: [rmqUrl],
-            queue: queue,
+            urls: [
+              {
+                protocol: 'amqp',
+                hostname: host,
+                port,
+                username,
+                password,
+                vhost,
+              },
+            ],
+            queue,
             prefetchCount: prefetchCount,
-            noAck: false, // 队列消息需要消费后手动ack
+            noAck,
             persistent: true,
             queueOptions: {
               durable: true,
