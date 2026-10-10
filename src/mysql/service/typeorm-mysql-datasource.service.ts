@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { DEFAULT_MYSQL_DATASOURCE } from '../mysql.constant';
 import { IMySQLConfiguration } from '../../configuration/interface/mysql-configuration.interface';
 
-export const mysqlDataSources: Array<Provider> = [
+export const mysqlDataSources: Array<Provider<DataSource>> = [
   /**
    * 默认MySQL数据源
    */

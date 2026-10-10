@@ -4,7 +4,7 @@ import { DEFAULT_RABBIMTMQ_CLIENT } from '../rabbitmq.constant';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-configuration.interface';
 
-export const rabbitmqClients: Array<Provider> = [
+export const rabbitmqClients: Array<Provider<ClientProxy>> = [
   /**
    * 默认Rabbitmq客户端
    *
