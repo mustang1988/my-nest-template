@@ -6,17 +6,21 @@ import { NestFactory } from '@nestjs/core';
 import compression from '@fastify/compress';
 import fastifyCookie from '@fastify/cookie';
 import { ConfigService } from '@nestjs/config';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { WINSTON_MODULE_PROVIDER, WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { JsonResponseInterceptor } from './common/interceptor/json-response.interceptor';
 import { GlobalExceptionFilter } from './common/exception-filter/global.exception-filter';
+import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-configuration.interface';
 
 void (async () => {
   /**
    * 初始化IoC容器
    */
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ bodyLimit: bytes('1GB') as number }));
+  const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER).child({ context: basename(__filename) });
+  const configService = app.get(ConfigService);
 
   /**
    * 注册fastify-compression插件
@@ -24,7 +28,7 @@ void (async () => {
   await app.register(compression);
 
   /**
-   * 注册fastify-cookie插件   
+   * 注册fastify-cookie插件  
    */
   await app.register(fastifyCookie);
 
@@ -51,12 +55,41 @@ void (async () => {
   app.useGlobalFilters(new I18nValidationExceptionFilter({ detailedErrors: false }), app.get(GlobalExceptionFilter));
 
   /**
+   * Rabbitmq队列消费
+   */
+  const rabbitmqConfig = configService.get<Record<string, Required<IRabbitmqConfiguration>>>('rabbitmq');
+  if (rabbitmqConfig) {
+    Object.values(rabbitmqConfig)
+      .filter((rmqConfig) => rmqConfig.consume)
+      .forEach((rmqConfig) => {
+        const { username, password, host, port, vhost, queue, prefetchCount } = rmqConfig;
+        const rmqUrl = `amqp://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}${encodeURIComponent(vhost)}`;
+        logger.info('Rabbitmq队列监听: url = %s', rmqUrl);
+        app.connectMicroservice<MicroserviceOptions>({
+          transport: Transport.RMQ,
+          options: {
+            urls: [rmqUrl],
+            queue: queue,
+            prefetchCount: prefetchCount,
+            noAck: false, // 队列消息需要消费后手动ack
+            persistent: true,
+            queueOptions: {
+              durable: true,
+            },
+          },
+        });
+      });
+    /**
+     * 启动队列消费
+     */
+    await app.startAllMicroservices();
+    logger.info('队列消费启动');
+  }
+
+  /**
    * 启动服务监听
    */
-  const configService = app.get(ConfigService);
   const appPort = configService.getOrThrow<number>('app.port');
   await app.listen(appPort, '0.0.0.0');
-
-  const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER).child({ context: basename(__filename) });
-  logger.info('App started: port = %s', appPort);
+  logger.info('服务启动完成: port = %s', appPort);
 })();

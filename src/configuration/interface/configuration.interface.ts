@@ -3,6 +3,7 @@ import { Ii18nConfiguration } from './i18n-configuration.interface';
 import { IRedisConfiguration } from './redis-configuration.interface';
 import { IMySQLConfiguration } from './mysql-configuration.interface';
 import { ILoggerConfiguration } from './logger-configuration.interface';
+import { IRabbitmqConfiguration } from './rabbitmq-configuration.interface';
 
 /**
  * 配置
@@ -32,6 +33,11 @@ export interface IConfiguration {
    * 国际化配置
    */
   i18n?: Ii18nConfiguration;
+
+  /**
+   * Rabbitmq队列配置
+   */
+  rabbitmq?: Record<string, IRabbitmqConfiguration>;
 
   /**
    * 常量配置

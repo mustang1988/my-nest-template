@@ -37,6 +37,18 @@ export default (): IConfiguration => ({
       sync: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_SYNC', false),
     },
   },
+  rabbitmq: {
+    default: {
+      host: EnvValueLoadUtil.loadRequiredString('DEFAULT_RABBITMQ_HOST'),
+      port: EnvValueLoadUtil.loadOptionalInteger('DEFAULT_RABBITMQ_PORT', 5672),
+      username: EnvValueLoadUtil.loadRequiredString('DEFAULT_RABBITMQ_USERNAME'),
+      password: EnvValueLoadUtil.loadRequiredString('DEFAULT_RABBITMQ_PASSWORD'),
+      vhost: EnvValueLoadUtil.loadOptionalString('DEFAULT_RABBITMQ_VHOST', undefined),
+      queue: EnvValueLoadUtil.loadRequiredString('DEFAULT_RABBITMQ_QUEUE'),
+      consume: EnvValueLoadUtil.loadRequiredBoolean('DEFAULT_RABBITMQ_CONSUME'),
+      prefetchCount: EnvValueLoadUtil.loadOptionalInteger('DEFAULT_RABBITMQ_PREFETCH_COUNT', 1),
+    },
+  },
   i18n: {
     fallbackLanguage: EnvValueLoadUtil.loadOptionalString('I18N_FALLBACK_LANGUAGE', 'en-US'),
   },
