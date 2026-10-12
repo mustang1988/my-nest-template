@@ -1,11 +1,10 @@
 import { Logger } from 'winston';
 import { ClsService } from 'nestjs-cls';
-import { randomUUID } from 'node:crypto';
 import { ConfigService } from '@nestjs/config';
 import { Inject, Injectable } from '@nestjs/common';
 import type { RedisClientType } from '@redis/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { DEFAULT_REDIS_CLIENT } from '../redis.constant';
+import { getRedisClientToken } from '../redis.constant';
 import { CLS_REQUEST_ID } from '../../common/common.constant';
 import { EventType, IRedisEventMessage } from '../interface/redis-event-message.interface';
 
@@ -25,7 +24,7 @@ export class RedisEventEmitterService {
     @Inject() private readonly cls: ClsService,
     @Inject() private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    @Inject(DEFAULT_REDIS_CLIENT) private defaultRedisClient: RedisClientType,
+    @Inject(getRedisClientToken('default')) private defaultRedisClient: RedisClientType,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     this.channel = this.configService.getOrThrow<string>('redis.default.eventChannel');

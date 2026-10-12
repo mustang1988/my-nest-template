@@ -13,8 +13,8 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { WINSTON_MODULE_PROVIDER, WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { JsonResponseInterceptor } from './common/interceptor/json-response.interceptor';
 import { GlobalExceptionFilter } from './common/exception-filter/global.exception-filter';
-import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-configuration.interface';
 import { RequestLoggerInterceptor } from './common/interceptor/request-logger.interceptor';
+import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-configuration.interface';
 
 void (async () => {
   /**
@@ -41,23 +41,37 @@ void (async () => {
 
   /**
    * 全局拦截器注册
+   *
+   * - JSON响应格式化拦截器
+   * - 请求日志拦截器
+   *
+   * 注意: 多个拦截器注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
   app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(RequestLoggerInterceptor));
 
   /**
    * 全局管道注册
+   *
+   * - 国际化参数校验错误处理管道
+   *
+   * 注意: 多个管道注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
   app.useGlobalPipes(new I18nValidationPipe());
 
   /**
    * 全局异常过滤器注册
    *
-   * 注意: 多异常过滤器注册时需要注意注册顺序
+   * - 国际化参数校验异常过滤器
+   * - 全局异常过滤器
+   *
+   * 注意: 多异常过滤器注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
   app.useGlobalFilters(new I18nValidationExceptionFilter({ detailedErrors: false }), app.get(GlobalExceptionFilter));
 
   /**
    * Rabbitmq队列消费
+   *
+   * 对rabbitmq配置中, `consume`配置项为true的队列启动消费监听
    */
   const rabbitmqConfig = configService.get<Record<string, Required<IRabbitmqConfiguration>>>('rabbitmq');
   if (rabbitmqConfig) {
@@ -79,7 +93,7 @@ void (async () => {
         });
       });
     /**
-     * 启动队列消费
+     * 启动所有队列消费
      */
     await app.startAllMicroservices();
     logger.info('队列消费启动');

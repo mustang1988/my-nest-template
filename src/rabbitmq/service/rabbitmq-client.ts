@@ -1,6 +1,6 @@
 import { Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DEFAULT_RABBIMTMQ_CLIENT } from '../rabbitmq.constant';
+import { getRabbitmqClientToken } from '../rabbitmq.constant';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-configuration.interface';
 
@@ -11,7 +11,7 @@ export const rabbitmqClients: Array<Provider<ClientProxy>> = [
    * - 用于消息发送
    */
   {
-    provide: DEFAULT_RABBIMTMQ_CLIENT,
+    provide: getRabbitmqClientToken('default'),
     inject: [ConfigService],
     useFactory: async (configService: ConfigService): Promise<ClientProxy> => {
       const { username, password, host, port, vhost, queue } = configService.getOrThrow<Required<IRabbitmqConfiguration>>('rabbitmq.default');

@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DEFAULT_MYSQL_DATASOURCE } from '../mysql.constant';
+import { getMySQLDataSourceToken } from '../mysql.constant';
 import { IMySQLConfiguration } from '../../configuration/interface/mysql-configuration.interface';
 
 export const mysqlDataSources: Array<Provider<DataSource>> = [
@@ -9,7 +9,7 @@ export const mysqlDataSources: Array<Provider<DataSource>> = [
    * 默认MySQL数据源
    */
   {
-    provide: DEFAULT_MYSQL_DATASOURCE,
+    provide: getMySQLDataSourceToken('default'),
     inject: [ConfigService],
     useFactory: async (configService: ConfigService): Promise<DataSource> => {
       const defaultMySQLConfig = configService.getOrThrow<Required<IMySQLConfiguration>>('mysql.default');

@@ -1,4 +1,10 @@
+import { InjectionToken } from '@nestjs/common';
+
 /**
- * 默认Redis连接客户端IoC注入Token
+ * 获取指定名称Redis连接客户端IoC注入Token
+ * @param name Redis连接名称
+ * @return Redis连接客户端IoC注入Token
  */
-export const DEFAULT_REDIS_CLIENT: symbol = Symbol('token:default:redis-client');
+export const getRedisClientToken = (name: string): InjectionToken => {
+  return `token:redis-client:${name}`;
+};

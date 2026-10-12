@@ -3,7 +3,7 @@ import { I18nService } from 'nestjs-i18n';
 import { DataSource, Repository } from 'typeorm';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { SampleEntity } from '../entity/sample.default.entity';
-import { DEFAULT_MYSQL_DATASOURCE } from '../../mysql/mysql.constant';
+import { getMySQLDataSourceToken } from '../../mysql/mysql.constant';
 import { ContextService } from '../../context/service/context.service';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
@@ -21,7 +21,7 @@ export class SampleService {
     @Inject() private readonly ctx: ContextService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @Inject() private readonly redisEventEmitter: RedisEventEmitterService,
-    @Inject(DEFAULT_MYSQL_DATASOURCE) private readonly defaultDataSource: DataSource,
+    @Inject(getMySQLDataSourceToken('default')) private readonly defaultDataSource: DataSource,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     this.sampleRepo = this.defaultDataSource.getRepository(SampleEntity);
