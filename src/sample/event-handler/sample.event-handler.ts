@@ -5,8 +5,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
-import { getRabbitmqClientToken } from '../../rabbitmq/rabbitmq.constant';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
+import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-client.decorator';
 
 /**
  * 示例事件委托处理器
@@ -15,7 +15,7 @@ import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 export class SampleEventHandler {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    @Inject(getRabbitmqClientToken('default')) private readonly rmqClient: ClientProxy,
+    @InjectRabbitmqClient('default') private readonly rmqClient: ClientProxy,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
   }

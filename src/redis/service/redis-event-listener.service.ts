@@ -1,8 +1,9 @@
 import { Logger } from 'winston';
 import { ConfigService } from '@nestjs/config';
+import type { RedisClientType } from '@redis/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { createClient, RedisClientType } from '@redis/client';
+import { InjectRedisSubscriber } from '../decorator/inject-redis-client.decorator';
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { EventType, IRedisEventMessage } from '../interface/redis-event-message.interface';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
@@ -13,11 +14,6 @@ import { IRedisConfiguration } from '../../configuration/interface/redis-configu
 @Injectable()
 export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy {
   /**
-   * Redis事件订阅客户端
-   */
-  private readonly subscriber: RedisClientType;
-
-  /**
    * Redis事件订阅通道
    */
   private readonly channel: string;
@@ -26,18 +22,10 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
     @Inject() private readonly eventEmitter: EventEmitter2,
     @Inject() private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @InjectRedisSubscriber('default') private readonly subscriber: RedisClientType,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     const defaultRedisConf = this.configService.getOrThrow<Required<IRedisConfiguration>>('redis.default');
-    this.subscriber = createClient({
-      socket: {
-        host: defaultRedisConf.host,
-        port: defaultRedisConf.port,
-      },
-      username: defaultRedisConf.username,
-      password: defaultRedisConf.password,
-      database: defaultRedisConf.db,
-    });
     this.channel = defaultRedisConf.eventChannel;
   }
 
@@ -47,7 +35,6 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
   }
 
   async onModuleInit() {
-    await this.subscriber.connect();
     await this.subscriber.subscribe(this.channel, (message: string, channel: string) => {
       this.logger.debug('Redis事件订阅, 收到订阅消息: channel = %s, message = %j', channel, message);
       try {
