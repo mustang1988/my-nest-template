@@ -33,16 +33,20 @@ export class RedisEventEmitterService {
 
   /**
    * 发布Redis事件
-   * @param message 事件消息
+   * @param payload 事件消息
    * @return 订阅事件的实例数量
    */
-  async emit<E extends EventType, P>(message: IRedisEventMessage<E, P>): Promise<number> {
+  async emit<E extends EventType, P>(event: E, payload: P, target?: number): Promise<number> {
     const requestId = this.cls.get(CLS_REQUEST_ID);
     /**
      * 对事件消息自动补全触发事件的请求ID和事件唯一ID
      */
-    message.requestId = message.requestId ?? requestId;
-    message.eventId = message.eventId ?? randomUUID();
+    const message: IRedisEventMessage<E, P> = {
+      event,
+      payload,
+      requestId,
+      target,
+    };
     this.logger.debug('[%s] 发布Redis事件, 入参: channel = %s, message = %j', requestId, this.channel, message);
     return await this.defaultRedisClient.publish(this.channel, JSON.stringify(message));
   }

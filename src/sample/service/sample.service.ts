@@ -7,7 +7,6 @@ import { DEFAULT_MYSQL_DATASOURCE } from '../../mysql/mysql.constant';
 import { ContextService } from '../../context/service/context.service';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
-import { IRedisEventMessage } from '../../redis/interface/redis-event-message.interface';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
 
 /**
@@ -38,11 +37,7 @@ export class SampleService {
     /**
      * 触发事件委托
      */
-    const eventMessage: IRedisEventMessage<ESampleEventPattern, SampleEntity> = {
-      event: ESampleEventPattern.SAMPLE_EVENT,
-      payload: foundSample,
-    };
-    await this.redisEventEmitter.emit(eventMessage);
+    await this.redisEventEmitter.emit<ESampleEventPattern.SAMPLE_EVENT, SampleEntity>(ESampleEventPattern.SAMPLE_EVENT, foundSample);
     return foundSample;
   }
 }

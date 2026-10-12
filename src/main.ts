@@ -14,6 +14,7 @@ import { WINSTON_MODULE_PROVIDER, WINSTON_MODULE_NEST_PROVIDER } from 'nest-wins
 import { JsonResponseInterceptor } from './common/interceptor/json-response.interceptor';
 import { GlobalExceptionFilter } from './common/exception-filter/global.exception-filter';
 import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-configuration.interface';
+import { RequestLoggerInterceptor } from './common/interceptor/request-logger.interceptor';
 
 void (async () => {
   /**
@@ -41,7 +42,7 @@ void (async () => {
   /**
    * 全局拦截器注册
    */
-  app.useGlobalInterceptors(app.get(JsonResponseInterceptor));
+  app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(RequestLoggerInterceptor));
 
   /**
    * 全局管道注册

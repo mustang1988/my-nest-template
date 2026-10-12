@@ -2,6 +2,7 @@ import { Logger } from 'winston';
 import { Channel, Message } from 'amqplib';
 import { Controller, Inject } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { SampleEntity } from '../entity/sample.default.entity';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 
@@ -15,9 +16,9 @@ export class SampleConsumer {
   }
 
   @MessagePattern(ESampleMessagePattern.SAMPLE_MESSAGE)
-  async consumeSampleMessage(@Payload() payload: unknown, @Ctx() rmqContext: RmqContext) {
+  async consumeSampleMessage(@Payload() payload: SampleEntity & { requestId: string }, @Ctx() rmqContext: RmqContext) {
     try {
-      this.logger.info('payload: %o, type: %s', payload, typeof payload);
+      this.logger.info('[%s] 收到RMQ消息: pattern = %s, payload: %j', payload.requestId, ESampleMessagePattern.SAMPLE_MESSAGE, payload);
     } catch (error) {
       this.logger.error('error: %o', error);
     } finally {

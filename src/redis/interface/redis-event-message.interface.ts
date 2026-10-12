@@ -6,16 +6,11 @@ export type EventType = symbol | string;
 /**
  * Redis事件消息
  */
-export interface IRedisEventMessage<E extends EventType, P> {
+export interface IRedisEventMessage<E extends EventType, P extends unknown> {
   /**
    * 事件类型
    */
-  event: E;
-
-  /**
-   * 事件唯一ID
-   */
-  eventId?: string;
+  event?: E;
 
   /**
    * 事件负载

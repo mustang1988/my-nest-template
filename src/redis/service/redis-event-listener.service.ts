@@ -59,11 +59,11 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
         if (target !== undefined) {
           const currentInstanceId = Number(process.env.INSTANCE_ID ?? 0);
           if (currentInstanceId !== target) {
-            this.logger.info('Redis事件订阅, 目标实例不匹配: expect = %s, currentInstanceId = %s', target, currentInstanceId);
+            this.logger.info('Redis事件订阅, 目标实例非当前实例: expect = %s, currentInstanceId = %s', target, currentInstanceId);
             return;
           }
         }
-        const emitRes = this.eventEmitter.emit(event, payload);
+        const emitRes = this.eventEmitter.emit(event, payload, { requestId });
         this.logger.info('[%s] Redis事件订阅, 事件已处理: event = %s, payload = %j, emitRes = %s', requestId, event, payload, emitRes);
       } catch (error) {
         this.logger.error('Redis事件订阅, 事件消息格式无效: error = %o', error);
