@@ -21,10 +21,10 @@
       - [模块内容](#模块内容-3)
     - [MySQL](#mysql)
       - [模块内容](#模块内容-4)
-        - [常量](#常量-1)
+        - [工具函数](#工具函数)
     - [Redis](#redis)
       - [模块内容](#模块内容-5)
-        - [常量](#常量-2)
+        - [工具函数](#工具函数-1)
         - [服务](#服务-1)
     - [Internationalization](#internationalization)
       - [模块内容](#模块内容-6)
@@ -32,7 +32,8 @@
         - [国际化语言处理器](#国际化语言处理器)
     - [Rabbitmq](#rabbitmq)
       - [模块内容](#模块内容-7)
-        - [常量](#常量-3)
+        - [工具函数](#工具函数-2)
+    - [Sample](#sample)
 
 ## 项目配置
 
@@ -191,9 +192,9 @@
 
 #### 模块内容
 
-##### 常量
+##### 工具函数
 
-[DEFAULT_MYSQL_DATASOURCE](./src/mysql/mysql.constant.ts): 默认MySQL数据库TypeORM的数据源依赖注入Token
+[getMySQLDataSourceToken()](./src/mysql/mysql.constant.ts): 获取指定名称MySQL的TypeORM数据源的IoC注入Token
 
 ### Redis
 
@@ -214,9 +215,9 @@
 
 #### 模块内容
 
-##### 常量
+##### 工具函数
 
-[DEFAULT_REDIS_CLIENT](./src/redis/redis.constant.ts): 默认Redis连接客户端对象依赖注入Token
+[getRedisClientToken()](./src/redis/redis.constant.ts): 回去指定名称Redis连接客户端对象依赖注入Token
 
 ##### 服务
 
@@ -286,6 +287,34 @@ CookieResolver > QueryResolver > AcceptLanguageResolver
 
 #### 模块内容
 
-##### 常量
+##### 工具函数
 
-- [DEFAULT_RABBIMTMQ_CLIENT](./src/rabbitmq/rabbitmq.constant.ts): Rabbitmq队列消息发送客户端IoC注入Token
+- [getRabbitmqClientToken](./src/rabbitmq/rabbitmq.constant.ts): 获取指定名称Rabbitmq队列消息发送客户端IoC注入Token
+
+### Sample
+
+示例模块
+
+MySQL, Context, Internationalization, Rabbitmq, Redis模块实际使用示例
+
+模块目录结构
+
+```bash
+📦sample
+ ┣ 📂consumer
+ ┃ ┗ 📜sample.consumer.ts
+ ┣ 📂controller
+ ┃ ┗ 📜sample.controller.ts
+ ┣ 📂dto
+ ┃ ┗ 📜sample.dto.ts
+ ┣ 📂entity
+ ┃ ┗ 📜sample.default.entity.ts
+ ┣ 📂enum
+ ┃ ┣ 📜sample-event-pattern.enum.ts
+ ┃ ┗ 📜sample-message-pattern.enum.ts
+ ┣ 📂event-handler
+ ┃ ┗ 📜sample.event-handler.ts
+ ┣ 📂service
+ ┃ ┗ 📜sample.service.ts
+ ┗ 📜sample.module.ts
+```
