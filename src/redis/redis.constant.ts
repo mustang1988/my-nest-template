@@ -1,6 +1,21 @@
 import { InjectionToken } from '@nestjs/common';
 
 /**
+ * Redis模块异步初始化选项IoC注入Token
+ */
+export const REDIS_MODULE_ASYNC_OPTIONS_TOKEN: symbol = Symbol('token:redis-module-async-options');
+
+/**
+ * Redis连接客户端IoC注入Token
+ */
+export const REDIS_CLIENTS_TOKEN: symbol = Symbol('token:redis-clients');
+
+/**
+ * Redis订阅端IoC注入Token
+ */
+export const REDIS_SUBSCRIBERS_TOKEN: symbol = Symbol('token:redis-subscribers');
+
+/**
  * 获取指定名称Redis连接客户端IoC注入Token
  * @param name Redis连接名称
  * @return Redis连接客户端IoC注入Token

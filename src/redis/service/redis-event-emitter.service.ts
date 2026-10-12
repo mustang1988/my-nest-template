@@ -1,11 +1,12 @@
 import { Logger } from 'winston';
 import { ClsService } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
-import { Inject, Injectable } from '@nestjs/common';
 import type { RedisClientType } from '@redis/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { REDIS_CLIENTS_TOKEN } from '../redis.constant';
 import { CLS_REQUEST_ID } from '../../common/common.constant';
-import { InjectRedisClient } from '../decorator/inject-redis-client.decorator';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { IRedisEventEmitOptions } from '../interface/redis-event-emit-options.interface';
 import { EventType, IRedisEventMessage } from '../interface/redis-event-message.interface';
 
 /**
@@ -24,7 +25,7 @@ export class RedisEventEmitterService {
     @Inject() private readonly cls: ClsService,
     @Inject() private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    @InjectRedisClient('default') private defaultRedisClient: RedisClientType,
+    @Inject(REDIS_CLIENTS_TOKEN) private readonly redisClientsMap: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     this.channel = this.configService.getOrThrow<string>('redis.default.eventChannel');
@@ -35,7 +36,7 @@ export class RedisEventEmitterService {
    * @param payload 事件消息
    * @return 订阅事件的实例数量
    */
-  async emit<E extends EventType, P>(event: E, payload: P, target?: number): Promise<number> {
+  async emit<E extends EventType, P>(event: E, payload: P, options?: IRedisEventEmitOptions): Promise<number | Array<number>> {
     const requestId = this.cls.get(CLS_REQUEST_ID);
     /**
      * 对事件消息自动补全触发事件的请求ID和事件唯一ID
@@ -44,9 +45,32 @@ export class RedisEventEmitterService {
       event,
       payload,
       requestId,
-      target,
+      target: options?.target,
     };
     this.logger.debug('[%s] 发布Redis事件, 入参: channel = %s, message = %j', requestId, this.channel, message);
-    return await this.defaultRedisClient.publish(this.channel, JSON.stringify(message));
+
+    let publishResult;
+    /**
+     * 有指定发布的Redis客户端
+     */
+    if (options?.clientName) {
+      const redisClient = await this.redisClientsMap.get(options?.clientName);
+      if (!redisClient) {
+        throw new InternalServerErrorException('Invalid redis client name');
+      }
+      publishResult = await redisClient.publish(this.channel, JSON.stringify(message));
+    }
+    /**
+     * 未指定Redis客户端
+     *
+     * 对所有已连接的客户端发布消息
+     */
+    else {
+      publishResult = await Promise.all(
+        Array.from(this.redisClientsMap.values()).map((redisClient) => redisClient.publish(this.channel, JSON.stringify(message))),
+      );
+    }
+
+    return publishResult;
   }
 }
