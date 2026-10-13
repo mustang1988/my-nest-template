@@ -1,4 +1,6 @@
+import { Logger } from 'winston';
 import { DataSource } from 'typeorm';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { IMySQLModuleAsyncOptions } from './interface/mysq-module-options.interface';
@@ -24,8 +26,8 @@ export class MySQLModule {
 
     const mysqlDataSourceMap: Provider<Map<string, DataSource>> = {
       provide: MYSQL_DATASOURCE_MAP,
-      inject: [MYSQL_DATASOURCE_OPTIONS],
-      useFactory: async (mysqlDataSourceOptions: Array<IMySQLDataSourceOptions>) => {
+      inject: [MYSQL_DATASOURCE_OPTIONS, WINSTON_MODULE_PROVIDER],
+      useFactory: async (mysqlDataSourceOptions: Array<IMySQLDataSourceOptions>, logger: Logger) => {
         const mysqlDataSourceMap: Map<string, DataSource> = new Map();
         for (const mysqlOpt of mysqlDataSourceOptions) {
           if (!names.includes(mysqlOpt.name)) {
@@ -48,6 +50,7 @@ export class MySQLModule {
           });
           mysqlDataSourceMap.set(mysqlOpt.name, dataSource);
           await dataSource.initialize();
+          logger.info('MySQL数据源初始化完成: name = %s', mysqlOpt.name);
         }
 
         return mysqlDataSourceMap;

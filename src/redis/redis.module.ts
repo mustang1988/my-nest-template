@@ -5,6 +5,8 @@ import {
   REDIS_SUBSCRIBERS_TOKEN,
   REDIS_MODULE_ASYNC_OPTIONS_TOKEN,
 } from './redis.constant';
+import { Logger } from 'winston';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createClient, RedisClientType } from '@redis/client';
@@ -38,8 +40,8 @@ export class RedisModule {
 
     const redisClientsProvider: Provider<Map<string, RedisClientType>> = {
       provide: REDIS_CLIENTS_TOKEN,
-      inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN],
-      useFactory: async (redisClientOptions: Array<IRedisClientOptions>): Promise<Map<string, RedisClientType>> => {
+      inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
+      useFactory: async (redisClientOptions: Array<IRedisClientOptions>, logger: Logger): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
           if (!names.includes(redisClientOpt.name)) {
@@ -55,6 +57,7 @@ export class RedisModule {
             database: redisClientOpt.db,
           });
           await redisClient.connect();
+          logger.info('Redis客户端初始化完成: name = %s', redisClientOpt.name);
           redisClients.set(redisClientOpt.name, redisClient);
         }
         return redisClients;
@@ -63,8 +66,8 @@ export class RedisModule {
 
     const redisSubscribersProvider: Provider<Map<string, RedisClientType>> = {
       provide: REDIS_SUBSCRIBERS_TOKEN,
-      inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN],
-      useFactory: async (redisClientOptions: Array<IRedisClientOptions>): Promise<Map<string, RedisClientType>> => {
+      inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
+      useFactory: async (redisClientOptions: Array<IRedisClientOptions>, logger: Logger): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
           if (!names.includes(redisClientOpt.name)) {
@@ -80,6 +83,7 @@ export class RedisModule {
             database: redisClientOpt.db,
           });
           await redisClient.connect();
+          logger.info('Redis订阅端初始化完成: name = %s', redisClientOpt.name);
           redisClients.set(redisClientOpt.name, redisClient);
         }
         return redisClients;

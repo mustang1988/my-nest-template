@@ -1,3 +1,5 @@
+import { Logger } from 'winston';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
@@ -23,8 +25,8 @@ export class RabbitmqModule {
 
     const rabbitmqClientsProvider: Provider<Map<string, ClientProxy>> = {
       provide: RABBITMQ_CLIENTS_MAP,
-      inject: [RABBITMQ_MODULE_ASYNC_OPTIONS],
-      useFactory: async (rabbitmqConfigs: Array<IRabbitmqClientOptions>) => {
+      inject: [RABBITMQ_MODULE_ASYNC_OPTIONS, WINSTON_MODULE_PROVIDER],
+      useFactory: async (rabbitmqConfigs: Array<IRabbitmqClientOptions>, logger: Logger) => {
         const rabbitmqClientsMap = new Map<string, ClientProxy>();
         for (const rmqConfOpt of rabbitmqConfigs) {
           if (!names.includes(rmqConfOpt.name)) {
@@ -46,6 +48,7 @@ export class RabbitmqModule {
             },
           });
           await rmqClient.connect();
+          logger.info('Rabbitmq发送端初始化完成: name = %s', name);
           rabbitmqClientsMap.set(name, rmqClient);
         }
         return rabbitmqClientsMap;
