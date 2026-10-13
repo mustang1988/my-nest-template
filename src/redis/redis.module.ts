@@ -8,23 +8,18 @@ import {
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createClient, RedisClientType } from '@redis/client';
-import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
+import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { RedisEventEmitterService } from './service/redis-event-emitter.service';
+import { IRedisClientOptions } from './interface/redis-client-options.interface';
 import { RedisEventListenerService } from './service/redis-event-listener.service';
 import { RedisModuleForRootAsyncOptions } from './interface/redis-module-options.interface';
-import { IRedisConfiguration } from '../configuration/interface/redis-configuration.interface';
 
 /**
  * Redis模块
  *
- * - 全局模块
+ * - 动态模块
  */
-@Global()
-@Module({
-  // imports: [EventEmitterModule.forRoot({ global: true, inheritRequestContextId: true })],
-  // providers: [RedisEventEmitterService, RedisEventListenerService, ...redisClients],
-  // exports: [RedisEventEmitterService, ...redisClients],
-})
+@Module({})
 export class RedisModule {
   static forRootAsync(options: RedisModuleForRootAsyncOptions): DynamicModule {
     const {
@@ -36,31 +31,31 @@ export class RedisModule {
     } = options;
 
     // #region 创建配置选项provider, 注入IoC但不export
-    const optionProvider: Provider<Map<string, IRedisConfiguration>> = {
+    const optionProvider: Provider<Array<IRedisClientOptions>> = {
       provide: REDIS_MODULE_ASYNC_OPTIONS_TOKEN,
+      inject,
       useFactory,
-      inject: inject ?? [ConfigService],
     };
     // #endregion
 
-    // #region 创建Redis客户端, 注入IoC但不export
+    // #region 创建Redis客户端
     const redisClientsProvider: Provider<Map<string, RedisClientType>> = {
       provide: REDIS_CLIENTS_TOKEN,
       inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN],
-      useFactory: async (redisConfigMap: Map<string, IRedisConfiguration>): Promise<Map<string, RedisClientType>> => {
+      useFactory: async (redisClientOptions: Array<IRedisClientOptions>): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
-        for (const [redisClientName, redisClientConf] of redisConfigMap.entries()) {
+        for (const redisClientOpt of redisClientOptions) {
           const redisClient = createClient({
             socket: {
-              host: redisClientConf.host,
-              port: redisClientConf.port,
+              host: redisClientOpt.host,
+              port: redisClientOpt.port,
             },
-            username: redisClientConf.username,
-            password: redisClientConf.password,
-            database: redisClientConf.db,
+            username: redisClientOpt.username,
+            password: redisClientOpt.password,
+            database: redisClientOpt.db,
           });
           await redisClient.connect();
-          redisClients.set(redisClientName, redisClient);
+          redisClients.set(redisClientOpt.name, redisClient);
         }
         return redisClients;
       },
@@ -71,20 +66,20 @@ export class RedisModule {
     const redisSubscribersProvider: Provider<Map<string, RedisClientType>> = {
       provide: REDIS_SUBSCRIBERS_TOKEN,
       inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN],
-      useFactory: async (redisConfigMap: Map<string, IRedisConfiguration>): Promise<Map<string, RedisClientType>> => {
+      useFactory: async (redisClientOptions: Array<IRedisClientOptions>): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
-        for (const [redisClientName, redisClientConf] of redisConfigMap.entries()) {
+        for (const redisClientOpt of redisClientOptions) {
           const redisClient = createClient({
             socket: {
-              host: redisClientConf.host,
-              port: redisClientConf.port,
+              host: redisClientOpt.host,
+              port: redisClientOpt.port,
             },
-            username: redisClientConf.username,
-            password: redisClientConf.password,
-            database: redisClientConf.db,
+            username: redisClientOpt.username,
+            password: redisClientOpt.password,
+            database: redisClientOpt.db,
           });
           await redisClient.connect();
-          redisClients.set(redisClientName, redisClient);
+          redisClients.set(redisClientOpt.name, redisClient);
         }
         return redisClients;
       },
@@ -92,39 +87,35 @@ export class RedisModule {
     // #endregion
 
     // #region 创建各redis客户端provider
-    const redisClientProviders: Array<Provider<RedisClientType>> = names
-      .map((name) => {
-        return {
-          provide: getRedisClientToken(name),
-          inject: [REDIS_CLIENTS_TOKEN],
-          useFactory: (redisClientsMap: Map<string, RedisClientType>) => {
-            const client = redisClientsMap.get(name);
-            if (!client) {
-              throw new Error(`Redis client name not found: ${name}`);
-            }
-            return client;
-          },
-        };
-      })
-      .filter((p) => p);
+    const redisClientProviders: Array<Provider<RedisClientType>> = names.map((name) => {
+      return {
+        provide: getRedisClientToken(name),
+        inject: [REDIS_CLIENTS_TOKEN],
+        useFactory: (redisClientsMap: Map<string, RedisClientType>) => {
+          const client = redisClientsMap.get(name);
+          if (!client) {
+            throw new Error(`Redis client not found: ${name}`);
+          }
+          return client;
+        },
+      };
+    });
     // #endregion
 
     // #region 创建各redis订阅端provider
-    const redisSubscriberProviders: Array<Provider<RedisClientType>> = names
-      .map((name) => {
-        return {
-          provide: getRedisSubscriberToken(name),
-          inject: [REDIS_CLIENTS_TOKEN],
-          useFactory: (redisClientsMap: Map<string, RedisClientType>) => {
-            const subscriber = redisClientsMap.get(name);
-            if (!subscriber) {
-              throw new Error(`Redis subscriber not found: ${name}`);
-            }
-            return subscriber;
-          },
-        };
-      })
-      .filter((p) => p);
+    const redisSubscriberProviders: Array<Provider<RedisClientType>> = names.map((name) => {
+      return {
+        provide: getRedisSubscriberToken(name),
+        inject: [REDIS_CLIENTS_TOKEN],
+        useFactory: (redisClientsMap: Map<string, RedisClientType>) => {
+          const subscriber = redisClientsMap.get(name);
+          if (!subscriber) {
+            throw new Error(`Redis subscriber not found: ${name}`);
+          }
+          return subscriber;
+        },
+      };
+    });
     // #endregion
 
     return {
@@ -134,29 +125,10 @@ export class RedisModule {
       providers: [
         RedisEventEmitterService,
         RedisEventListenerService,
-        /**
-         * 注入配置
-         */
         optionProvider,
-
-        /**
-         * 注入客户端Map
-         */
         redisClientsProvider,
-
-        /**
-         * 注入订阅端Map
-         */
         redisSubscribersProvider,
-
-        /**
-         * 注入单个客户端
-         */
         ...redisClientProviders,
-
-        /**
-         * 注入单个订阅端
-         */
         ...redisSubscriberProviders,
       ],
       exports: [

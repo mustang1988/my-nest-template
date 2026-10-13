@@ -1,6 +1,16 @@
 import { InjectionToken } from '@nestjs/common';
 
 /**
+ * Rabbitmq模块异步初始化选项IoC注入Token
+ */
+export const RABBITMQ_MODULE_ASYNC_OPTIONS: symbol = Symbol('token:rabbitmq-module-async-options');
+
+/**
+ * Rabbitmq客户端Map IoC注入Token
+ */
+export const RABBITMQ_CLIENTS_MAP: symbol = Symbol('token:rabbitmq-clients-map');
+
+/**
  * 获取指定名称Rabbitmq连接客户端IoC注入Token
  * @param name Rabbitmq连接名称
  * @return Rabbitmq连接客户端IoC注入Token

@@ -1,5 +1,5 @@
 import { DynamicModule } from '@nestjs/common';
-import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
+import { IRedisClientOptions } from './redis-client-options.interface';
 
 /**
  * Redis模块异步初始化选项
@@ -7,6 +7,6 @@ import { IRedisConfiguration } from '../../configuration/interface/redis-configu
 export interface RedisModuleForRootAsyncOptions extends Pick<DynamicModule, 'imports'> {
   isGlobal?: boolean;
   inject?: any[];
-  useFactory: (...args: any[]) => Map<string, IRedisConfiguration> | Promise<Map<string, IRedisConfiguration>>;
+  useFactory: (...args: any[]) => Array<IRedisClientOptions> | Promise<Array<IRedisClientOptions>>;
   names?: Array<string>;
 }
