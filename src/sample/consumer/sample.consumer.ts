@@ -15,12 +15,23 @@ export class SampleConsumer {
     this.logger = this.logger.child({ context: this.constructor.name });
   }
 
+  /**
+   * 示例队列消息消费
+   * @param payload 队列消息负载
+   * @param rmqContext 队列上下文
+   */
   @MessagePattern(ESampleMessagePattern.SAMPLE_MESSAGE)
   async consumeSampleMessage(@Payload() payload: SampleEntity & { requestId: string }, @Ctx() rmqContext: RmqContext) {
     try {
       this.logger.info('[%s] 收到RMQ消息: pattern = %s, payload: %j', payload.requestId, ESampleMessagePattern.SAMPLE_MESSAGE, payload);
     } catch (error) {
-      this.logger.error('error: %o', error);
+      this.logger.error(
+        '[%s] RMQ消息消费异常: pattern = %s, payload: %j, error: %o',
+        payload.requestId,
+        ESampleMessagePattern.SAMPLE_MESSAGE,
+        payload.requestId,
+        error,
+      );
     } finally {
       /**
        * 手动ack消息

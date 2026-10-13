@@ -8,6 +8,7 @@ import { CLS_REQUEST_ID } from '../../common/common.constant';
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { IRedisEventEmitOptions } from '../interface/redis-event-emit-options.interface';
 import { EventType, IRedisEventMessage } from '../interface/redis-event-message.interface';
+import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
 
 /**
  * Redis事件发布服务
@@ -19,7 +20,7 @@ export class RedisEventEmitterService {
   /**
    * Redis事件发布通道
    */
-  private readonly channel: string;
+  private readonly channelMap: Map<string, string>;
 
   constructor(
     @Inject() private readonly cls: ClsService,
@@ -28,7 +29,8 @@ export class RedisEventEmitterService {
     @Inject(REDIS_CLIENTS_TOKEN) private readonly redisClientsMap: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
-    this.channel = this.configService.getOrThrow<string>('redis.default.eventChannel');
+    const redisConfig = this.configService.getOrThrow<Record<string, Required<IRedisConfiguration>>>('redis');
+    this.channelMap = new Map(Object.keys(redisConfig).map((name) => [name, redisConfig[name].eventChannel]));
   }
 
   /**
@@ -38,6 +40,7 @@ export class RedisEventEmitterService {
    */
   async emit<E extends EventType, P>(event: E, payload: P, options?: IRedisEventEmitOptions): Promise<number | Array<number>> {
     const requestId = this.cls.get(CLS_REQUEST_ID);
+    this.logger.debug('[%s] 发布Redis事件, 入参: event = %s, payload = %j, options = %j', requestId, event, payload, options);
     /**
      * 对事件消息自动补全触发事件的请求ID和事件唯一ID
      */
@@ -47,7 +50,6 @@ export class RedisEventEmitterService {
       requestId,
       target: options?.target,
     };
-    this.logger.debug('[%s] 发布Redis事件, 入参: channel = %s, message = %j', requestId, this.channel, message);
 
     let publishResult;
     /**
@@ -59,7 +61,12 @@ export class RedisEventEmitterService {
         this.logger.warn('[%s] 发布Redis事件, 指定的发布端名称无效: clientName = %s', requestId, options?.clientName);
         throw new InternalServerErrorException('Redis client not found');
       }
-      publishResult = await redisClient.publish(this.channel, JSON.stringify(message));
+      const channelToPublish = this.channelMap.get(options?.clientName);
+      if (!channelToPublish) {
+        this.logger.warn('[%s] 发布Redis事件, 指定的发布通道无效: clientName = %s', requestId, options?.clientName);
+        throw new InternalServerErrorException('Redis channel not found');
+      }
+      publishResult = await redisClient.publish(channelToPublish, JSON.stringify(message));
     }
     /**
      * 未指定Redis客户端
@@ -68,17 +75,13 @@ export class RedisEventEmitterService {
      */
     else {
       publishResult = await Promise.all(
-        Array.from(this.redisClientsMap.values()).map((redisClient) => redisClient.publish(this.channel, JSON.stringify(message))),
+        Array.from(this.redisClientsMap.entries()).map(([name, redisClient]) =>
+          redisClient.publish(this.channelMap.get(name) as string, JSON.stringify(message)),
+        ),
       );
     }
 
-    this.logger.debug(
-      '[%s] 发布Redis事件, 发布结果: channel = %s, message = %j, publishResult = %j',
-      requestId,
-      this.channel,
-      message,
-      publishResult,
-    );
+    this.logger.debug('[%s] 发布Redis事件, 发布结果: publishResult = %j', requestId, publishResult);
     return publishResult;
   }
 }

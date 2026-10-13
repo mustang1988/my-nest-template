@@ -1,3 +1,6 @@
+/**
+ * Rabbitmq配置
+ */
 export interface IRabbitmqConfiguration {
   /**
    * Rabbitmq主机
@@ -31,6 +34,9 @@ export interface IRabbitmqConfiguration {
 
   /**
    * Rabbitmq队列是否执行消费
+   *
+   * 配置为true时, 服务启动时会启动该Rabbitmq的队列消费监听
+   * @see [main.ts-Rabbitmq队列消费](../../main.ts)
    */
   consume: boolean;
 
@@ -41,6 +47,26 @@ export interface IRabbitmqConfiguration {
 
   /**
    * Rabbitmq消息消费后是否自动ACK
+   *
+   * 配置为true时, 队列消息消费者在完成消息消费后无需手动ack消息; 反之必须对消息ack
+   *
+   * @example
+   * ```typescript
+   * @MessagePattern(消息pattern)
+   * async consumeSampleMessage(@Payload() payload: unknown, @Ctx() rmqContext: RmqContext) {
+   *   try {
+   *     // 消息消费逻辑
+   *   } catch (error) {
+   *     // 消息消费异常
+   *     this.logger.error('error: %o', error);
+   *   } finally {
+   *     // 手动ack消息
+   *     const channel = rmqContext.getChannelRef() as Channel;
+   *     const originalMsg = rmqContext.getMessage() as Message;
+   *     channel.ack(originalMsg);
+   *   }
+   * }
+   * ```
    */
   noAck: boolean;
 }

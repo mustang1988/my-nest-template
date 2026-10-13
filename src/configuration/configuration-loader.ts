@@ -12,7 +12,7 @@ export default (): IConfiguration => ({
     maxSize: EnvValueLoadUtil.loadOptionalString('LOGGER_MAX_SIZE', '2g'),
     enableConsole: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_CONSOLE', false),
     dirname: EnvValueLoadUtil.loadOptionalString('LOGGER_DIR', '/tmp'),
-    jsonLogger: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_JSON', true),
+    jsonLogger: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_JSON', false),
   },
   redis: {
     default: {

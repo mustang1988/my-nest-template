@@ -16,7 +16,7 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
   /**
    * Redis事件订阅通道
    */
-  private readonly channel: string;
+  private readonly channelMap: Map<string, string>;
 
   constructor(
     @Inject() private readonly eventEmitter: EventEmitter2,
@@ -25,8 +25,8 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
     @Inject(REDIS_SUBSCRIBERS_TOKEN) private readonly redisSubscribers: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
-    const defaultRedisConf = this.configService.getOrThrow<Required<IRedisConfiguration>>('redis.default');
-    this.channel = defaultRedisConf.eventChannel;
+    const redisConfig = this.configService.getOrThrow<Record<string, Required<IRedisConfiguration>>>('redis');
+    this.channelMap = new Map(Object.keys(redisConfig).map((name) => [name, redisConfig[name].eventChannel]));
   }
 
   async onModuleDestroy() {
@@ -42,9 +42,9 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
      * 启动所有订阅者的订阅
      */
     await Promise.all(
-      Array.from(this.redisSubscribers.values()).map((redisSubscriber) =>
-        redisSubscriber.subscribe(this.channel, (message: string, channel: string) => {
-          this.logger.debug('Redis事件订阅, 收到订阅消息: channel = %s, message = %j', channel, message);
+      Array.from(this.redisSubscribers.entries()).map(([name, redisSubscriber]) =>
+        redisSubscriber.subscribe(this.channelMap.get(name) as string, (message: string, channel: string) => {
+          this.logger.debug('Redis事件订阅, 收到订阅消息: name = %s, channel = %s, message = %j', name, channel, message);
           try {
             const jsonMessage = JSON.parse(message) as Required<IRedisEventMessage<EventType, unknown>>;
             const { event, payload, target, requestId } = jsonMessage;
@@ -66,6 +66,6 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
         }),
       ),
     );
-    this.logger.info('Redis事件订阅启动: channel = %s', this.channel);
+    this.logger.info('Redis事件订阅启动: channel = %s', this.channelMap);
   }
 }
