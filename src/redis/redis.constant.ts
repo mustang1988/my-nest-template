@@ -5,21 +5,21 @@ import { InjectionToken } from '@nestjs/common';
  *
  * 注入的Provider泛型为: Array<IRedisClientOptions>
  */
-export const REDIS_MODULE_ASYNC_OPTIONS_TOKEN: symbol = Symbol('token:redis-module-async-options');
+export const REDIS_CLIENT_OPTIONS_TOKEN: symbol = Symbol('token:redis-client-options');
 
 /**
  * Redis连接客户端IoC注入Token
  *
  * 注入的Provider泛型为: Map<string, RedisClientType>
  */
-export const REDIS_CLIENTS_TOKEN: symbol = Symbol('token:redis-clients');
+export const REDIS_CLIENTS_MAP_TOKEN: symbol = Symbol('token:redis-clients-map');
 
 /**
  * Redis订阅端IoC注入Token
  *
  * 注入的Provider泛型为: Map<string, RedisClientType>
  */
-export const REDIS_SUBSCRIBERS_TOKEN: symbol = Symbol('token:redis-subscribers');
+export const REDIS_SUBSCRIBERS_MAP_TOKEN: symbol = Symbol('token:redis-subscribers-map');
 
 /**
  * 获取指定名称Redis连接客户端IoC注入Token

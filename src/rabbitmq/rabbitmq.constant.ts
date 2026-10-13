@@ -5,14 +5,14 @@ import { InjectionToken } from '@nestjs/common';
  *
  * 注入的Provider泛型为: Array<IRabbitmqClientOptions>
  */
-export const RABBITMQ_MODULE_ASYNC_OPTIONS: symbol = Symbol('token:rabbitmq-module-async-options');
+export const RABBITMQ_CLIENT_OPTIONS_TOKEN: symbol = Symbol('token:rabbitmq-client-options');
 
 /**
  * Rabbitmq客户端Map IoC注入Token
  *
  * 注入的Provider泛型为: Map<string, ClientProxy>
  */
-export const RABBITMQ_CLIENTS_MAP: symbol = Symbol('token:rabbitmq-clients-map');
+export const RABBITMQ_CLIENTS_MAP_TOKEN: symbol = Symbol('token:rabbitmq-clients-map');
 
 /**
  * 获取指定名称Rabbitmq连接客户端IoC注入Token

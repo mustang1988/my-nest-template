@@ -5,7 +5,7 @@ export interface IAppConfiguration {
   /**
    * 应用标题
    *
-   * 作用与以下部分
+   * 此配置在以下位置生效
    * - 文件日志的文件名
    * - 日志中的标题
    */

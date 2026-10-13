@@ -5,7 +5,7 @@ import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { IRabbitmqClientOptions } from './interface/rabbitmq-client-options.interface';
 import { IRabbitmqModuleAsyncOptions } from './interface/rabbitmq-module-options.interface';
-import { getRabbitmqClientToken, RABBITMQ_CLIENTS_MAP, RABBITMQ_MODULE_ASYNC_OPTIONS } from './rabbitmq.constant';
+import { getRabbitmqClientToken, RABBITMQ_CLIENTS_MAP_TOKEN, RABBITMQ_CLIENT_OPTIONS_TOKEN } from './rabbitmq.constant';
 
 /**
  * Rabbitmq模块
@@ -17,15 +17,15 @@ export class RabbitmqModule {
   static forRootAsync(options: IRabbitmqModuleAsyncOptions): DynamicModule {
     const { inject = [ConfigService], names = ['default'], isGlobal = true, imports = [ConfigModule] } = options;
 
-    const rabbitmqConfigProvider: Provider<Array<IRabbitmqClientOptions>> = {
-      provide: RABBITMQ_MODULE_ASYNC_OPTIONS,
+    const rabbitmqClientOptionsProvider: Provider<Array<IRabbitmqClientOptions>> = {
+      provide: RABBITMQ_CLIENT_OPTIONS_TOKEN,
       inject,
       useFactory: options.useFactory,
     };
 
     const rabbitmqClientsProvider: Provider<Map<string, ClientProxy>> = {
-      provide: RABBITMQ_CLIENTS_MAP,
-      inject: [RABBITMQ_MODULE_ASYNC_OPTIONS, WINSTON_MODULE_PROVIDER],
+      provide: RABBITMQ_CLIENTS_MAP_TOKEN,
+      inject: [RABBITMQ_CLIENT_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: async (rabbitmqConfigs: Array<IRabbitmqClientOptions>, logger: Logger) => {
         const rabbitmqClientsMap = new Map<string, ClientProxy>();
         for (const rmqConfOpt of rabbitmqConfigs) {
@@ -57,7 +57,7 @@ export class RabbitmqModule {
 
     const rabbitmqClients: Array<Provider<ClientProxy>> = names.map((name) => ({
       provide: getRabbitmqClientToken(name),
-      inject: [RABBITMQ_CLIENTS_MAP, WINSTON_MODULE_PROVIDER],
+      inject: [RABBITMQ_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: (rmqClientsMap: Map<string, ClientProxy>, logger: Logger) => {
         const client = rmqClientsMap.get(name);
         if (!client) {
@@ -72,7 +72,7 @@ export class RabbitmqModule {
       global: isGlobal,
       module: RabbitmqModule,
       imports,
-      providers: [rabbitmqConfigProvider, rabbitmqClientsProvider, ...rabbitmqClients],
+      providers: [rabbitmqClientOptionsProvider, rabbitmqClientsProvider, ...rabbitmqClients],
       exports: [...rabbitmqClients],
     };
   }

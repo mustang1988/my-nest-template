@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import type { RedisClientType } from '@redis/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { REDIS_SUBSCRIBERS_TOKEN } from '../redis.constant';
+import { REDIS_SUBSCRIBERS_MAP_TOKEN } from '../redis.constant';
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { EventType, IRedisEventMessage } from '../interface/redis-event-message.interface';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
@@ -22,7 +22,7 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
     @Inject() private readonly eventEmitter: EventEmitter2,
     @Inject() private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    @Inject(REDIS_SUBSCRIBERS_TOKEN) private readonly redisSubscribers: Map<string, RedisClientType>,
+    @Inject(REDIS_SUBSCRIBERS_MAP_TOKEN) private readonly redisSubscribers: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     const redisConfig = this.configService.getOrThrow<Record<string, Required<IRedisConfiguration>>>('redis');

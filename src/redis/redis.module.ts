@@ -1,9 +1,9 @@
 import {
   getRedisClientToken,
-  REDIS_CLIENTS_TOKEN,
+  REDIS_CLIENTS_MAP_TOKEN,
   getRedisSubscriberToken,
-  REDIS_SUBSCRIBERS_TOKEN,
-  REDIS_MODULE_ASYNC_OPTIONS_TOKEN,
+  REDIS_CLIENT_OPTIONS_TOKEN,
+  REDIS_SUBSCRIBERS_MAP_TOKEN,
 } from './redis.constant';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -32,15 +32,15 @@ export class RedisModule {
       useFactory,
     } = options;
 
-    const optionProvider: Provider<Array<IRedisClientOptions>> = {
-      provide: REDIS_MODULE_ASYNC_OPTIONS_TOKEN,
+    const redisClientOptionsProvider: Provider<Array<IRedisClientOptions>> = {
+      provide: REDIS_CLIENT_OPTIONS_TOKEN,
       inject,
       useFactory,
     };
 
-    const redisClientsProvider: Provider<Map<string, RedisClientType>> = {
-      provide: REDIS_CLIENTS_TOKEN,
-      inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
+    const redisClientsMapProvider: Provider<Map<string, RedisClientType>> = {
+      provide: REDIS_CLIENTS_MAP_TOKEN,
+      inject: [REDIS_CLIENT_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: async (redisClientOptions: Array<IRedisClientOptions>, logger: Logger): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
@@ -64,9 +64,9 @@ export class RedisModule {
       },
     };
 
-    const redisSubscribersProvider: Provider<Map<string, RedisClientType>> = {
-      provide: REDIS_SUBSCRIBERS_TOKEN,
-      inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
+    const redisSubscribersMapProvider: Provider<Map<string, RedisClientType>> = {
+      provide: REDIS_SUBSCRIBERS_MAP_TOKEN,
+      inject: [REDIS_CLIENT_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: async (redisClientOptions: Array<IRedisClientOptions>, logger: Logger): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
@@ -90,10 +90,10 @@ export class RedisModule {
       },
     };
 
-    const redisClientProviders: Array<Provider<RedisClientType>> = names.map((name) => {
+    const redisClients: Array<Provider<RedisClientType>> = names.map((name) => {
       return {
         provide: getRedisClientToken(name),
-        inject: [REDIS_CLIENTS_TOKEN, WINSTON_MODULE_PROVIDER],
+        inject: [REDIS_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
         useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
           const redisClient = redisClientsMap.get(name);
           if (!redisClient) {
@@ -105,10 +105,10 @@ export class RedisModule {
       };
     });
 
-    const redisSubscriberProviders: Array<Provider<RedisClientType>> = names.map((name) => {
+    const redisSubscribers: Array<Provider<RedisClientType>> = names.map((name) => {
       return {
         provide: getRedisSubscriberToken(name),
-        inject: [REDIS_CLIENTS_TOKEN, WINSTON_MODULE_PROVIDER],
+        inject: [REDIS_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
         useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
           const redisSubscriber = redisClientsMap.get(name);
           if (!redisSubscriber) {
@@ -127,13 +127,13 @@ export class RedisModule {
       providers: [
         RedisEventEmitterService,
         RedisEventListenerService,
-        optionProvider,
-        redisClientsProvider,
-        redisSubscribersProvider,
-        ...redisClientProviders,
-        ...redisSubscriberProviders,
+        redisClientOptionsProvider,
+        redisClientsMapProvider,
+        redisSubscribersMapProvider,
+        ...redisClients,
+        ...redisSubscribers,
       ],
-      exports: [RedisEventEmitterService, ...redisClientProviders, ...redisSubscriberProviders],
+      exports: [RedisEventEmitterService, ...redisClients, ...redisSubscribers],
     };
   }
 }

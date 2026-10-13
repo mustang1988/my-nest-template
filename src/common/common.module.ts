@@ -13,7 +13,7 @@ import { RequestLoggerInterceptor } from './interceptor/request-logger.intercept
 @Module({
   imports: [],
   providers: [JsonResponseInterceptor, GlobalExceptionFilter, RequestLoggerInterceptor],
-  exports: [],
+  exports: [JsonResponseInterceptor, GlobalExceptionFilter, RequestLoggerInterceptor],
   controllers: [HealthCheckController],
 })
 export class CommonModule {}

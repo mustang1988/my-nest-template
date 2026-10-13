@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { IMySQLModuleAsyncOptions } from './interface/mysq-module-options.interface';
 import { IMySQLDataSourceOptions } from './interface/mysql-datasource-options.interface';
-import { getMySQLDataSourceToken, MYSQL_DATASOURCE_MAP, MYSQL_DATASOURCE_OPTIONS } from './mysql.constant';
+import { getMySQLDataSourceToken, MYSQL_DATASOURCE_MAP_TOKEN, MYSQL_DATASOURCE_OPTIONS_TOKEN } from './mysql.constant';
 
 /**
  * MySQL模块
@@ -18,15 +18,15 @@ export class MySQLModule {
   static forRootAsync(options: IMySQLModuleAsyncOptions): DynamicModule {
     const { isGlobal = true, imports = [ConfigModule], inject = [ConfigService], names = ['default'] } = options;
 
-    const mysqlDataSourceOptions: Provider<Array<IMySQLDataSourceOptions>> = {
-      provide: MYSQL_DATASOURCE_OPTIONS,
+    const mysqlDataSourceOptionsProvider: Provider<Array<IMySQLDataSourceOptions>> = {
+      provide: MYSQL_DATASOURCE_OPTIONS_TOKEN,
       inject,
       useFactory: options.useFactory,
     };
 
-    const mysqlDataSourceMap: Provider<Map<string, DataSource>> = {
-      provide: MYSQL_DATASOURCE_MAP,
-      inject: [MYSQL_DATASOURCE_OPTIONS, WINSTON_MODULE_PROVIDER],
+    const mysqlDataSourceMapProvider: Provider<Map<string, DataSource>> = {
+      provide: MYSQL_DATASOURCE_MAP_TOKEN,
+      inject: [MYSQL_DATASOURCE_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: async (mysqlDataSourceOptions: Array<IMySQLDataSourceOptions>, logger: Logger) => {
         const mysqlDataSourceMap: Map<string, DataSource> = new Map();
         for (const mysqlOpt of mysqlDataSourceOptions) {
@@ -58,7 +58,7 @@ export class MySQLModule {
 
     const mysqlDataSources: Array<Provider<DataSource>> = names.map((name) => ({
       provide: getMySQLDataSourceToken(name),
-      inject: [MYSQL_DATASOURCE_MAP, WINSTON_MODULE_PROVIDER],
+      inject: [MYSQL_DATASOURCE_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: (mysqlDataSourceMap: Map<string, DataSource>, logger: Logger) => {
         const dataSource = mysqlDataSourceMap.get(name);
         if (!dataSource) {
@@ -73,7 +73,7 @@ export class MySQLModule {
       global: isGlobal,
       module: MySQLModule,
       imports,
-      providers: [mysqlDataSourceOptions, mysqlDataSourceMap, ...mysqlDataSources],
+      providers: [mysqlDataSourceOptionsProvider, mysqlDataSourceMapProvider, ...mysqlDataSources],
       exports: [...mysqlDataSources],
     };
   }

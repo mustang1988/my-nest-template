@@ -5,14 +5,14 @@ import { InjectionToken } from '@nestjs/common';
  *
  * 注入的Provider泛型为: Array<IMySQLDataSourceOptions>
  */
-export const MYSQL_DATASOURCE_OPTIONS: symbol = Symbol('token:mysql-datasource-options');
+export const MYSQL_DATASOURCE_OPTIONS_TOKEN: symbol = Symbol('token:mysql-datasource-options');
 
 /**
  * MySQL数据源Map IoC注入Token
  *
  * 注入的Provider泛型为: Map<string, DataSource>
  */
-export const MYSQL_DATASOURCE_MAP: symbol = Symbol('token:mysql-datasource-map');
+export const MYSQL_DATASOURCE_MAP_TOKEN: symbol = Symbol('token:mysql-datasource-map');
 
 /**
  * 获取指定名称MySQL数据源IoC注入Token
