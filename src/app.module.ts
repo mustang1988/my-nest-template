@@ -24,6 +24,7 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     InternationalizationModule,
     EventEmitterModule.forRoot({ global: true, inheritRequestContextId: true }),
     RedisModule.forRootAsync({
+      isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
       names: ['default'],
@@ -33,6 +34,7 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
       },
     }),
     MySQLModule.forRootAsync({
+      isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
       names: ['default'],
@@ -42,6 +44,7 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
       },
     }),
     RabbitmqModule.forRootAsync({
+      isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
       names: ['default'],

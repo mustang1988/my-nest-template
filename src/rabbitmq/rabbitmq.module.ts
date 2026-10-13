@@ -27,6 +27,9 @@ export class RabbitmqModule {
       useFactory: async (rabbitmqConfigs: Array<IRabbitmqClientOptions>) => {
         const rabbitmqClientsMap = new Map<string, ClientProxy>();
         for (const rmqConfOpt of rabbitmqConfigs) {
+          if (!names.includes(rmqConfOpt.name)) {
+            continue;
+          }
           const { username, password, host, port, vhost, queue, name } = rmqConfOpt;
           const rmqClient = ClientProxyFactory.create({
             transport: Transport.RMQ,

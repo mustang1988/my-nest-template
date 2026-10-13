@@ -30,21 +30,21 @@ export class RedisModule {
       useFactory,
     } = options;
 
-    // #region 创建配置选项provider, 注入IoC但不export
     const optionProvider: Provider<Array<IRedisClientOptions>> = {
       provide: REDIS_MODULE_ASYNC_OPTIONS_TOKEN,
       inject,
       useFactory,
     };
-    // #endregion
 
-    // #region 创建Redis客户端
     const redisClientsProvider: Provider<Map<string, RedisClientType>> = {
       provide: REDIS_CLIENTS_TOKEN,
       inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN],
       useFactory: async (redisClientOptions: Array<IRedisClientOptions>): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
+          if (!names.includes(redisClientOpt.name)) {
+            continue; // name中没有的配置不初始化连接客户端
+          }
           const redisClient = createClient({
             socket: {
               host: redisClientOpt.host,
@@ -60,15 +60,16 @@ export class RedisModule {
         return redisClients;
       },
     };
-    // #endregion
 
-    // #region 创建Redis订阅客户端
     const redisSubscribersProvider: Provider<Map<string, RedisClientType>> = {
       provide: REDIS_SUBSCRIBERS_TOKEN,
       inject: [REDIS_MODULE_ASYNC_OPTIONS_TOKEN],
       useFactory: async (redisClientOptions: Array<IRedisClientOptions>): Promise<Map<string, RedisClientType>> => {
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
+          if (!names.includes(redisClientOpt.name)) {
+            continue; // name中没有的配置不初始化连接客户端
+          }
           const redisClient = createClient({
             socket: {
               host: redisClientOpt.host,
@@ -84,9 +85,7 @@ export class RedisModule {
         return redisClients;
       },
     };
-    // #endregion
 
-    // #region 创建各redis客户端provider
     const redisClientProviders: Array<Provider<RedisClientType>> = names.map((name) => {
       return {
         provide: getRedisClientToken(name),
@@ -100,9 +99,7 @@ export class RedisModule {
         },
       };
     });
-    // #endregion
 
-    // #region 创建各redis订阅端provider
     const redisSubscriberProviders: Array<Provider<RedisClientType>> = names.map((name) => {
       return {
         provide: getRedisSubscriberToken(name),
@@ -116,7 +113,6 @@ export class RedisModule {
         },
       };
     });
-    // #endregion
 
     return {
       global: isGlobal,
@@ -131,15 +127,7 @@ export class RedisModule {
         ...redisClientProviders,
         ...redisSubscriberProviders,
       ],
-      exports: [
-        RedisEventEmitterService,
-        RedisEventListenerService,
-        optionProvider,
-        redisClientsProvider,
-        redisSubscribersProvider,
-        ...redisClientProviders,
-        ...redisSubscriberProviders,
-      ],
+      exports: [RedisEventEmitterService, ...redisClientProviders, ...redisSubscriberProviders],
     };
   }
 }

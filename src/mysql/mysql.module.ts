@@ -27,29 +27,29 @@ export class MySQLModule {
       inject: [MYSQL_DATASOURCE_OPTIONS],
       useFactory: async (mysqlDataSourceOptions: Array<IMySQLDataSourceOptions>) => {
         const mysqlDataSourceMap: Map<string, DataSource> = new Map();
-        try {
-          for (const opt of mysqlDataSourceOptions) {
-            const dataSource = new DataSource({
-              type: 'mysql',
-              host: opt.host,
-              port: opt.port,
-              username: opt.username,
-              password: opt.password,
-              database: opt.database,
-              charset: opt.charset,
-              timezone: opt.timezone,
-              logging: opt.enableLogger,
-              synchronize: opt.sync,
-              logger: 'formatted-console',
-              bigNumberStrings: false,
-              entities: [__dirname + `/../**/*.${opt.name}.entity{.ts,.js}`], // 加载其他模块下 xxx.{名称}.entity文件名的实体
-            });
-            mysqlDataSourceMap.set(opt.name, dataSource);
-            await dataSource.initialize();
+        for (const mysqlOpt of mysqlDataSourceOptions) {
+          if (!names.includes(mysqlOpt.name)) {
+            continue;
           }
-        } catch (error) {
-          console.error(error);
+          const dataSource = new DataSource({
+            type: 'mysql',
+            host: mysqlOpt.host,
+            port: mysqlOpt.port,
+            username: mysqlOpt.username,
+            password: mysqlOpt.password,
+            database: mysqlOpt.database,
+            charset: mysqlOpt.charset,
+            timezone: mysqlOpt.timezone,
+            logging: mysqlOpt.enableLogger,
+            synchronize: mysqlOpt.sync,
+            logger: 'formatted-console',
+            bigNumberStrings: false,
+            entities: [__dirname + `/../**/*.${mysqlOpt.name}.entity{.ts,.js}`], // 加载其他模块下 xxx.{连接名称}.entity文件名的实体
+          });
+          mysqlDataSourceMap.set(mysqlOpt.name, dataSource);
+          await dataSource.initialize();
         }
+
         return mysqlDataSourceMap;
       },
     };
