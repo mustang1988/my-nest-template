@@ -22,16 +22,14 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     ContextModule,
     ConfigurationModule,
     InternationalizationModule,
+    EventEmitterModule.forRoot({ global: true, inheritRequestContextId: true }),
     RedisModule.forRootAsync({
-      imports: [ConfigModule, EventEmitterModule.forRoot({ global: true, inheritRequestContextId: true })],
+      imports: [ConfigModule],
       inject: [ConfigService],
       names: ['default'],
       useFactory: (configService: ConfigService) => {
         const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
-        return Object.keys(redisConfig).map((name) => ({
-          name,
-          ...redisConfig[name],
-        }));
+        return Object.keys(redisConfig).map((name) => ({ name, ...redisConfig[name] }));
       },
     }),
     MySQLModule.forRootAsync({
@@ -39,8 +37,8 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
       inject: [ConfigService],
       names: ['default'],
       useFactory: (configService: ConfigService) => {
-        const conf = configService.getOrThrow<Record<string, Required<IMySQLConfiguration>>>('mysql');
-        return Object.keys(conf).map((name) => ({ name, ...conf[name] }));
+        const mysqlConfig = configService.getOrThrow<Record<string, Required<IMySQLConfiguration>>>('mysql');
+        return Object.keys(mysqlConfig).map((name) => ({ name, ...mysqlConfig[name] }));
       },
     }),
     RabbitmqModule.forRootAsync({
@@ -49,10 +47,7 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
       names: ['default'],
       useFactory: (configService: ConfigService) => {
         const rmqConfig = configService.getOrThrow<Record<string, Required<IRabbitmqConfiguration>>>('rabbitmq');
-        return Object.keys(rmqConfig).map((name) => ({
-          name,
-          ...rmqConfig[name],
-        }));
+        return Object.keys(rmqConfig).map((name) => ({ name, ...rmqConfig[name] }));
       },
     }),
     // #endregion
