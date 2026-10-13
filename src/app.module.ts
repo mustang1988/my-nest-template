@@ -10,16 +10,18 @@ import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { IRedisConfiguration } from './configuration/interface/redis-configuration.interface';
+import { IMySQLConfiguration } from './configuration/interface/mysql-configuration.interface';
 import { InternationalizationModule } from './internationalization/internationalization.module';
 import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-configuration.interface';
 
 @Module({
   imports: [
     // #region 全局模块
-    ConfigurationModule,
+    CommonModule,
     LoggerModule,
     ContextModule,
-    CommonModule,
+    ConfigurationModule,
+    InternationalizationModule,
     RedisModule.forRootAsync({
       imports: [ConfigModule, EventEmitterModule.forRoot({ global: true, inheritRequestContextId: true })],
       inject: [ConfigService],
@@ -32,8 +34,15 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
         }));
       },
     }),
-    MySQLModule,
-    InternationalizationModule,
+    MySQLModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      names: ['default'],
+      useFactory: (configService: ConfigService) => {
+        const conf = configService.getOrThrow<Record<string, Required<IMySQLConfiguration>>>('mysql');
+        return Object.keys(conf).map((name) => ({ name, ...conf[name] }));
+      },
+    }),
     RabbitmqModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
