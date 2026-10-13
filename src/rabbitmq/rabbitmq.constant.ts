@@ -2,11 +2,15 @@ import { InjectionToken } from '@nestjs/common';
 
 /**
  * Rabbitmq模块异步初始化选项IoC注入Token
+ *
+ * 注入的Provider泛型为: Array<IRabbitmqClientOptions>
  */
 export const RABBITMQ_MODULE_ASYNC_OPTIONS: symbol = Symbol('token:rabbitmq-module-async-options');
 
 /**
  * Rabbitmq客户端Map IoC注入Token
+ *
+ * 注入的Provider泛型为: Map<string, ClientProxy>
  */
 export const RABBITMQ_CLIENTS_MAP: symbol = Symbol('token:rabbitmq-clients-map');
 

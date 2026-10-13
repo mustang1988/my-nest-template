@@ -23,7 +23,6 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
     @Inject() private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @Inject(REDIS_SUBSCRIBERS_TOKEN) private readonly redisSubscribers: Map<string, RedisClientType>,
-    // @InjectRedisSubscriber('default') private readonly subscriber: RedisClientType,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     const defaultRedisConf = this.configService.getOrThrow<Required<IRedisConfiguration>>('redis.default');
@@ -35,12 +34,13 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
      * 关闭所有订阅者
      */
     await Promise.all(Array.from(this.redisSubscribers.values()).map((redisSubscriber) => redisSubscriber.unsubscribe()));
-    // await this.subscriber.unsubscribe();
     Array.from(this.redisSubscribers.values()).map((redisSubscriber) => redisSubscriber.destroy());
-    // this.subscriber.destroy();
   }
 
   async onModuleInit() {
+    /**
+     * 启动所有订阅者的订阅
+     */
     await Promise.all(
       Array.from(this.redisSubscribers.values()).map((redisSubscriber) =>
         redisSubscriber.subscribe(this.channel, (message: string, channel: string) => {
@@ -66,28 +66,6 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
         }),
       ),
     );
-
-    // await this.subscriber.subscribe(this.channel, (message: string, channel: string) => {
-    //   this.logger.debug('Redis事件订阅, 收到订阅消息: channel = %s, message = %j', channel, message);
-    //   try {
-    //     const jsonMessage = JSON.parse(message) as Required<IRedisEventMessage<EventType, unknown>>;
-    //     const { event, payload, target, requestId } = jsonMessage;
-    //     /**
-    //      * 如果事件发送方制定了事件处理的实例ID, 则检查被指定实例是否为当前实例, 如果不是, 则不做处理
-    //      */
-    //     if (target !== undefined) {
-    //       const currentInstanceId = Number(process.env.INSTANCE_ID ?? 0);
-    //       if (currentInstanceId !== target) {
-    //         this.logger.info('Redis事件订阅, 目标实例非当前实例: expect = %s, currentInstanceId = %s', target, currentInstanceId);
-    //         return;
-    //       }
-    //     }
-    //     const emitRes = this.eventEmitter.emit(event, payload, { requestId });
-    //     this.logger.info('[%s] Redis事件订阅, 事件已处理: event = %s, payload = %j, emitRes = %s', requestId, event, payload, emitRes);
-    //   } catch (error) {
-    //     this.logger.error('Redis事件订阅, 事件消息格式无效: error = %o', error);
-    //   }
-    // });
-    this.logger.info('Redis事件监听启动: channel = %s', this.channel);
+    this.logger.info('Redis事件订阅启动: channel = %s', this.channel);
   }
 }

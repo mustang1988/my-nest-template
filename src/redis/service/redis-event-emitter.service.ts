@@ -56,7 +56,8 @@ export class RedisEventEmitterService {
     if (options?.clientName) {
       const redisClient = await this.redisClientsMap.get(options?.clientName);
       if (!redisClient) {
-        throw new InternalServerErrorException('Invalid redis client name');
+        this.logger.warn('[%s] 发布Redis事件, 指定的发布端名称无效: clientName = %s', requestId, options?.clientName);
+        throw new InternalServerErrorException('Redis client not found');
       }
       publishResult = await redisClient.publish(this.channel, JSON.stringify(message));
     }
@@ -71,6 +72,13 @@ export class RedisEventEmitterService {
       );
     }
 
+    this.logger.debug(
+      '[%s] 发布Redis事件, 发布结果: channel = %s, message = %j, publishResult = %j',
+      requestId,
+      this.channel,
+      message,
+      publishResult,
+    );
     return publishResult;
   }
 }

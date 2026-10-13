@@ -2,16 +2,22 @@ import { InjectionToken } from '@nestjs/common';
 
 /**
  * Redis模块异步初始化选项IoC注入Token
+ *
+ * 注入的Provider泛型为: Array<IRedisClientOptions>
  */
 export const REDIS_MODULE_ASYNC_OPTIONS_TOKEN: symbol = Symbol('token:redis-module-async-options');
 
 /**
  * Redis连接客户端IoC注入Token
+ *
+ * 注入的Provider泛型为: Map<string, RedisClientType>
  */
 export const REDIS_CLIENTS_TOKEN: symbol = Symbol('token:redis-clients');
 
 /**
  * Redis订阅端IoC注入Token
+ *
+ * 注入的Provider泛型为: Map<string, RedisClientType>
  */
 export const REDIS_SUBSCRIBERS_TOKEN: symbol = Symbol('token:redis-subscribers');
 

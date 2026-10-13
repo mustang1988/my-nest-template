@@ -12,7 +12,7 @@ import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { RedisEventEmitterService } from './service/redis-event-emitter.service';
 import { IRedisClientOptions } from './interface/redis-client-options.interface';
 import { RedisEventListenerService } from './service/redis-event-listener.service';
-import { RedisModuleForRootAsyncOptions } from './interface/redis-module-options.interface';
+import { IRedisModuleAsyncOptions } from './interface/redis-module-options.interface';
 
 /**
  * Redis模块
@@ -21,7 +21,7 @@ import { RedisModuleForRootAsyncOptions } from './interface/redis-module-options
  */
 @Module({})
 export class RedisModule {
-  static forRootAsync(options: RedisModuleForRootAsyncOptions): DynamicModule {
+  static forRootAsync(options: IRedisModuleAsyncOptions): DynamicModule {
     const {
       isGlobal = true,
       inject = [ConfigService],
