@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
+import { randomUUID } from 'node:crypto';
 import { ConfigService } from '@nestjs/config';
 import { RedisClientType } from '@redis/client';
 import { ClientProxy } from '@nestjs/microservices';
@@ -31,7 +32,14 @@ export class HealthCheckController {
       const redisNames = Object.keys(redisConfigs);
       for (const redisName of redisNames) {
         const redisClient = this.moduleRef.get<RedisClientType>(getRedisClientToken(redisName), { strict: false });
-        result.redis[redisName] = redisClient.isOpen ? 'healthy' : 'unhealthy';
+        if (redisClient) {
+          /**
+           * 发送ping命令进行健康检查
+           */
+          const pingMsg = randomUUID();
+          const redisPingRes = await redisClient.ping(pingMsg);
+          result.redis[redisName] = pingMsg === redisPingRes ? 'healthy' : 'unhealthy';
+        }
       }
     }
     // #endregion
@@ -43,7 +51,13 @@ export class HealthCheckController {
       const mysqlDataSourceNames = Object.keys(mysqlConfigs);
       for (const mysqlName of mysqlDataSourceNames) {
         const mysqlDataSource = this.moduleRef.get<DataSource>(getMySQLDataSourceToken(mysqlName), { strict: false });
-        result.mysql[mysqlName] = mysqlDataSource.isInitialized ? 'healthy' : 'unhealthy';
+        if (mysqlDataSource) {
+          /**
+           * 查询mysql版本信息进行健康检查
+           */
+          const versionQueryRes = await mysqlDataSource.createQueryRunner().manager.query<Array<any>>(`SELECT version() as version FROM DUAL`);
+          result.mysql[mysqlName] = versionQueryRes.length !== 0 ? 'healthy' : 'unhealthy';
+        }
       }
     }
     // #endregion
@@ -55,7 +69,12 @@ export class HealthCheckController {
       const rabbitmqNames = Object.keys(rabbitmqConfigs);
       for (const rabbitmqName of rabbitmqNames) {
         const rabbitmqClient = this.moduleRef.get<ClientProxy>(getRabbitmqClientToken(rabbitmqName), { strict: false });
-        result.rabbitmq[rabbitmqName] = rabbitmqClient.unwrap<AmqpConnectionManager>().isConnected() ? 'healthy' : 'unhealthy';
+        if (rabbitmqClient) {
+          /**
+           * 通过Rabbitmq连接状态进行健康检查
+           */
+          result.rabbitmq[rabbitmqName] = rabbitmqClient.unwrap<AmqpConnectionManager>().isConnected() ? 'healthy' : 'unhealthy';
+        }
       }
     }
     // #endregion

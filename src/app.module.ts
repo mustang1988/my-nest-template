@@ -22,7 +22,7 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     ContextModule,
     ConfigurationModule,
     InternationalizationModule,
-    EventEmitterModule.forRoot({ global: true, inheritRequestContextId: true }),
+    EventEmitterModule.forRoot({ global: true }),
     RedisModule.forRootAsync({
       isGlobal: true,
       imports: [ConfigModule],
@@ -55,9 +55,9 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     }),
     // #endregion
 
+    // #region 业务模块
     SampleModule,
+    // #endregion
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

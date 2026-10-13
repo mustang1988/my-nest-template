@@ -93,13 +93,14 @@ export class RedisModule {
     const redisClientProviders: Array<Provider<RedisClientType>> = names.map((name) => {
       return {
         provide: getRedisClientToken(name),
-        inject: [REDIS_CLIENTS_TOKEN],
-        useFactory: (redisClientsMap: Map<string, RedisClientType>) => {
-          const client = redisClientsMap.get(name);
-          if (!client) {
-            throw new Error(`Redis client not found: ${name}`);
+        inject: [REDIS_CLIENTS_TOKEN, WINSTON_MODULE_PROVIDER],
+        useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
+          const redisClient = redisClientsMap.get(name);
+          if (!redisClient) {
+            logger.error('未找到指定名称的Redis客户端对象: name = %s', name);
+            throw new Error(`未找到指定名称的Redis客户端对象: ${name}`);
           }
-          return client;
+          return redisClient;
         },
       };
     });
@@ -107,13 +108,14 @@ export class RedisModule {
     const redisSubscriberProviders: Array<Provider<RedisClientType>> = names.map((name) => {
       return {
         provide: getRedisSubscriberToken(name),
-        inject: [REDIS_CLIENTS_TOKEN],
-        useFactory: (redisClientsMap: Map<string, RedisClientType>) => {
-          const subscriber = redisClientsMap.get(name);
-          if (!subscriber) {
-            throw new Error(`Redis subscriber not found: ${name}`);
+        inject: [REDIS_CLIENTS_TOKEN, WINSTON_MODULE_PROVIDER],
+        useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
+          const redisSubscriber = redisClientsMap.get(name);
+          if (!redisSubscriber) {
+            logger.error('未找到指定名称的Redis订阅端对象: name = %s', name);
+            throw new Error(`未找到指定名称的Redis订阅端对象: ${name}`);
           }
-          return subscriber;
+          return redisSubscriber;
         },
       };
     });

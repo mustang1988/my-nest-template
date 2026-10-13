@@ -52,18 +52,18 @@ export class MySQLModule {
           await dataSource.initialize();
           logger.info('MySQL数据源初始化完成: name = %s', mysqlOpt.name);
         }
-
         return mysqlDataSourceMap;
       },
     };
 
     const mysqlDataSources: Array<Provider<DataSource>> = names.map((name) => ({
       provide: getMySQLDataSourceToken(name),
-      inject: [MYSQL_DATASOURCE_MAP],
-      useFactory: (mysqlDataSourceMap: Map<string, DataSource>) => {
+      inject: [MYSQL_DATASOURCE_MAP, WINSTON_MODULE_PROVIDER],
+      useFactory: (mysqlDataSourceMap: Map<string, DataSource>, logger: Logger) => {
         const dataSource = mysqlDataSourceMap.get(name);
         if (!dataSource) {
-          throw new Error(`MySQL DataSource not found: ${name}`);
+          logger.error('未找到指定名称的MySQL数据源对象: name = %s', name);
+          throw new Error(`未找到指定名称的MySQL数据源对象: ${name}`);
         }
         return dataSource;
       },

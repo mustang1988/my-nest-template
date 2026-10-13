@@ -57,11 +57,12 @@ export class RabbitmqModule {
 
     const rabbitmqClients: Array<Provider<ClientProxy>> = names.map((name) => ({
       provide: getRabbitmqClientToken(name),
-      inject: [RABBITMQ_CLIENTS_MAP],
-      useFactory: (rmqClientsMap: Map<string, ClientProxy>) => {
+      inject: [RABBITMQ_CLIENTS_MAP, WINSTON_MODULE_PROVIDER],
+      useFactory: (rmqClientsMap: Map<string, ClientProxy>, logger: Logger) => {
         const client = rmqClientsMap.get(name);
         if (!client) {
-          throw new Error(`Rabbitmq client not found: ${name}`);
+          logger.error('未找到指定名称的Rabbitmq客户端对象: name = %s', name);
+          throw new Error(`未找到指定名称的Rabbitmq客户端对象: ${name}`);
         }
         return client;
       },
