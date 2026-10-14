@@ -1,4 +1,7 @@
+import ms from 'ms';
 import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { ScheduleModule } from '@nestjs/schedule';
 import { RedisModule } from './redis/redis.module';
 import { MySQLModule } from './mysql/mysql.module';
 import { LoggerModule } from './logger/logger.module';
@@ -19,12 +22,25 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
 @Module({
   imports: [
     // #region 全局模块
+    /**
+     * NestJS 定时/计划任务模块
+     */
+    ScheduleModule.forRoot({ cronJobs: true, intervals: true, timeouts: true }),
+
+    /**
+     * NestJS 事件驱动模块
+     */
+    EventEmitterModule.forRoot({ global: true }),
+
+    /**
+     * NestJS HTTP客户端模块
+     */
+    HttpModule.register({ global: true, timeout: ms('5min') }),
     CommonModule,
     LoggerModule,
     ContextModule,
     ConfigurationModule,
     InternationalizationModule,
-    EventEmitterModule.forRoot({ global: true }),
     RedisModule.forRootAsync({
       isGlobal: true,
       imports: [ConfigModule],

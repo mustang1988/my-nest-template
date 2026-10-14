@@ -1,5 +1,7 @@
 import { Logger } from 'winston';
+import { lastValueFrom } from 'rxjs';
 import { I18nService } from 'nestjs-i18n';
+import { HttpService } from '@nestjs/axios';
 import { DataSource, Repository } from 'typeorm';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { SampleEntity } from '../entity/sample.default.entity';
@@ -18,6 +20,7 @@ export class SampleService {
 
   constructor(
     @Inject() private readonly i18n: I18nService,
+    @Inject() private readonly axios: HttpService,
     @Inject() private readonly ctx: ContextService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @Inject() private readonly redisEventEmitter: RedisEventEmitterService,
@@ -35,6 +38,8 @@ export class SampleService {
       this.logger.warn('[%s] 未找到指定示例数据: id = %s', requestId, id);
       throw new NotFoundException(this.i18n.t('exception.NotFoundException', { args: { entity: 'Sample' } }));
     }
+    const response = await lastValueFrom(this.axios.get<unknown>('http://localhost:3000/api/healthcheck'));
+    this.logger.debug('[%s] 示例数据详情查询, 外部API响应: response = %j', requestId, response.data);
 
     /**
      * 触发事件委托
