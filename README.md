@@ -5,34 +5,20 @@
   - [模块说明](#模块说明)
     - [Common](#common)
       - [模块内容](#模块内容)
-        - [常量](#常量)
-        - [控制器](#控制器)
-        - [装饰器](#装饰器)
-        - [异常过滤器](#异常过滤器)
-        - [拦截器](#拦截器)
-        - [工具类](#工具类)
     - [Configuration](#configuration)
       - [模块内容](#模块内容-1)
-        - [环境变量加载工具](#环境变量加载工具)
     - [Context](#context)
       - [模块内容](#模块内容-2)
-        - [服务](#服务)
     - [Logger](#logger)
       - [模块内容](#模块内容-3)
     - [MySQL](#mysql)
       - [模块内容](#模块内容-4)
-        - [工具函数](#工具函数)
     - [Redis](#redis)
       - [模块内容](#模块内容-5)
-        - [工具函数](#工具函数-1)
-        - [服务](#服务-1)
     - [Internationalization](#internationalization)
       - [模块内容](#模块内容-6)
-        - [国际化语言包](#国际化语言包)
-        - [国际化语言处理器](#国际化语言处理器)
     - [Rabbitmq](#rabbitmq)
       - [模块内容](#模块内容-7)
-        - [工具函数](#工具函数-2)
     - [Sample](#sample)
 
 ## 项目配置
@@ -65,37 +51,17 @@
 
 #### 模块内容
 
-##### 常量
-
-- [CLS_REQUEST_ID](./src/common/common.constant.ts): 请求唯一ID写入请求上下文[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)的Key
-- [CLS_INSTANCE_ID](./src/common/common.constant.ts): 当前请求处理进程实例ID写入请求上下文[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)的Key
-
-##### 控制器
-
-[HealthCheckController](./src/common/controller/health-check.controller.ts): 健康检查接口控制器, 提供以下接口
-
-- GET /api/healthcheck
-
-##### 装饰器
-
-[@JsonResp(options?:boolean)](./src/common/decorator/json-response.decorator.ts): 控制器接口函数装饰器, 用于标记Controller中的Action函数的响应内容是否为JSON
-[@Cookies(name?:string)](./src/common/decorator/cookies.decorator.ts): 控制器接口函数装饰器, 用于获取请求的Cookie参数
-
-##### 异常过滤器
-
-- [GlobalExceptionFilter](./src/common/exception-filter/global.exception-filter.ts): 全局异常过滤器, 用于全局兜底处理请求内部发生的异常, 并统一响应格式, 可处理异常包括
-  - HttpException及其子类
-  - JavaScript Error及其子类
-
-##### 拦截器
-
-- [JsonResponseInterceptor](./src/common/interceptor/json-response.interceptor.ts): JSON响应格式化拦截器, 用于统一所有接口的HTTP响应格式
-
-##### 工具类
-
-- [DataMaskingUtil](./src//common/util/data-masking.util.ts): 数据脱敏工具类, 提供以下功能
-  - maskingString(): 字符串内容脱敏
-  - maskingObject(): 对象内容脱敏
+|                                                                                    | 类型       | 说明                                                                                                                                |
+| ---------------------------------------------------------------------------------: | :--------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+|                                  [CLS_REQUEST_ID](./src/common/common.constant.ts) | 常量       | 请求唯一ID写入请求上下文[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)的Key                                |
+|                                 [CLS_INSTANCE_ID](./src/common/common.constant.ts) | 常量       | 当前请求处理进程实例ID写入请求上下文[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)的Key                    |
+|        [HealthCheckController](./src/common/controller/health-check.controller.ts) | 控制器     | 健康检查接口控制器                                                                                                                  |
+|   [@JsonResp(options?:boolean)](./src/common/decorator/json-response.decorator.ts) | 装饰器     | 控制器接口函数装饰器, 用于标记Controller中的Action函数的响应内容是否为JSON                                                          |
+|              [@Cookies(name?:string)](./src/common/decorator/cookies.decorator.ts) | 装饰器     | 控制器接口函数装饰器, 用于获取请求的Cookie参数                                                                                      |
+|  [GlobalExceptionFilter](./src/common/exception-filter/global.exception-filter.ts) | 异常过滤器 | 全局异常过滤器, 用于全局兜底处理请求内部发生的异常, 并统一响应格式, 可处理异常包括: HttpException及其子类和JavaScript Error及其子类 |
+|   [JsonResponseInterceptor](./src/common/interceptor/json-response.interceptor.ts) | 拦截器     | JSON响应格式化拦截器, 用于统一所有接口的HTTP响应格式                                                                                |
+| [RequestLoggerInterceptor](./src/common/interceptor/request-logger.interceptor.ts) | 拦截器     | 请求参数日志拦截器, 用于在日志中输出每次请求的参数, 建议在开发调试阶段使用                                                          |
+|                         [DataMaskingUtil](./src//common/util/data-masking.util.ts) | 工具类     | 数据脱敏工具类; 可用于对字符串类型敏感数据(例如密码)进行数据脱敏                                                                    |
 
 ### Configuration
 
@@ -119,18 +85,17 @@
 
 #### 模块内容
 
-##### 环境变量加载工具
-
-[EnvValueLoadUtil](./src/configuration/util/env-value-load.util.ts): 环境变量配置加载工具类, 提供以下静态函数用于加载环境变量配置
-
-- loadOptionalString(): 加载指定名称的String类型`可选`环境变量
-- loadRequiredString(): 加载指定名称的String类型`必须`环境变量
-- loadOptionalInteger(): 加载指定名称的Integer类型`可选`环境变量
-- loadRequiredInteger(): 加载指定名称的Integer类型`必须`环境变量
-- loadOptionalBoolean(): 加载指定名称的Boolean类型`可选`环境变量
-- loadRequiredBoolean(): 加载指定名称的Boolean类型`必须`环境变量
-- loadOptionalNumber(): 加载指定名称的Number类型`可选`环境变量
-- loadRequiredNumber(): 加载指定名称的Number类型`必须`环境变量
+|                                                                                             | 类型   | 说明                                                         |
+| ------------------------------------------------------------------------------------------: | :----- | :----------------------------------------------------------- |
+|                         [EnvValueLoadUtil](./src/configuration/util/env-value-load.util.ts) | 工具类 | 环境变量配置加载工具类, 提供以下静态函数用于加载环境变量配置 |
+|           [IAppConfiguration](./src/configuration/interface/app-configuration.interface.ts) | 接口   | 应用配置                                                     |
+|     [ILoggerConfiguration](./src/configuration/interface/logger-configuration.interface.ts) | 接口   | 日志配置                                                     |
+|       [IRedisConfiguration](./src/configuration/interface/redis-configuration.interface.ts) | 接口   | Redis配置                                                    |
+|       [IMySQLConfiguration](./src/configuration/interface/mysql-configuration.interface.ts) | 接口   | MySQL配置                                                    |
+| [IRabbitmqConfiguration](./src/configuration/interface/rabbitmq-configuration.interface.ts) | 接口   | Rabbitmq配置                                                 |
+|         [Ii18nConfiguration](./src/configuration/interface/i18n-configuration.interface.ts) | 接口   | 国际化配置                                                   |
+|                  [IConfiguration](./src/configuration/interface/configuration.interface.ts) | 接口   | 项目配置                                                     |
+|                      [configuration-loader.ts](./src/configuration/configuration-loader.ts) | 函数   | 项目配置加载函数                                             |
 
 ### Context
 
@@ -147,12 +112,9 @@
 
 #### 模块内容
 
-##### 服务
-
-[ContextService](./src/context/service/context.service.ts): 基于[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)实现的请求上下文服务, 用于获取当前请求上下文中暂存的信息, 目前提供以下功能
-
-- getRequestId(): 获取当前请求的唯一ID; 支持上游服务通过请求头参数`x-request-id`透传, 若无上游服务透传则在收到请求后生成随机UUID作为唯一ID
-- getInstanceId(): 获取当前请求处理进程的实例ID(PM2 cluster模式下分配)
+|                                                            | 类型 | 说明                                                                                                                                                             |
+| ---------------------------------------------------------: | :--- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ContextService](./src/context/service/context.service.ts) | 服务 | 基于[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)实现的请求上下文服务; 提供获取当前请求唯一ID(requestId)和当前实例ID(instanceId)的实现 |
 
 ### Logger
 
@@ -178,7 +140,7 @@
 
 ### MySQL
 
-全局MySQL数据库模块
+基于TypeORM的MySQL数据库动态模块
 
 模块目录结构
 
@@ -192,13 +154,20 @@
 
 #### 模块内容
 
-##### 工具函数
-
-[getMySQLDataSourceToken()](./src/mysql/mysql.constant.ts): 获取指定名称MySQL的TypeORM数据源的IoC注入Token
+|                                                                                                   | 类型     | 说明                                               |
+| ------------------------------------------------------------------------------------------------: | :------- | :------------------------------------------------- |
+|                                   [MYSQL_DATASOURCE_OPTIONS_TOKEN](./src/mysql/mysql.constant.ts) | 常量     | MySQL模块配置选项IoC注入Token                      |
+|                                       [MYSQL_DATASOURCE_MAP_TOKEN](./src/mysql/mysql.constant.ts) | 常量     | MySQL数据源Map IoC注入Token                        |
+|                             [getMySQLDataSourceToken(name:string)](./src/mysql/mysql.constant.ts) | 工具函数 | 获取指定名称MySQL的TypeORM数据源的IoC注入Token     |
+|            [IMySQLDataSourceOptions](./src/mysql/interface/mysql-datasource-options.interface.ts) | 接口     | MySQL TypeORM数据源配置选项                        |
+|                [IMySQLModuleAsyncOptions](./src/mysql/interface/mysq-module-options.interface.ts) | 接口     | MySQL 模块动态初始化选项                           |
+|   [IDateTimeValueTransformerOptions](./src/mysql/interface/datetime-value-transformer-options.ts) | 接口     | datetime类型字段转换器转换选项                     |
+|           [DatetimeValueTransformer](./src/mysql/value-transformer/datetime.value-transformer.ts) | 值转换器 | datetime类型字段值转换器                           |
+| [@InjectMySQLDataSource(name:string)](./src/mysql/decorator/inject-mysql-datasource.decorator.ts) | 装饰器   | 用于从IoC容器中获取指定名称的MySQL数据源示例并注入 |
 
 ### Redis
 
-全局Redis模块
+Redis动态模块
 
 模块目录结构
 
@@ -215,14 +184,21 @@
 
 #### 模块内容
 
-##### 工具函数
-
-[getRedisClientToken()](./src/redis/redis.constant.ts): 回去指定名称Redis连接客户端对象依赖注入Token
-
-##### 服务
-
-- [RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts): 基于Redis发布订阅实现的事件发布服务
-- [RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts): 基于Redis发布订阅实现的事件订阅监听服务
+|                                                                                               | 类型     | 说明                                    |
+| --------------------------------------------------------------------------------------------: | :------- | :-------------------------------------- |
+|                                   [REDIS_CLIENT_OPTIONS_TOKEN](./src/redis/redis.constant.ts) | 常量     | Redis模块异步初始化选项IoC注入Token     |
+|                                      [REDIS_CLIENTS_MAP_TOKEN](./src/redis/redis.constant.ts) | 常量     | Redis连接客户端IoC注入Token             |
+|                                  [REDIS_SUBSCRIBERS_MAP_TOKEN](./src/redis/redis.constant.ts) | 常量     | Redis订阅端IoC注入Token                 |
+|                             [getRedisClientToken(name:string)](./src/redis/redis.constant.ts) | 工具函数 | 获取指定名称Redis连接客户端IoC注入Token |
+|                         [getRedisSubscriberToken(name:string)](./src/redis/redis.constant.ts) | 工具函数 | 获取指定名称Redis订阅客户端IoC注入Token |
+|                [RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts) | 服务     | 基于Redis发布订阅实现的事件发布服务     |
+|              [RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts) | 服务     | 基于Redis发布订阅实现的事件订阅监听服务 |
+|                [IRedisClientOptions](./src/redis/interface/redis-client-options.interface.ts) | 接口     | Redis客户端/订阅端配置选项              |
+|         [IRedisEventEmitOptions](./src/redis/interface/redis-event-emit-options.interface.ts) | 接口     | Redis事件发布选项                       |
+|                  [IRedisEventMessage](./src/redis/interface/redis-event-message.interface.ts) | 接口     | Redis事件消息                           |
+|           [IRedisModuleAsyncOptions](./src/redis/interface/redis-module-options.interface.ts) | 接口     | Redis模块异步初始化选项                 |
+|     [@InjectRedisClient(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | 装饰器   | 注入指定名称的Redis连接客户端           |
+| [@InjectRedisSubscriber(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | 装饰器   | 注入指定名称的Redis订阅客户端           |
 
 ### Internationalization
 
@@ -248,7 +224,7 @@
 
 #### 模块内容
 
-##### 国际化语言包
+1. 国际化语言包
 
 - zh-CN目录: 简体中文语言包
 - en-US目录: 美式英语语言包
@@ -260,7 +236,7 @@
 - property.json: 参数名称语言包; 定义class-validator参数校验失败时返回错误信息中字的字段名称翻译
 - validation.json: 参数校验规则语言包; 定义class-validator参数校验失败时返回的错误信息翻译
 
-##### 国际化语言处理器
+2. 国际化语言处理器
 
 已配置以下语言处理器
 
@@ -273,7 +249,7 @@ CookieResolver > QueryResolver > AcceptLanguageResolver
 
 ### Rabbitmq
 
-全局Rabbitmq队列模块
+Rabbitmq动态模块
 
 模块目录结构
 
@@ -287,9 +263,14 @@ CookieResolver > QueryResolver > AcceptLanguageResolver
 
 #### 模块内容
 
-##### 工具函数
-
-- [getRabbitmqClientToken](./src/rabbitmq/rabbitmq.constant.ts): 获取指定名称Rabbitmq队列消息发送客户端IoC注入Token
+|                                                                                                    | 类型     | 说明                                               |
+| -------------------------------------------------------------------------------------------------: | :------- | :------------------------------------------------- |
+|                               [RABBITMQ_CLIENT_OPTIONS_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | 常量     | Rabbitmq模块异步初始化选项IoC注入Token             |
+|                                  [RABBITMQ_CLIENTS_MAP_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | 常量     | Rabbitmq客户端Map IoC注入Token                     |
+|                         [getRabbitmqClientToken(name:string)](./src/rabbitmq/rabbitmq.constant.ts) | 工具函数 | 获取指定名称Rabbitmq队列消息发送客户端IoC注入Token |
+| [@InjectRabbitmqClient(name:string)](./src/rabbitmq/decorator/inject-rabbitmq-client.decorator.ts) | 装饰器   | 注入指定名称的Rabbitmq消息发送客户端               |
+|            [IRabbitmqClientOptions](./src/rabbitmq/interface/rabbitmq-client-options.interface.ts) | 接口     | Rabbitmq客户端配置选项                             |
+|       [IRabbitmqModuleAsyncOptions](./src/rabbitmq/interface/rabbitmq-module-options.interface.ts) | 接口     | Rabbitmq模块异步初始化选项                         |
 
 ### Sample
 
