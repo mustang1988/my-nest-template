@@ -16,4 +16,9 @@ export interface IHealthCheckResult {
    * Rabbitmq连接客户端健康检查结果
    */
   rabbitmq?: Record<string, 'healthy' | 'unhealthy'>;
+
+  /**
+   * S3存储客户端健康检查结果
+   */
+  s3?: Record<string, 'healthy' | 'unhealthy'>;
 }

@@ -7,9 +7,12 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Get, Controller, Inject } from '@nestjs/common';
 import { AmqpConnectionManager } from 'amqp-connection-manager';
 import { getRedisClientToken } from '../../redis/redis.constant';
+import { S3Client, ListBucketsCommand } from '@aws-sdk/client-s3';
 import { getMySQLDataSourceToken } from '../../mysql/mysql.constant';
+import { getS3ClientToken } from '../../s3-storage/s3-storage.constant';
 import { getRabbitmqClientToken } from '../../rabbitmq/rabbitmq.constant';
 import { IHealthCheckResult } from '../interface/health-check-result.interface';
+import { IS3StorageConfiguration } from '../../configuration/interface/s3-storage.interface';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
 import { IMySQLConfiguration } from '../../configuration/interface/mysql-configuration.interface';
 import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-configuration.interface';
@@ -74,6 +77,29 @@ export class HealthCheckController {
            * 通过Rabbitmq连接状态进行健康检查
            */
           result.rabbitmq[rabbitmqName] = rabbitmqClient.unwrap<AmqpConnectionManager>().isConnected() ? 'healthy' : 'unhealthy';
+        }
+      }
+    }
+    // #endregion
+
+    // #region S3健康检查
+    const s3Configs = this.configService.get<Record<string, IS3StorageConfiguration>>('s3Storage');
+    if (s3Configs) {
+      result.s3 = {};
+      const s3Names = Object.keys(s3Configs);
+      for (const s3Name of s3Names) {
+        const s3Client = this.moduleRef.get<S3Client>(getS3ClientToken(s3Name), { strict: false });
+        if (s3Client) {
+          try {
+            /**
+             * 通过ListBucket命令进行健康检查
+             */
+            const listBucketCommand = new ListBucketsCommand({});
+            const res = await s3Client.send(listBucketCommand);
+            result.s3[s3Name] = Array.isArray(res.Buckets) ? 'healthy' : 'unhealthy';
+          } catch (error) {
+            result.s3[s3Name] = 'unhealthy';
+          }
         }
       }
     }

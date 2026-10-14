@@ -53,5 +53,13 @@ export default (): IConfiguration => ({
   i18n: {
     fallbackLanguage: EnvValueLoadUtil.loadOptionalString('I18N_FALLBACK_LANGUAGE', 'en-US'),
   },
+  s3Storage: {
+    default: {
+      endpoint: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_ENDPOINT'),
+      region: EnvValueLoadUtil.loadOptionalString('DEFAULT_S3_REGION', 'default'),
+      accessKeyId: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_ACCESS_KEY'),
+      secretAccessKey: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_SECRET_KEY'),
+    },
+  },
   constants: {},
 });

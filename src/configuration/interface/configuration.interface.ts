@@ -4,6 +4,7 @@ import { IRedisConfiguration } from './redis-configuration.interface';
 import { IMySQLConfiguration } from './mysql-configuration.interface';
 import { ILoggerConfiguration } from './logger-configuration.interface';
 import { IRabbitmqConfiguration } from './rabbitmq-configuration.interface';
+import { IS3StorageConfiguration } from './s3-storage.interface';
 
 /**
  * 配置
@@ -35,9 +36,14 @@ export interface IConfiguration {
   i18n?: Ii18nConfiguration;
 
   /**
-   * Rabbitmq队列配置
+   * Rabbitmq配置
    */
   rabbitmq?: Record<string, IRabbitmqConfiguration>;
+
+  /**
+   * S3存储配置
+   */
+  s3Storage?: Record<string, IS3StorageConfiguration>;
 
   /**
    * 常量配置

@@ -19,6 +19,4 @@ export const MYSQL_DATASOURCE_MAP_TOKEN: symbol = Symbol('token:mysql-datasource
  * @param name MySQL连接名称
  * @return MySQL数据源IoC注入Token
  */
-export const getMySQLDataSourceToken = (name: string): InjectionToken => {
-  return `token:mysql-datasource:${name}`;
-};
+export const getMySQLDataSourceToken = (name: string): InjectionToken => `token:mysql-datasource:${name}`;
