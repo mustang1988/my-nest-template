@@ -2,6 +2,7 @@ import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
+import { DataMaskingUtil } from '../common/util/data-masking.util';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { IRabbitmqClientOptions } from './interface/rabbitmq-client-options.interface';
 import { IRabbitmqModuleAsyncOptions } from './interface/rabbitmq-module-options.interface';
@@ -27,6 +28,7 @@ export class RabbitmqModule {
       provide: RABBITMQ_CLIENTS_MAP_TOKEN,
       inject: [RABBITMQ_CLIENT_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: async (rabbitmqConfigs: Array<IRabbitmqClientOptions>, logger: Logger) => {
+        logger = logger.child({ context: this.name });
         const rabbitmqClientsMap = new Map<string, ClientProxy>();
         for (const rmqConfOpt of rabbitmqConfigs) {
           if (!names.includes(rmqConfOpt.name)) {
@@ -48,7 +50,11 @@ export class RabbitmqModule {
             },
           });
           await rmqClient.connect();
-          logger.info('Rabbitmq发送端初始化完成: name = %s', name);
+          logger.info(
+            'Rabbitmq发送端初始化完成: name = %s, options = %j',
+            name,
+            DataMaskingUtil.maskingObject(rmqConfOpt, { fields: ['username', 'password'] }),
+          );
           rabbitmqClientsMap.set(name, rmqClient);
         }
         return rabbitmqClientsMap;
@@ -59,6 +65,7 @@ export class RabbitmqModule {
       provide: getRabbitmqClientToken(name),
       inject: [RABBITMQ_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: (rmqClientsMap: Map<string, ClientProxy>, logger: Logger) => {
+        logger = logger.child({ context: this.name });
         const client = rmqClientsMap.get(name);
         if (!client) {
           logger.error('未找到指定名称的Rabbitmq客户端对象: name = %s', name);

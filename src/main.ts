@@ -6,6 +6,7 @@ import { NestFactory } from '@nestjs/core';
 import compression from '@fastify/compress';
 import fastifyCookie from '@fastify/cookie';
 import { ConfigService } from '@nestjs/config';
+import fastofyMultipart from '@fastify/multipart';
 import { DataMaskingUtil } from './common/util/data-masking.util';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
@@ -25,19 +26,30 @@ void (async () => {
   const configService = app.get(ConfigService);
 
   /**
+   * 替换全局日志为winston
+   */
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+
+  /**
    * 注册fastify-compression插件
+   *
+   * 用来支持请求响应的压缩
    */
   await app.register(compression);
 
   /**
-   * 注册fastify-cookie插件  
+   * 注册fastify-cookie插件
+   *
+   * 用来支持获取请求Cookie
    */
   await app.register(fastifyCookie);
 
   /**
-   * 替换全局日志为winston
+   * 注册fastify-multipart插件
+   *
+   * 用来支持文件上传请求
    */
-  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  await app.register(fastofyMultipart);
 
   /**
    * 全局拦截器注册
@@ -79,7 +91,7 @@ void (async () => {
       .filter((rmqConfig) => rmqConfig.consume)
       .forEach((rmqConfig) => {
         const { username, password, host, port, vhost, queue, prefetchCount, noAck } = rmqConfig;
-        logger.info('Rabbitmq队列消费: rmqConfig = %j', DataMaskingUtil.maskingObject(rmqConfig, { fields: ['username', 'password'] }));
+        logger.info('Rabbitmq队列消费: options = %j', DataMaskingUtil.maskingObject(rmqConfig, { fields: ['username', 'password'] }));
         app.connectMicroservice<MicroserviceOptions>({
           transport: Transport.RMQ,
           options: {

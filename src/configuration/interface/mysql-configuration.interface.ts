@@ -45,5 +45,5 @@ export interface IMySQLConfiguration {
   /**
    * TypeORM 表结构同步开关
    */
-  sync?: boolean;
+  enableSynchronize?: boolean;
 }

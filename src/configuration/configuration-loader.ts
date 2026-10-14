@@ -34,7 +34,7 @@ export default (): IConfiguration => ({
       charset: EnvValueLoadUtil.loadOptionalString('DEFAULT_MYSQL_CHARSET', 'utf8mb4'),
       timezone: EnvValueLoadUtil.loadOptionalString('DEFAULT_MYSQL_TIMEZONE', '+08:00'),
       enableLogger: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_LOGGER', false),
-      sync: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_SYNC', false),
+      enableSynchronize: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_SYNC', false),
     },
   },
   rabbitmq: {

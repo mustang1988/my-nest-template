@@ -11,6 +11,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createClient, RedisClientType } from '@redis/client';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
+import { DataMaskingUtil } from '../common/util/data-masking.util';
 import { RedisEventEmitterService } from './service/redis-event-emitter.service';
 import { IRedisClientOptions } from './interface/redis-client-options.interface';
 import { RedisEventListenerService } from './service/redis-event-listener.service';
@@ -42,6 +43,7 @@ export class RedisModule {
       provide: REDIS_CLIENTS_MAP_TOKEN,
       inject: [REDIS_CLIENT_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: async (redisClientOptions: Array<IRedisClientOptions>, logger: Logger): Promise<Map<string, RedisClientType>> => {
+        logger = logger.child({ context: this.name });
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
           if (!names.includes(redisClientOpt.name)) {
@@ -57,7 +59,11 @@ export class RedisModule {
             database: redisClientOpt.db,
           });
           await redisClient.connect();
-          logger.info('Redis客户端初始化完成: name = %s', redisClientOpt.name);
+          logger.info(
+            'Redis客户端初始化完成: name = %s, options = %j',
+            redisClientOpt.name,
+            DataMaskingUtil.maskingObject(redisClientOpt, { fields: ['password'] }),
+          );
           redisClients.set(redisClientOpt.name, redisClient);
         }
         return redisClients;
@@ -68,6 +74,7 @@ export class RedisModule {
       provide: REDIS_SUBSCRIBERS_MAP_TOKEN,
       inject: [REDIS_CLIENT_OPTIONS_TOKEN, WINSTON_MODULE_PROVIDER],
       useFactory: async (redisClientOptions: Array<IRedisClientOptions>, logger: Logger): Promise<Map<string, RedisClientType>> => {
+        logger = logger.child({ context: this.name });
         const redisClients = new Map<string, RedisClientType>();
         for (const redisClientOpt of redisClientOptions) {
           if (!names.includes(redisClientOpt.name)) {
@@ -83,7 +90,11 @@ export class RedisModule {
             database: redisClientOpt.db,
           });
           await redisClient.connect();
-          logger.info('Redis订阅端初始化完成: name = %s', redisClientOpt.name);
+          logger.info(
+            'Redis订阅端初始化完成: name = %s, options = %j',
+            redisClientOpt.name,
+            DataMaskingUtil.maskingObject(redisClientOpt, { fields: ['password'] }),
+          );
           redisClients.set(redisClientOpt.name, redisClient);
         }
         return redisClients;
@@ -95,6 +106,7 @@ export class RedisModule {
         provide: getRedisClientToken(name),
         inject: [REDIS_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
         useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
+          logger = logger.child({ context: this.name });
           const redisClient = redisClientsMap.get(name);
           if (!redisClient) {
             logger.error('未找到指定名称的Redis客户端对象: name = %s', name);
@@ -110,6 +122,7 @@ export class RedisModule {
         provide: getRedisSubscriberToken(name),
         inject: [REDIS_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
         useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
+          logger = logger.child({ context: this.name });
           const redisSubscriber = redisClientsMap.get(name);
           if (!redisSubscriber) {
             logger.error('未找到指定名称的Redis订阅端对象: name = %s', name);
