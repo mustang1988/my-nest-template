@@ -47,14 +47,14 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
           this.logger.debug('Redis事件订阅, 收到订阅消息: name = %s, channel = %s, message = %j', name, channel, message);
           try {
             const jsonMessage = JSON.parse(message) as Required<IRedisEventMessage<EventType, unknown>>;
-            const { event, payload, target, requestId } = jsonMessage;
+            const { event, payload, targetInstance, requestId } = jsonMessage;
             /**
              * 如果事件发送方制定了事件处理的实例ID, 则检查被指定实例是否为当前实例, 如果不是, 则不做处理
              */
-            if (target !== undefined) {
+            if (targetInstance !== undefined) {
               const currentInstanceId = Number(process.env.INSTANCE_ID ?? 0);
-              if (currentInstanceId !== target) {
-                this.logger.info('Redis事件订阅, 目标实例非当前实例: expect = %s, currentInstanceId = %s', target, currentInstanceId);
+              if (currentInstanceId !== targetInstance) {
+                this.logger.info('Redis事件订阅, 目标实例非当前实例: expect = %s, currentInstanceId = %s', targetInstance, currentInstanceId);
                 return;
               }
             }

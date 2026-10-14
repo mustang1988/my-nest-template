@@ -3,9 +3,10 @@ import { Logger } from 'winston';
 import { basename } from 'node:path';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
-import compression from '@fastify/compress';
+import fastifyHelmet from '@fastify/helmet';
 import fastifyCookie from '@fastify/cookie';
 import { ConfigService } from '@nestjs/config';
+import fastifyCompress from '@fastify/compress';
 import fastofyMultipart from '@fastify/multipart';
 import { DataMaskingUtil } from './common/util/data-masking.util';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -21,7 +22,10 @@ void (async () => {
   /**
    * 初始化IoC容器
    */
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ bodyLimit: bytes('1GB') as number }));
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ bodyLimit: bytes('1GB') as number, trustProxy: true }),
+  );
   const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER).child({ context: basename(__filename) });
   const configService = app.get(ConfigService);
 
@@ -31,11 +35,18 @@ void (async () => {
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   /**
+   * 注册fastify-helmet插件
+   *
+   * HTTP响应自动添加安全相关响应头
+   */
+  await app.register(fastifyHelmet);
+
+  /**
    * 注册fastify-compression插件
    *
    * 用来支持请求响应的压缩
    */
-  await app.register(compression);
+  await app.register(fastifyCompress);
 
   /**
    * 注册fastify-cookie插件

@@ -48,7 +48,7 @@ export class RedisEventEmitterService {
       event,
       payload,
       requestId,
-      target: options?.target,
+      targetInstance: options?.instanceId,
     };
 
     let publishResult;
