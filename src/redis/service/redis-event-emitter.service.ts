@@ -2,9 +2,9 @@ import { Logger } from 'winston';
 import { ClsService } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
 import type { RedisClientType } from '@redis/client';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { REDIS_CLIENTS_MAP_TOKEN } from '../redis.constant';
 import { CLS_REQUEST_ID } from '../../common/common.constant';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { IRedisEventEmitOptions } from '../interface/redis-event-emit-options.interface';
 import { EventType, IRedisEventMessage } from '../interface/redis-event-message.interface';
@@ -24,8 +24,8 @@ export class RedisEventEmitterService {
 
   constructor(
     @Inject() private readonly cls: ClsService,
+    @InjectLogger() private readonly logger: Logger,
     @Inject() private readonly configService: ConfigService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @Inject(REDIS_CLIENTS_MAP_TOKEN) private readonly redisClientsMap: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });

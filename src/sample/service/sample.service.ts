@@ -3,11 +3,11 @@ import { lastValueFrom } from 'rxjs';
 import { I18nService } from 'nestjs-i18n';
 import { HttpService } from '@nestjs/axios';
 import { DataSource, Repository } from 'typeorm';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ContextService } from '../../context/service/context.service';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
 import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-datasource.decorator';
 
@@ -22,7 +22,7 @@ export class SampleService {
     @Inject() private readonly i18n: I18nService,
     @Inject() private readonly axios: HttpService,
     @Inject() private readonly ctx: ContextService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @InjectLogger() private readonly logger: Logger,
     @Inject() private readonly redisEventEmitter: RedisEventEmitterService,
     @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
   ) {

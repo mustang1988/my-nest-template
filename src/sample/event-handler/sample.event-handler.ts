@@ -2,10 +2,10 @@ import { Logger } from 'winston';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-client.decorator';
 
 /**
@@ -14,7 +14,7 @@ import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-c
 @Injectable()
 export class SampleEventHandler {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @InjectLogger() private readonly logger: Logger,
     @InjectRabbitmqClient('default') private readonly rmqClient: ClientProxy,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });

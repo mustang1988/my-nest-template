@@ -1,15 +1,15 @@
 import ms from 'ms';
 import { Logger } from 'winston';
-import { Inject, Injectable } from '@nestjs/common';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 
 /**
  * 示例定时/计划任务执行器
  */
 @Injectable()
 export class SampleScheduler {
-  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {
+  constructor(@InjectLogger() private readonly logger: Logger) {
     this.logger = this.logger.child({ context: this.constructor.name });
   }
 

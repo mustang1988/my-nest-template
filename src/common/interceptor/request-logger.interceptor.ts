@@ -4,8 +4,8 @@ import { Reflector } from '@nestjs/core';
 import { FastifyRequest } from 'fastify';
 import { ClsService, InjectCls } from 'nestjs-cls';
 import { CLS_REQUEST_ID } from '../common.constant';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { JsonResp } from '../decorator/json-response.decorator';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from '@nestjs/common';
 
 /**
@@ -20,7 +20,7 @@ export class RequestLoggerInterceptor implements NestInterceptor {
   constructor(
     @InjectCls() private readonly cls: ClsService,
     @Inject() private readonly reflector: Reflector,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @InjectLogger() private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
   }

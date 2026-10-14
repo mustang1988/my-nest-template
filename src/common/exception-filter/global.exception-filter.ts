@@ -3,9 +3,9 @@ import { Logger } from 'winston';
 import { ClsService } from 'nestjs-cls';
 import { CLS_REQUEST_ID } from '../common.constant';
 import { I18nValidationException } from 'nestjs-i18n';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { IJsonResponse } from '../interface/json-response.interface';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Injectable } from '@nestjs/common';
 
 /**
@@ -20,7 +20,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Injectabl
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(
     @Inject() private readonly cls: ClsService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @InjectLogger() private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
   }

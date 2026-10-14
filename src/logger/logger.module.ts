@@ -25,8 +25,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
          * 文件日志格式
          */
         const fileLoggerFormat = winston.format.combine(
-          winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
-          winston.format.ms(),
+          winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS Z' }),
           winston.format.splat(),
           utilities.format.nestLike(appConfig.title, {
             colors: false,
@@ -91,8 +90,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
          */
         if (loggerConfig.enableConsole) {
           const consoleLoggerFormat = winston.format.combine(
-            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSSZ' }),
-            winston.format.ms(),
+            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS Z' }),
             winston.format.splat(),
             utilities.format.nestLike(appConfig.title, {
               colors: true,

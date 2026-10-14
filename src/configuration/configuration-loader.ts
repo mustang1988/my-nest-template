@@ -61,5 +61,16 @@ export default (): IConfiguration => ({
       secretAccessKey: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_SECRET_KEY'),
     },
   },
-  constants: {},
+  constants: {
+    performance: {
+      /**
+       * 接口性能指标
+       *
+       * 接口耗时超过指标时会输出WARN级别日志记录
+       *
+       * 单位: 毫秒
+       */
+      threshold: EnvValueLoadUtil.loadOptionalInteger('PERFORMANCE_THRESHOLD', 100),
+    },
+  },
 });

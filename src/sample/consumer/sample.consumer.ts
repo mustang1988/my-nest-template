@@ -1,9 +1,9 @@
 import { Logger } from 'winston';
 import { Channel, Message } from 'amqplib';
 import { Controller, Inject } from '@nestjs/common';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 
 /**
@@ -11,7 +11,7 @@ import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices'
  */
 @Controller()
 export class SampleConsumer {
-  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {
+  constructor(@InjectLogger() private readonly logger: Logger) {
     this.logger = this.logger.child({ context: this.constructor.name });
   }
 

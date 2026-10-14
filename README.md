@@ -63,6 +63,7 @@
 |  [GlobalExceptionFilter](./src/common/exception-filter/global.exception-filter.ts) | class     | 全局异常过滤器, 用于全局兜底处理请求内部发生的异常, 并统一响应格式, 可处理异常包括: HttpException及其子类和JavaScript Error及其子类 |
 |   [JsonResponseInterceptor](./src/common/interceptor/json-response.interceptor.ts) | class     | JSON响应格式化拦截器, 用于统一所有接口的HTTP响应格式                                                                                |
 | [RequestLoggerInterceptor](./src/common/interceptor/request-logger.interceptor.ts) | class     | 请求参数日志拦截器, 用于在日志中输出每次请求的参数, 建议在开发调试阶段使用                                                          |
+|      [PerformanceInterseptor](./src/common/interceptor/performance.interceptor.ts) | class     | 性能指标拦截器; 当接口耗时超过指定哦可配置阈值时, 输出WARN级别日志                                                                  |
 |                         [DataMaskingUtil](./src//common/util/data-masking.util.ts) | class     | 数据脱敏工具类; 可用于对字符串类型敏感数据(例如密码)进行数据脱敏                                                                    |
 
 ### Configuration
@@ -129,8 +130,6 @@
  ┗ 📜logger.module.ts
 ```
 
-#### 模块内容
-
 全局日志传输器初始化, 提供以下日志传输器
 
 - 按日切分主文件日志: 默认提供, 输出配置项`LOGGER_LEVEL`指定的级别及以上级别的日志
@@ -139,6 +138,12 @@
 - 控制台日志: 仅在配置项`LOGGER_CONSOLE`设置为true时提供
 
 上述所有按日切分的文件日志的单日志文件大小阈值和日志滚动保留的文件数量均支持配置
+
+#### 模块内容
+
+|                                                                      | 类型      | 说明     |
+| -------------------------------------------------------------------: | :-------- | :------- |
+| [@InjectLogger()](./src/logger/decorator/inject-logger.decorator.ts) | decorator | 注入日志 |
 
 ### MySQL
 
