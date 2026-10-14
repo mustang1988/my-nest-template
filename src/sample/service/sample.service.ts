@@ -28,16 +28,18 @@ export class SampleService {
   }
 
   async viewSampleOrThrow(id: number): Promise<SampleEntity> {
+    const requestId = this.ctx.getRequestId(); // CLS上下文中获取请求ID
+    this.logger.debug('[%s] 示例数据详情查询, 入参: id = %s', requestId, id);
     const foundSample = await this.sampleRepo.findOne({ where: { id } });
     if (foundSample === null) {
-      this.logger.warn('[%s] 未找到指定示例: id = %s', this.ctx.getRequestId(), id);
+      this.logger.warn('[%s] 未找到指定示例数据: id = %s', requestId, id);
       throw new NotFoundException(this.i18n.t('exception.NotFoundException', { args: { entity: 'Sample' } }));
     }
 
     /**
      * 触发事件委托
      */
-    await this.redisEventEmitter.emit<ESampleEventPattern.SAMPLE_EVENT, SampleEntity>(ESampleEventPattern.SAMPLE_EVENT, foundSample);
+    await this.redisEventEmitter.emit<ESampleEventPattern, SampleEntity>(ESampleEventPattern.SAMPLE_EVENT, foundSample, { clientName: 'default' });
     return foundSample;
   }
 }
