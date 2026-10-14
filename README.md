@@ -115,9 +115,10 @@
 
 #### 模块内容
 
-|                                                            | 类型  | 说明                                                                                                                                                             |
-| ---------------------------------------------------------: | :---- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ContextService](./src/context/service/context.service.ts) | class | 基于[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)实现的请求上下文服务; 提供获取当前请求唯一ID(requestId)和当前实例ID(instanceId)的实现 |
+|                                                                                | 类型                   | 说明                                                                                                                                                             |
+| -----------------------------------------------------------------------------: | :--------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|                     [ContextService](./src/context/service/context.service.ts) | class                  | 基于[NodeJS Async Local Storage](https://nodejs.org/api/async_context.html)实现的请求上下文服务; 提供获取当前请求唯一ID(requestId)和当前实例ID(instanceId)的实现 |
+| [@InjectClsContext()](./src/context/decorator/inject-cls-context.decorator.ts) | 注入CLS上下文decorator |                                                                                                                                                                  |
 
 ### Logger
 

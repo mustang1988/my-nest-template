@@ -35,4 +35,9 @@ export interface ILoggerConfiguration {
    * 是否输入json日志
    */
   jsonLogger?: boolean;
+
+  /**
+   * 是否对日志文件进行压缩
+   */
+  zippedArchive?: boolean;
 }

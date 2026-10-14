@@ -28,7 +28,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
           winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS Z' }),
           winston.format.splat(),
           utilities.format.nestLike(appConfig.title, {
-            colors: false,
+            colors: false, // 文件日志关闭颜色标记
             prettyPrint: true,
             processId: true,
             appName: true,
@@ -48,8 +48,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             maxFiles: loggerConfig.maxFile,
             format: fileLoggerFormat,
             filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log`,
-            // datePattern: 'YYYY-MM-DD',
-            // zippedArchive: true,
+            zippedArchive: loggerConfig.zippedArchive,
           }),
 
           /**
@@ -64,8 +63,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             maxFiles: loggerConfig.maxFile,
             format: fileLoggerFormat,
             filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-error.log`,
-            // datePattern: 'YYYY-MM-DD',
-            // zippedArchive: true,
+            zippedArchive: loggerConfig.zippedArchive,
           }),
         ];
 
@@ -79,8 +77,9 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
               dirname: loggerConfig.dirname,
               maxFiles: loggerConfig.maxFile,
               maxSize: loggerConfig.maxSize,
-              format: winston.format.json(),
+              format: winston.format.combine(winston.format.splat(), winston.format.json()),
               filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log.json`,
+              zippedArchive: loggerConfig.zippedArchive,
             }),
           );
         }
@@ -93,7 +92,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS Z' }),
             winston.format.splat(),
             utilities.format.nestLike(appConfig.title, {
-              colors: true,
+              colors: true, // 控制台日志开启颜色标记
               prettyPrint: true,
               processId: true,
               appName: true,

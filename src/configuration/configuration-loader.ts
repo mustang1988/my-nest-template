@@ -13,6 +13,7 @@ export default (): IConfiguration => ({
     enableConsole: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_CONSOLE', false),
     dirname: EnvValueLoadUtil.loadOptionalString('LOGGER_DIR', '/tmp'),
     jsonLogger: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_JSON', false),
+    zippedArchive: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_ZIP', true),
   },
   redis: {
     default: {
