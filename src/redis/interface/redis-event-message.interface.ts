@@ -25,5 +25,5 @@ export interface IRedisEventMessage<E extends EventType, P extends unknown> {
   /**
    * 目标实例编号
    */
-  target?: number;
+  targetInstance?: number;
 }

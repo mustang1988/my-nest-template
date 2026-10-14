@@ -88,6 +88,7 @@ void (async () => {
   const rabbitmqConfig = configService.get<Record<string, Required<IRabbitmqConfiguration>>>('rabbitmq');
   if (rabbitmqConfig) {
     Object.values(rabbitmqConfig)
+      // 只对consume配置为true的Rabbitmq创建消费
       .filter((rmqConfig) => rmqConfig.consume)
       .forEach((rmqConfig) => {
         const { username, password, host, port, vhost, queue, prefetchCount, noAck } = rmqConfig;

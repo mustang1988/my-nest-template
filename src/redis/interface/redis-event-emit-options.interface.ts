@@ -3,9 +3,9 @@
  */
 export interface IRedisEventEmitOptions {
   /**
-   * 目标处理示例ID
+   * 目标处理实例ID
    */
-  target?: number;
+  instanceId?: number;
 
   /**
    * 使用的Redis连接名称
