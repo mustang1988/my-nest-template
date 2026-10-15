@@ -38,40 +38,24 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     ConfigurationModule,
     InternationalizationModule,
     RedisModule.forRootAsync({
-      isGlobal: true,
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      names: ['default'],
       useFactory: (configService: ConfigService) => {
         const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
         return Object.keys(redisConfig).map((name) => ({ name, ...redisConfig[name] }));
       },
     }),
     MySQLModule.forRootAsync({
-      isGlobal: true,
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      names: ['default'],
       useFactory: (configService: ConfigService) => {
         const mysqlConfig = configService.getOrThrow<Record<string, Required<IMySQLConfiguration>>>('mysql');
         return Object.keys(mysqlConfig).map((name) => ({ name, ...mysqlConfig[name] }));
       },
     }),
     RabbitmqModule.forRootAsync({
-      isGlobal: true,
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      names: ['default'],
       useFactory: (configService: ConfigService) => {
         const rmqConfig = configService.getOrThrow<Record<string, Required<IRabbitmqConfiguration>>>('rabbitmq');
         return Object.keys(rmqConfig).map((name) => ({ name, ...rmqConfig[name] }));
       },
     }),
     S3StorageModule.forRootAsync({
-      isGlobal: true,
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      names: ['default'],
       useFactory: (configService: ConfigService) => {
         const s3Config = configService.getOrThrow<Record<string, IS3StorageConfiguration>>('s3Storage');
         return Object.keys(s3Config).map((name) => ({ name, ...s3Config[name] }));

@@ -1,12 +1,15 @@
-import { ModuleMetadata } from '@nestjs/common';
 import { IRabbitmqClientOptions } from './rabbitmq-client-options.interface';
+import { ICommonModuleAsyncOptions } from '../../common/interface/common-module-options.interface';
 
 /**
  * Rabbitmq模块异步初始化选项
  */
-export interface IRabbitmqModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
-  isGlobal?: boolean;
-  inject?: any[];
+export interface IRabbitmqModuleAsyncOptions extends ICommonModuleAsyncOptions<Array<IRabbitmqClientOptions>> {
+  /**
+   * 需要初始化的Rabbitmq配置名称列表
+   *
+   * - 可选
+   * - 默认值: ['default']
+   */
   names?: Array<string>;
-  useFactory: (...args: Array<any>) => Array<IRabbitmqClientOptions> | Promise<Array<IRabbitmqClientOptions>>;
 }
