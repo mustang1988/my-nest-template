@@ -28,10 +28,10 @@ export class SampleConsumer {
   @MessagePattern(ESampleMessagePattern.SAMPLE_MESSAGE)
   @InjectClsContext()
   async consumeSampleMessage(@Payload() payload: unknown, @Ctx() rmqContext: RmqContext) {
+    this.logger.info('收到队列消息: payloadType = %s, payload = %j', typeof payload, payload);
     try {
-      const message = BaseMessage.fromJsonObject(payload);
+      const message = typeof payload === 'string' ? BaseMessage.fromJsonString(payload) : BaseMessage.fromObject(payload);
       this.logger.info('[%s] 收到队列消息: message = %j', message.getRequestId(), message);
-      // console.log(this.ctx.getRequestId(), message.getRequestId());
     } catch (error) {
       this.logger.error('[%s] 收到队列消息, 消费失败: error = %o, payload = %j', this.ctx.getRequestId(), error, payload);
     } finally {

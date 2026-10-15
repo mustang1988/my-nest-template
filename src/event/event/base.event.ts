@@ -1,12 +1,27 @@
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import { EventType } from '../type/event.type';
+import { EventDeserializationException } from '../exception/event-deserialization.exception';
 
+/**
+ * 事件基类
+ */
 export class BaseEvent<E extends EventType, T> {
+  /**
+   * 触发事件的请求ID
+   */
   private readonly requestId: string;
-  private readonly eventName: E;
-  private readonly payload: T;
 
-  constructor(requestId: string, eventName: E, payload: T) {
+  /**
+   * 事件名
+   */
+  private readonly eventName: E;
+
+  /**
+   * 事件负载
+   */
+  private readonly payload: T | undefined;
+
+  constructor(requestId: string, eventName: E, payload?: T) {
     this.requestId = requestId;
     this.eventName = eventName;
     this.payload = payload;
@@ -20,11 +35,11 @@ export class BaseEvent<E extends EventType, T> {
     return this.eventName;
   }
 
-  public getPayload(): T {
+  public getPayload(): T | undefined {
     return this.payload;
   }
 
-  public getPayloadWithRequestId(): T & { requestId: string } {
+  public getPayloadWithRequestId(): { requestId: string } | (T & { requestId: string }) {
     return {
       ...this.payload,
       requestId: this.requestId,
@@ -38,15 +53,24 @@ export class BaseEvent<E extends EventType, T> {
   public static fromJsonString<E extends EventType, T>(jsonString: string): BaseEvent<E, T> {
     try {
       const jsonData = JSON.parse(jsonString);
-      const requestId = get(jsonData, 'requestId');
-      const eventName = get(jsonData, 'eventName');
-      const payload = get(jsonData, 'payload');
-      if (isEmpty(requestId) || isEmpty(eventName) || isEmpty(payload)) {
-        throw new Error('事件信息反序列化失败');
+      const requestId: string = get(jsonData, 'requestId');
+      const eventName: E = get(jsonData, 'eventName');
+      const payload: T | undefined = get(jsonData, 'payload');
+      if (isNil(requestId) || isEmpty(requestId)) {
+        throw new EventDeserializationException(new Error('requestId缺失'));
       }
-      return new BaseEvent(requestId, eventName, payload);
+
+      if (isNil(eventName) || isEmpty(eventName)) {
+        throw new EventDeserializationException(new Error('eventName缺失'));
+      }
+
+      return new BaseEvent<E, T>(requestId, eventName, payload);
     } catch (error) {
-      throw new Error('事件信息反序列化失败');
+      let errorMsg = '事件信息反序列化失败';
+      if (error instanceof EventDeserializationException) {
+        errorMsg += `: ${error.message}`;
+      }
+      throw new Error(errorMsg);
     }
   }
 }

@@ -40,6 +40,15 @@ export class SampleEventHandler {
      * 发送RMQ队列消息
      */
     const message = new SampleMessage(event.getRequestId(), ESampleMessagePattern.SAMPLE_MESSAGE, event.getPayload());
+
+    /**
+     * 发送JSON字符串消息
+     */
+    this.rmqClient.send(message.getPattern(), message.toJsonString()).subscribe();
+
+    /**
+     * 发送对象消息
+     */
     this.rmqClient.send(message.getPattern(), message).subscribe();
     this.logger.info('[%s] 发送队列消息: message: %j', message.getRequestId(), message);
   }
