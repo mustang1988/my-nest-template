@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ContextService } from '../../context/service/context.service';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { InjectClsContext } from '../../context/decorator/inject-cls-context.decorator';
+import { InjectContext } from '../../context/decorator/inject-cls-context.decorator';
 
 /**
  * 示例定时/计划任务执行器
@@ -22,7 +22,7 @@ export class SampleScheduler {
    * 示例计划任务
    */
   @Cron(CronExpression.EVERY_10_SECONDS)
-  @InjectClsContext()
+  @InjectContext()
   async handleSampleCronJob(): Promise<void> {
     this.logger.info('[%s] handleSampleCronJob: instanceId = %s', this.ctx.getRequestId(), this.ctx.getInstanceId());
   }
@@ -31,7 +31,7 @@ export class SampleScheduler {
    * 示例定时任务
    */
   @Interval(ms('15s'))
-  @InjectClsContext()
+  @InjectContext()
   async handleIntervalJob(): Promise<void> {
     this.logger.info('[%s] handleIntervalJob: instanceId = %s', this.ctx.getRequestId(), this.ctx.getInstanceId());
   }
@@ -40,7 +40,7 @@ export class SampleScheduler {
    * 示例服务启动后一次性任务
    */
   @Timeout(ms('5s'))
-  @InjectClsContext()
+  @InjectContext()
   async handleTimeoutJob(): Promise<void> {
     this.logger.info('[%s] handleTimeoutJob: instanceId = %s', this.ctx.getRequestId(), this.ctx.getInstanceId());
   }

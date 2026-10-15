@@ -13,6 +13,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { WINSTON_MODULE_PROVIDER, WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { PerformanceInterseptor } from './common/interceptor/performance.interceptor';
 import { JsonResponseInterceptor } from './common/interceptor/json-response.interceptor';
 import { GlobalExceptionFilter } from './common/exception-filter/global.exception-filter';
 import { RequestLoggerInterceptor } from './common/interceptor/request-logger.interceptor';
@@ -66,11 +67,12 @@ void (async () => {
    * 全局拦截器注册
    *
    * - JSON响应格式化拦截器
+   * - 性能指标拦截器
    * - 请求日志拦截器
    *
    * 注意: 多个拦截器注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
-  app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(RequestLoggerInterceptor));
+  app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(PerformanceInterseptor), app.get(RequestLoggerInterceptor));
 
   /**
    * 全局管道注册

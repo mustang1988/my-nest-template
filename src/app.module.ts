@@ -1,6 +1,7 @@
 import ms from 'ms';
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RedisModule } from './redis/redis.module';
 import { MySQLModule } from './mysql/mysql.module';
@@ -10,7 +11,6 @@ import { CommonModule } from './common/common.module';
 import { SampleModule } from './sample/sample.module';
 import { ContextModule } from './context/context.module';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { S3StorageModule } from './s3-storage/s3-storage.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { IS3StorageConfiguration } from './configuration/interface/s3-storage.interface';

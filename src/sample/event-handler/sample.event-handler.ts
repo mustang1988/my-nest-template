@@ -8,7 +8,7 @@ import { ContextService } from '../../context/service/context.service';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { InjectClsContext } from '../../context/decorator/inject-cls-context.decorator';
+import { InjectContext } from '../../context/decorator/inject-cls-context.decorator';
 import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-client.decorator';
 
 /**
@@ -32,7 +32,7 @@ export class SampleEventHandler {
    * @param eventPayload 事件委托负载
    */
   @OnEvent(ESampleEventPattern.SAMPLE_EVENT)
-  @InjectClsContext()
+  @InjectContext()
   onSampleEvent(event: SampleEvent): void {
     this.logger.info('[%s] 收到事件委托: event: %j', event.requestId, event);
     /**

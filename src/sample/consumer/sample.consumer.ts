@@ -7,7 +7,7 @@ import { ContextService } from '../../context/service/context.service';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
-import { InjectClsContext } from '../../context/decorator/inject-cls-context.decorator';
+import { InjectContext } from '../../context/decorator/inject-cls-context.decorator';
 
 /**
  * 示例队列消费
@@ -27,7 +27,7 @@ export class SampleConsumer {
    * @param rmqContext 队列上下文
    */
   @MessagePattern(ESampleMessagePattern.SAMPLE_MESSAGE)
-  @InjectClsContext()
+  @InjectContext()
   async consumeSampleMessage(@Payload(new SampleMessagePipe()) payload: SampleMessage, @Ctx() rmqContext: RmqContext) {
     this.logger.info('[%s] 示例消息消费: payload = %j', payload.requestId, payload);
     try {

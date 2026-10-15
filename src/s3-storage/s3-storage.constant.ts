@@ -1,5 +1,3 @@
-import { InjectionToken } from '@nestjs/common';
-
 /**
  * S3客户端配置IoC注入Token
  *
@@ -19,4 +17,4 @@ export const S3_CLIENTS_MAP_TOKEN: symbol = Symbol('token:s3-clients-map');
  * @param name S3存储名称
  * @return S3存储客户端对象IoC注入Token
  */
-export const getS3ClientToken = (name: string): InjectionToken => `token:s3-client:${name}`;
+export const getS3ClientToken = (name: string): string => `token:s3-client:${name}`;

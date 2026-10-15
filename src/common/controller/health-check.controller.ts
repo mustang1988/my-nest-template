@@ -17,6 +17,9 @@ import { IRedisConfiguration } from '../../configuration/interface/redis-configu
 import { IMySQLConfiguration } from '../../configuration/interface/mysql-configuration.interface';
 import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-configuration.interface';
 
+/**
+ * 服务健康检查控制器
+ */
 @Controller('/api')
 export class HealthCheckController {
   constructor(
@@ -24,6 +27,10 @@ export class HealthCheckController {
     @Inject() private readonly configService: ConfigService,
   ) {}
 
+  /**
+   * 服务健康检查API
+   * @return 健康检查结果
+   */
   @Get('/healthcheck')
   async actionHealthCheck(): Promise<IHealthCheckResult> {
     const result: IHealthCheckResult = {};

@@ -37,7 +37,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
 
         const loggerTransports: winston.transport[] = [
           /**
-           * 按日切分主文件日志
+           * 每日切分`主`文件日志
            *
            * 记录配置的level值及以上级别的日志
            */
@@ -52,7 +52,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
           }),
 
           /**
-           * 按日切分异常文件日志
+           * 每日切分`异常`文件日志
            *
            * 仅记录error及以上级别的日志
            */

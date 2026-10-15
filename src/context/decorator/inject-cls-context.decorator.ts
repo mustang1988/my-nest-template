@@ -7,11 +7,15 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../../common/common.constant';
 /**
  * 注入CLS上下文
  *
- * 用于非HTTP请求的场景中需要使用CLS上下文, 诸如
+ * 用于非HTTP请求的场景中需要使用CLS上下文的情形, 诸如
  * - 定时/计划任务
  * - 事件委托
+ * - 队列消费
+ *
+ * 注入到上下文中的请求ID会优先读取被装饰函数入参列表中可能存在的requestId; 若入参中没有, 则以随机UUID注入
  */
-export const InjectClsContext = () => {
+export const InjectContext = (name?: string) => {
+  name = name ?? 'requestId';
   return applyDecorators(
     UseCls<any[]>({
       setup: (cls: ClsService, ...args: any[] /* 被装饰函数的入参列表 */) => {
@@ -19,7 +23,7 @@ export const InjectClsContext = () => {
          * 提取被装饰函数入参中可能存在的requestId
          */
         const requestIdInArgs: string | undefined = first(
-          args.filter((arg) => isObject(arg) && get(arg, 'requestId')) as Array<{
+          args.filter((arg) => isObject(arg) && get(arg, name)) as Array<{
             requestId: string;
           }>,
         )?.requestId;
