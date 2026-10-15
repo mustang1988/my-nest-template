@@ -55,6 +55,8 @@ common
  ┃ ┣ data-masking-options.interface.ts
  ┃ ┣ health-check-result.interface.ts
  ┃ ┗ json-response.interface.ts
+ ┣ response-transformer
+ ┃ ┗ bigint-support.response-transformer.ts
  ┣ util
  ┃ ┗ data-masking.util.ts
  ┗ common.module.ts
@@ -62,20 +64,21 @@ common
 
 #### 模块内容
 
-|                                                                                        | 类型      | 说明                                                                       |
-| -------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------------------------------- |
-|                             [DataMaskingUtil](./src//common/util/data-masking.util.ts) | class     | 数据脱敏工具类; 可用于对字符串类型敏感数据(例如密码)进行数据脱敏           |
-|                     [IJsonResponse](./src/common/interface/json-response.interface.ts) | interface | 统一JSON响应格式                                                           |
-|                  [@Cookies(name?:string)](./src/common/decorator/cookies.decorator.ts) | decorator | 控制器接口函数装饰器, 用于获取请求的Cookie参数                             |
-|            [HealthCheckController](./src/common/controller/health-check.controller.ts) | class     | 健康检查接口控制器                                                         |
-|          [IHealthCheckResult](./src/common/interface/health-check-result.interface.ts) | interface | 健康检查结果                                                               |
-|          [PerformanceInterseptor](./src/common/interceptor/performance.interceptor.ts) | class     | 性能指标拦截器; 当接口耗时超过指定哦可配置阈值时, 输出WARN级别日志         |
-|        [IDataMaskingOptions](./src/common/interface/data-masking-options.interface.ts) | interface | 数据脱敏选项                                                               |
-|       [@JsonResp(options?:boolean)](./src/common/decorator/json-response.decorator.ts) | decorator | 控制器接口函数装饰器, 用于标记Controller中的Action函数的响应内容是否为JSON |
-|       [JsonResponseInterceptor](./src/common/interceptor/json-response.interceptor.ts) | class     | JSON响应格式化拦截器, 用于统一所有接口的HTTP响应格式                       |
-|      [GlobalExceptionFilter](./src/common/exception-filter/global.exception-filter.ts) | class     | 全局异常过滤器, 用于全局兜底处理请求内部发生的异常, 并统一响应格式         |
-|     [RequestLoggerInterceptor](./src/common/interceptor/request-logger.interceptor.ts) | class     | 请求参数日志拦截器, 用于在日志中输出每次请求的参数, 建议在开发调试阶段使用 |
-| [ICommonModuleAsyncOptions](./src/common/interface/common-module-options.interface.ts) | interface | 通用动态模块初始化选项                                                     |
+|                                                                                                              | 类型      | 说明                                                                       |
+| -----------------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------------------------------- |
+|                                                   [DataMaskingUtil](./src//common/util/data-masking.util.ts) | class     | 数据脱敏工具类; 可用于对字符串类型敏感数据(例如密码)进行数据脱敏           |
+|                                           [IJsonResponse](./src/common/interface/json-response.interface.ts) | interface | 统一JSON响应格式                                                           |
+|                                        [@Cookies(name?:string)](./src/common/decorator/cookies.decorator.ts) | decorator | 控制器接口函数装饰器, 用于获取请求的Cookie参数                             |
+|                                  [HealthCheckController](./src/common/controller/health-check.controller.ts) | class     | 健康检查接口控制器                                                         |
+|                                [IHealthCheckResult](./src/common/interface/health-check-result.interface.ts) | interface | 健康检查结果                                                               |
+|                                [PerformanceInterseptor](./src/common/interceptor/performance.interceptor.ts) | class     | 性能指标拦截器; 当接口耗时超过指定哦可配置阈值时, 输出WARN级别日志         |
+|                              [IDataMaskingOptions](./src/common/interface/data-masking-options.interface.ts) | interface | 数据脱敏选项                                                               |
+|                             [@JsonResp(options?:boolean)](./src/common/decorator/json-response.decorator.ts) | decorator | 控制器接口函数装饰器, 用于标记Controller中的Action函数的响应内容是否为JSON |
+|                             [JsonResponseInterceptor](./src/common/interceptor/json-response.interceptor.ts) | class     | JSON响应格式化拦截器, 用于统一所有接口的HTTP响应格式                       |
+|                            [GlobalExceptionFilter](./src/common/exception-filter/global.exception-filter.ts) | class     | 全局异常过滤器, 用于全局兜底处理请求内部发生的异常, 并统一响应格式         |
+|                           [RequestLoggerInterceptor](./src/common/interceptor/request-logger.interceptor.ts) | class     | 请求参数日志拦截器, 用于在日志中输出每次请求的参数, 建议在开发调试阶段使用 |
+|                       [ICommonModuleAsyncOptions](./src/common/interface/common-module-options.interface.ts) | interface | 通用动态模块初始化选项                                                     |
+| [BigintSupportResponseTransformer](./src/common/response-transformer/bigint-support.response-transformer.ts) | function  | 支持Bigint的Axios响应转换器;                                               |
 
 ### Configuration
 

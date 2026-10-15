@@ -26,7 +26,6 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
      * NestJS 定时/计划任务模块
      */
     ScheduleModule.forRoot({ cronJobs: true, intervals: true, timeouts: true }),
-
     /**
      * NestJS HTTP客户端模块
      */
