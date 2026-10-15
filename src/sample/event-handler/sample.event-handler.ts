@@ -34,22 +34,20 @@ export class SampleEventHandler {
   @OnEvent(ESampleEventPattern.SAMPLE_EVENT)
   @InjectClsContext()
   onSampleEvent(event: SampleEvent): void {
-    this.logger.info('[%s] 收到事件委托: event: %j', event.getRequestId(), event);
-    // console.log(this.ctx.getRequestId(), event.getRequestId());
+    this.logger.info('[%s] 收到事件委托: event: %j', event.requestId, event);
     /**
      * 发送RMQ队列消息
      */
-    const message = new SampleMessage(event.getRequestId(), ESampleMessagePattern.SAMPLE_MESSAGE, event.getPayload());
-
+    const message = new SampleMessage(event.requestId, ESampleMessagePattern.SAMPLE_MESSAGE, event.payload);
     /**
      * 发送JSON字符串消息
      */
-    this.rmqClient.send(message.getPattern(), message.toJsonString()).subscribe();
+    this.rmqClient.send(message.pattern, message.toString()).subscribe();
 
     /**
      * 发送对象消息
      */
-    this.rmqClient.send(message.getPattern(), message).subscribe();
-    this.logger.info('[%s] 发送队列消息: message: %j', message.getRequestId(), message);
+    this.rmqClient.send(message.pattern, message).subscribe();
+    this.logger.info('[%s] 发送队列消息: message: %j', message.requestId, message);
   }
 }

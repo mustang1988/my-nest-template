@@ -46,9 +46,9 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
         redisSubscriber.subscribe(this.channelMap.get(name) as string, (message: string, channel: string) => {
           this.logger.debug('Redis事件订阅, 收到订阅消息: name = %s, channel = %s, message = %j', name, channel, message);
           try {
-            const event = BaseEvent.fromJsonString(message);
-            const emitRes = this.eventEmitter.emit(event.getEventName(), event);
-            this.logger.info('[%s] Redis事件订阅, 事件已处理: event = %j, emitRes = %s', event.getRequestId(), event, emitRes);
+            const event = BaseEvent.fromString(message);
+            const emitRes = this.eventEmitter.emit(event.eventName, event);
+            this.logger.info('[%s] Redis事件订阅, 事件已处理: event = %j, emitRes = %s', event.requestId, event, emitRes);
           } catch (error) {
             this.logger.error('Redis事件订阅, 事件消息格式无效: error = %o', error);
           }

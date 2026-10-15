@@ -97,7 +97,7 @@ export class HealthCheckController {
             const listBucketCommand = new ListBucketsCommand({});
             const res = await s3Client.send(listBucketCommand);
             result.s3[s3Name] = Array.isArray(res.Buckets) ? 'healthy' : 'unhealthy';
-          } catch (error) {
+          } catch {
             result.s3[s3Name] = 'unhealthy';
           }
         }

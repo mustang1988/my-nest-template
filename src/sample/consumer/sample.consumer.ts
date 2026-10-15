@@ -1,7 +1,8 @@
 import { Logger } from 'winston';
 import { Channel, Message } from 'amqplib';
 import { Controller, Inject } from '@nestjs/common';
-import { BaseMessage } from '../../rabbitmq/message/base.message';
+import { SampleMessage } from '../message/sample.message';
+import { SampleMessagePipe } from '../pipe/sample-message.pipe';
 import { ContextService } from '../../context/service/context.service';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
@@ -27,13 +28,12 @@ export class SampleConsumer {
    */
   @MessagePattern(ESampleMessagePattern.SAMPLE_MESSAGE)
   @InjectClsContext()
-  async consumeSampleMessage(@Payload() payload: unknown, @Ctx() rmqContext: RmqContext) {
-    this.logger.info('收到队列消息: payloadType = %s, payload = %j', typeof payload, payload);
+  async consumeSampleMessage(@Payload(new SampleMessagePipe()) payload: SampleMessage, @Ctx() rmqContext: RmqContext) {
+    this.logger.info('[%s] 示例消息消费: payload = %j', payload.requestId, payload);
     try {
-      const message = typeof payload === 'string' ? BaseMessage.fromJsonString(payload) : BaseMessage.fromObject(payload);
-      this.logger.info('[%s] 收到队列消息: message = %j', message.getRequestId(), message);
+      // Do something
     } catch (error) {
-      this.logger.error('[%s] 收到队列消息, 消费失败: error = %o, payload = %j', this.ctx.getRequestId(), error, payload);
+      this.logger.error('[%s] 示例消息消费, 消费失败: error = %o', payload.requestId, error);
     } finally {
       /**
        * 手动ack消息
@@ -46,6 +46,7 @@ export class SampleConsumer {
       const channel = rmqContext.getChannelRef() as Channel;
       const originalMsg = rmqContext.getMessage() as Message;
       channel.ack(originalMsg);
+      this.logger.debug('[%s] 示例消息消费, 消费结束, 队列消息已ACK', payload.requestId);
     }
   }
 }

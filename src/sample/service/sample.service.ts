@@ -4,6 +4,7 @@ import { I18nService } from 'nestjs-i18n';
 import { HttpService } from '@nestjs/axios';
 import { DataSource, Repository } from 'typeorm';
 import { SampleEvent } from '../event/sample.event';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ContextService } from '../../context/service/context.service';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
@@ -24,6 +25,7 @@ export class SampleService {
     @Inject() private readonly axios: HttpService,
     @Inject() private readonly ctx: ContextService,
     @InjectLogger() private readonly logger: Logger,
+    @Inject() private readonly eventEmitter: EventEmitter2,
     @Inject() private readonly redisEventEmitter: RedisEventEmitterService,
     @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
   ) {
@@ -46,6 +48,7 @@ export class SampleService {
     /**
      * 触发事件委托
      */
+    this.eventEmitter.emit(event.eventName, event);
     await this.redisEventEmitter.emit<ESampleEventPattern, SampleEntity>(event, { clientName: 'default' });
     return foundSample;
   }

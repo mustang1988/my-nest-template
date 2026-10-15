@@ -1,76 +1,51 @@
-import { get, isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { EventType } from '../type/event.type';
+import { plainToInstance } from 'class-transformer';
 import { EventDeserializationException } from '../exception/event-deserialization.exception';
 
 /**
  * 事件基类
  */
 export class BaseEvent<E extends EventType, T> {
-  /**
-   * 触发事件的请求ID
-   */
-  private readonly requestId: string;
+  constructor(
+    public readonly requestId: string,
+    public readonly eventName: E,
+    public readonly payload?: T,
+  ) {}
 
-  /**
-   * 事件名
-   */
-  private readonly eventName: E;
-
-  /**
-   * 事件负载
-   */
-  private readonly payload: T | undefined;
-
-  constructor(requestId: string, eventName: E, payload?: T) {
-    this.requestId = requestId;
-    this.eventName = eventName;
-    this.payload = payload;
-  }
-
-  public getRequestId(): string {
-    return this.requestId;
-  }
-
-  public getEventName(): E {
-    return this.eventName;
-  }
-
-  public getPayload(): T | undefined {
-    return this.payload;
-  }
-
-  public getPayloadWithRequestId(): { requestId: string } | (T & { requestId: string }) {
-    return {
-      ...this.payload,
-      requestId: this.requestId,
-    };
-  }
-
-  public toJsonString(): string {
+  public toString(): string {
     return JSON.stringify({ requestId: this.requestId, eventName: this.eventName, payload: this.payload });
   }
 
-  public static fromJsonString<E extends EventType, T>(jsonString: string): BaseEvent<E, T> {
+  public static fromString<E extends EventType, T>(jsonString: string): BaseEvent<E, T> {
     try {
       const jsonData = JSON.parse(jsonString);
-      const requestId: string = get(jsonData, 'requestId');
-      const eventName: E = get(jsonData, 'eventName');
-      const payload: T | undefined = get(jsonData, 'payload');
-      if (isNil(requestId) || isEmpty(requestId)) {
-        throw new EventDeserializationException(new Error('requestId缺失'));
-      }
-
-      if (isNil(eventName) || isEmpty(eventName)) {
-        throw new EventDeserializationException(new Error('eventName缺失'));
-      }
-
-      return new BaseEvent<E, T>(requestId, eventName, payload);
+      return BaseEvent.fromObject<E, T>(jsonData);
     } catch (error) {
       let errorMsg = '事件信息反序列化失败';
       if (error instanceof EventDeserializationException) {
         errorMsg += `: ${error.message}`;
       }
-      throw new Error(errorMsg);
+      throw new EventDeserializationException(new Error(errorMsg));
+    }
+  }
+
+  public static fromObject<E extends EventType, T>(obj: unknown): BaseEvent<E, T> {
+    try {
+      const event = plainToInstance<BaseEvent<E, T>, unknown>(BaseEvent, obj);
+      if (isNil(event.requestId) || isEmpty(event.requestId)) {
+        throw new EventDeserializationException(new Error('requestId缺失'));
+      }
+      if (isNil(event.eventName) || isEmpty(event.eventName)) {
+        throw new EventDeserializationException(new Error('eventName缺失'));
+      }
+      return event;
+    } catch (error) {
+      let errorMsg = '事件信息反序列化失败';
+      if (error instanceof EventDeserializationException) {
+        errorMsg += `: ${error.message}`;
+      }
+      throw new EventDeserializationException(new Error(errorMsg));
     }
   }
 }
