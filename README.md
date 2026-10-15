@@ -11,15 +11,15 @@
       - [模块内容](#模块内容-2)
     - [Event](#event)
       - [模块内容](#模块内容-3)
-    - [Logger](#logger)
-      - [模块内容](#模块内容-4)
-    - [MySQL](#mysql)
-      - [模块内容](#模块内容-5)
-    - [Redis](#redis)
-      - [模块内容](#模块内容-6)
     - [Internationalization](#internationalization)
-      - [模块内容](#模块内容-7)
+      - [模块内容](#模块内容-4)
+    - [Logger](#logger)
+      - [模块内容](#模块内容-5)
+    - [MySQL](#mysql)
+      - [模块内容](#模块内容-6)
     - [Rabbitmq](#rabbitmq)
+      - [模块内容](#模块内容-7)
+    - [Redis](#redis)
       - [模块内容](#模块内容-8)
     - [S3-Storage](#s3-storage)
       - [模块内容](#模块内容-9)
@@ -38,26 +38,26 @@
 模块目录结构
 
 ```bash
-📦common
- ┣ 📂controller
- ┃ ┗ 📜health-check.controller.ts
- ┣ 📂decorator
- ┃ ┣ 📜cookies.decorator.ts
- ┃ ┗ 📜json-response.decorator.ts
- ┣ 📂exception-filter
- ┃ ┗ 📜global.exception-filter.ts
- ┣ 📂interceptor
- ┃ ┣ 📜json-response.interceptor.ts
- ┃ ┣ 📜performance.interceptor.ts
- ┃ ┗ 📜request-logger.interceptor.ts
- ┣ 📂interface
- ┃ ┣ 📜common-module-options.interface.ts
- ┃ ┣ 📜data-masking-options.interface.ts
- ┃ ┣ 📜health-check-result.interface.ts
- ┃ ┗ 📜json-response.interface.ts
- ┣ 📂util
- ┃ ┗ 📜data-masking.util.ts
- ┗ 📜common.module.ts
+common
+ ┣ controller
+ ┃ ┗ health-check.controller.ts
+ ┣ decorator
+ ┃ ┣ cookies.decorator.ts
+ ┃ ┗ json-response.decorator.ts
+ ┣ exception-filter
+ ┃ ┗ global.exception-filter.ts
+ ┣ interceptor
+ ┃ ┣ json-response.interceptor.ts
+ ┃ ┣ performance.interceptor.ts
+ ┃ ┗ request-logger.interceptor.ts
+ ┣ interface
+ ┃ ┣ common-module-options.interface.ts
+ ┃ ┣ data-masking-options.interface.ts
+ ┃ ┣ health-check-result.interface.ts
+ ┃ ┗ json-response.interface.ts
+ ┣ util
+ ┃ ┗ data-masking.util.ts
+ ┗ common.module.ts
 ```
 
 #### 模块内容
@@ -84,20 +84,20 @@
 模块目录结构
 
 ```bash
-📦configuration
- ┣ 📂interface
- ┃ ┣ 📜app-configuration.interface.ts
- ┃ ┣ 📜configuration.interface.ts
- ┃ ┣ 📜i18n-configuration.interface.ts
- ┃ ┣ 📜logger-configuration.interface.ts
- ┃ ┣ 📜mysql-configuration.interface.ts
- ┃ ┣ 📜rabbitmq-configuration.interface.ts
- ┃ ┣ 📜redis-configuration.interface.ts
- ┃ ┗ 📜s3-storage.interface.ts
- ┣ 📂util
- ┃ ┗ 📜env-value-load.util.ts
- ┣ 📜configuration-loader.ts
- ┗ 📜configuration.module.ts
+configuration
+ ┣ interface
+ ┃ ┣ app-configuration.interface.ts
+ ┃ ┣ configuration.interface.ts
+ ┃ ┣ i18n-configuration.interface.ts
+ ┃ ┣ logger-configuration.interface.ts
+ ┃ ┣ mysql-configuration.interface.ts
+ ┃ ┣ rabbitmq-configuration.interface.ts
+ ┃ ┣ redis-configuration.interface.ts
+ ┃ ┗ s3-storage.interface.ts
+ ┣ util
+ ┃ ┗ env-value-load.util.ts
+ ┣ configuration-loader.ts
+ ┗ configuration.module.ts
 ```
 
 #### 模块内容
@@ -122,13 +122,13 @@
 模块目录结构
 
 ```bash
-📦context
- ┣ 📂decorator
- ┃ ┗ 📜inject-context.decorator.ts
- ┣ 📂service
- ┃ ┗ 📜context.service.ts
- ┣ 📜context.constant.ts
- ┗ 📜context.module.ts
+context
+ ┣ decorator
+ ┃ ┗ inject-context.decorator.ts
+ ┣ service
+ ┃ ┗ context.service.ts
+ ┣ context.constant.ts
+ ┗ context.module.ts
 ```
 
 #### 模块内容
@@ -147,14 +147,14 @@
 模块目录结构
 
 ```bash
-📦event
- ┣ 📂event
- ┃ ┗ 📜base.event.ts
- ┣ 📂exception
- ┃ ┗ 📜event-deserialization.exception.ts
- ┣ 📂type
- ┃ ┗ 📜event.type.ts
- ┗ 📜event.module.ts
+event
+ ┣ event
+ ┃ ┗ base.event.ts
+ ┣ exception
+ ┃ ┗ event-deserialization.exception.ts
+ ┣ type
+ ┃ ┗ event.type.ts
+ ┗ event.module.ts
 ```
 
 #### 模块内容
@@ -165,105 +165,6 @@
 |                                              [BaseEvent](./src/event/event/base.event.ts) | class | 事件基类             |
 | [EventDeserializationException](./src/event/exception/event-deserialization.exception.ts) | class | 事件信息反序列化异常 |
 
-### Logger
-
-全局日志模块
-
-模块目录结构
-
-```bash
-📦logger
- ┣ 📂decorator
- ┃ ┗ 📜inject-logger.decorator.ts
- ┗ 📜logger.module.ts
-```
-
-全局日志传输器初始化, 提供以下日志传输器
-
-- 按日切分主文件日志: 默认提供, 输出配置项`LOGGER_LEVEL`指定的级别及以上级别的日志
-- 按日切分异常文件日志: 默认提供, 仅输出`ERROR`及以上级别的日志, 用于异常问题排查
-- 按日切分JSON格式文件日志: 仅在配置项`LOGGER_JSON`设置为true时提供, 用于ELK等日志收集服务
-- 控制台日志: 仅在配置项`LOGGER_CONSOLE`设置为true时提供
-
-上述所有按日切分的文件日志的单日志文件大小阈值和日志滚动保留的文件数量均支持配置
-
-#### 模块内容
-
-|                                                                      | 类型      | 说明     |
-| -------------------------------------------------------------------: | :-------- | :------- |
-| [@InjectLogger()](./src/logger/decorator/inject-logger.decorator.ts) | decorator | 注入日志 |
-
-### MySQL
-
-基于TypeORM的MySQL数据库动态模块
-
-模块目录结构
-
-```bash
-📦mysql
- ┣ 📂decorator
- ┃ ┗ 📜inject-mysql-datasource.decorator.ts
- ┣ 📂interface
- ┃ ┣ 📜datetime-value-transformer-options.ts
- ┃ ┣ 📜mysq-module-options.interface.ts
- ┃ ┗ 📜mysql-datasource-options.interface.ts
- ┣ 📂value-transformer
- ┃ ┣ 📜datetime.value-transformer.ts
- ┃ ┗ 📜json-string.value-transformer.ts
- ┣ 📜mysql.constant.ts
- ┗ 📜mysql.module.ts
-```
-
-#### 模块内容
-
-|                                                                                                   | 类型      | 说明                                               |
-| ------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------- |
-|                                       [MYSQL_DATASOURCE_MAP_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL数据源Map IoC注入Token                        |
-|                                   [MYSQL_DATASOURCE_OPTIONS_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL模块配置选项IoC注入Token                      |
-|                             [getMySQLDataSourceToken(name:string)](./src/mysql/mysql.constant.ts) | function  | 获取指定名称MySQL的TypeORM数据源的IoC注入Token     |
-|                [IMySQLModuleAsyncOptions](./src/mysql/interface/mysq-module-options.interface.ts) | interface | MySQL 模块动态初始化选项                           |
-|            [IMySQLDataSourceOptions](./src/mysql/interface/mysql-datasource-options.interface.ts) | interface | MySQL TypeORM数据源配置选项                        |
-|           [DatetimeValueTransformer](./src/mysql/value-transformer/datetime.value-transformer.ts) | class     | datetime类型字段值转换器                           |
-|      [JsonStringValueTransformer](./src/mysql/value-transformer/json-string.value-transformer.ts) | class     | json字符串字段值转换器                             |
-|   [IDateTimeValueTransformerOptions](./src/mysql/interface/datetime-value-transformer-options.ts) | interface | datetime类型字段转换器转换选项                     |
-| [@InjectMySQLDataSource(name:string)](./src/mysql/decorator/inject-mysql-datasource.decorator.ts) | decorator | 用于从IoC容器中获取指定名称的MySQL数据源示例并注入 |
-
-### Redis
-
-Redis动态模块
-
-模块目录结构
-
-```bash
-📦redis
- ┣ 📂decorator
- ┃ ┗ 📜inject-redis-client.decorator.ts
- ┣ 📂interface
- ┃ ┣ 📜redis-client-options.interface.ts
- ┃ ┣ 📜redis-event-emit-options.interface.ts
- ┃ ┗ 📜redis-module-options.interface.ts
- ┣ 📂service
- ┃ ┣ 📜redis-event-emitter.service.ts
- ┃ ┗ 📜redis-event-listener.service.ts
- ┣ 📜redis.constant.ts
- ┗ 📜redis.module.ts
-```
-
-#### 模块内容
-
-|                                                                                           | 类型      | 说明                                    |
-| ----------------------------------------------------------------------------------------: | :-------- | :-------------------------------------- |
-|                                  [REDIS_CLIENTS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis连接客户端IoC注入Token             |
-|                               [REDIS_CLIENT_OPTIONS_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis模块异步初始化选项IoC注入Token     |
-|                              [REDIS_SUBSCRIBERS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis订阅端IoC注入Token                 |
-|                         [getRedisClientToken(name:string)](./src/redis/redis.constant.ts) | function  | 获取指定名称Redis连接客户端IoC注入Token |
-|            [IRedisClientOptions](./src/redis/interface/redis-client-options.interface.ts) | interface | Redis客户端/订阅端配置选项              |
-|            [RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts) | class     | 基于Redis发布订阅实现的事件发布服务     |
-|          [RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts) | class     | 基于Redis发布订阅实现的事件订阅监听服务 |
-|       [IRedisModuleAsyncOptions](./src/redis/interface/redis-module-options.interface.ts) | interface | Redis模块异步初始化选项                 |
-|     [IRedisEventEmitOptions](./src/redis/interface/redis-event-emit-options.interface.ts) | interface | Redis事件发布选项                       |
-| [@InjectRedisClient(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | decorator | 注入指定名称的Redis连接客户端           |
-
 ### Internationalization
 
 全局国际化模块
@@ -271,19 +172,19 @@ Redis动态模块
 模块目录结构
 
 ```bash
-📦internationalization
- ┣ 📂translations
- ┃ ┣ 📂en-US
- ┃ ┃ ┣ 📜entity.json
- ┃ ┃ ┣ 📜exception.json
- ┃ ┃ ┣ 📜property.json
- ┃ ┃ ┗ 📜validation.json
- ┃ ┗ 📂zh-CN
- ┃ ┃ ┣ 📜entity.json
- ┃ ┃ ┣ 📜exception.json
- ┃ ┃ ┣ 📜property.json
- ┃ ┃ ┗ 📜validation.json
- ┗ 📜internationalization.module.ts
+internationalization
+ ┣ translations
+ ┃ ┣ en-US
+ ┃ ┃ ┣ entity.json
+ ┃ ┃ ┣ exception.json
+ ┃ ┃ ┣ property.json
+ ┃ ┃ ┗ validation.json
+ ┃ ┗ zh-CN
+ ┃ ┃ ┣ entity.json
+ ┃ ┃ ┣ exception.json
+ ┃ ┃ ┣ property.json
+ ┃ ┃ ┗ validation.json
+ ┗ internationalization.module.ts
 ```
 
 #### 模块内容
@@ -317,6 +218,69 @@ Redis动态模块
 2. QueryResolver
 3. AcceptLanguageResolver
 
+### Logger
+
+全局日志模块
+
+模块目录结构
+
+```bash
+logger
+ ┣ decorator
+ ┃ ┗ inject-logger.decorator.ts
+ ┗ logger.module.ts
+```
+
+全局日志传输器初始化, 提供以下日志传输器
+
+- 按日切分主文件日志: 默认提供, 输出配置项`LOGGER_LEVEL`指定的级别及以上级别的日志
+- 按日切分异常文件日志: 默认提供, 仅输出`ERROR`及以上级别的日志, 用于异常问题排查
+- 按日切分JSON格式文件日志: 仅在配置项`LOGGER_JSON`设置为true时提供, 用于ELK等日志收集服务
+- 控制台日志: 仅在配置项`LOGGER_CONSOLE`设置为true时提供
+
+上述所有按日切分的文件日志的单日志文件大小阈值和日志滚动保留的文件数量均支持配置
+
+#### 模块内容
+
+|                                                                      | 类型      | 说明     |
+| -------------------------------------------------------------------: | :-------- | :------- |
+| [@InjectLogger()](./src/logger/decorator/inject-logger.decorator.ts) | decorator | 注入日志 |
+
+### MySQL
+
+基于TypeORM的MySQL数据库动态模块
+
+模块目录结构
+
+```bash
+mysql
+ ┣ decorator
+ ┃ ┗ inject-mysql-datasource.decorator.ts
+ ┣ interface
+ ┃ ┣ datetime-value-transformer-options.ts
+ ┃ ┣ mysq-module-options.interface.ts
+ ┃ ┗ mysql-datasource-options.interface.ts
+ ┣ value-transformer
+ ┃ ┣ datetime.value-transformer.ts
+ ┃ ┗ json-string.value-transformer.ts
+ ┣ mysql.constant.ts
+ ┗ mysql.module.ts
+```
+
+#### 模块内容
+
+|                                                                                                   | 类型      | 说明                                               |
+| ------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------- |
+|                                       [MYSQL_DATASOURCE_MAP_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL数据源Map IoC注入Token                        |
+|                                   [MYSQL_DATASOURCE_OPTIONS_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL模块配置选项IoC注入Token                      |
+|                             [getMySQLDataSourceToken(name:string)](./src/mysql/mysql.constant.ts) | function  | 获取指定名称MySQL的TypeORM数据源的IoC注入Token     |
+|                [IMySQLModuleAsyncOptions](./src/mysql/interface/mysq-module-options.interface.ts) | interface | MySQL 模块动态初始化选项                           |
+|            [IMySQLDataSourceOptions](./src/mysql/interface/mysql-datasource-options.interface.ts) | interface | MySQL TypeORM数据源配置选项                        |
+|           [DatetimeValueTransformer](./src/mysql/value-transformer/datetime.value-transformer.ts) | class     | datetime类型字段值转换器                           |
+|      [JsonStringValueTransformer](./src/mysql/value-transformer/json-string.value-transformer.ts) | class     | json字符串字段值转换器                             |
+|   [IDateTimeValueTransformerOptions](./src/mysql/interface/datetime-value-transformer-options.ts) | interface | datetime类型字段转换器转换选项                     |
+| [@InjectMySQLDataSource(name:string)](./src/mysql/decorator/inject-mysql-datasource.decorator.ts) | decorator | 用于从IoC容器中获取指定名称的MySQL数据源示例并注入 |
+
 ### Rabbitmq
 
 Rabbitmq动态模块
@@ -324,18 +288,18 @@ Rabbitmq动态模块
 模块目录结构
 
 ```bash
-📦rabbitmq
- ┣ 📂decorator
- ┃ ┗ 📜inject-rabbitmq-client.decorator.ts
- ┣ 📂exception
- ┃ ┗ 📜message-deserialization.exception.ts
- ┣ 📂interface
- ┃ ┣ 📜rabbitmq-client-options.interface.ts
- ┃ ┗ 📜rabbitmq-module-options.interface.ts
- ┣ 📂message
- ┃ ┗ 📜base.message.ts
- ┣ 📜rabbitmq.constant.ts
- ┗ 📜rabbitmq.module.ts
+rabbitmq
+ ┣ decorator
+ ┃ ┗ inject-rabbitmq-client.decorator.ts
+ ┣ exception
+ ┃ ┗ message-deserialization.exception.ts
+ ┣ interface
+ ┃ ┣ rabbitmq-client-options.interface.ts
+ ┃ ┗ rabbitmq-module-options.interface.ts
+ ┣ message
+ ┃ ┗ base.message.ts
+ ┣ rabbitmq.constant.ts
+ ┗ rabbitmq.module.ts
 ```
 
 #### 模块内容
@@ -351,6 +315,42 @@ Rabbitmq动态模块
 |   [MessageDeserializationException](./src/rabbitmq/exception/message-deserialization.exception.ts) | class     | 队列消息反序列化异常                               |
 | [@InjectRabbitmqClient(name:string)](./src/rabbitmq/decorator/inject-rabbitmq-client.decorator.ts) | decorator | 注入指定名称的Rabbitmq消息发送客户端               |
 
+### Redis
+
+Redis动态模块
+
+模块目录结构
+
+```bash
+redis
+ ┣ decorator
+ ┃ ┗ inject-redis-client.decorator.ts
+ ┣ interface
+ ┃ ┣ redis-client-options.interface.ts
+ ┃ ┣ redis-event-emit-options.interface.ts
+ ┃ ┗ redis-module-options.interface.ts
+ ┣ service
+ ┃ ┣ redis-event-emitter.service.ts
+ ┃ ┗ redis-event-listener.service.ts
+ ┣ redis.constant.ts
+ ┗ redis.module.ts
+```
+
+#### 模块内容
+
+|                                                                                           | 类型      | 说明                                    |
+| ----------------------------------------------------------------------------------------: | :-------- | :-------------------------------------- |
+|                                  [REDIS_CLIENTS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis连接客户端IoC注入Token             |
+|                               [REDIS_CLIENT_OPTIONS_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis模块异步初始化选项IoC注入Token     |
+|                              [REDIS_SUBSCRIBERS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis订阅端IoC注入Token                 |
+|                         [getRedisClientToken(name:string)](./src/redis/redis.constant.ts) | function  | 获取指定名称Redis连接客户端IoC注入Token |
+|            [IRedisClientOptions](./src/redis/interface/redis-client-options.interface.ts) | interface | Redis客户端/订阅端配置选项              |
+|            [RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts) | class     | 基于Redis发布订阅实现的事件发布服务     |
+|          [RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts) | class     | 基于Redis发布订阅实现的事件订阅监听服务 |
+|       [IRedisModuleAsyncOptions](./src/redis/interface/redis-module-options.interface.ts) | interface | Redis模块异步初始化选项                 |
+|     [IRedisEventEmitOptions](./src/redis/interface/redis-event-emit-options.interface.ts) | interface | Redis事件发布选项                       |
+| [@InjectRedisClient(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | decorator | 注入指定名称的Redis连接客户端           |
+
 ### S3-Storage
 
 S3对象存储模块
@@ -358,25 +358,20 @@ S3对象存储模块
 模块目录结构
 
 ```bash
-📦rabbitmq
- ┣ 📂decorator
- ┃ ┗ 📜inject-rabbitmq-client.decorator.ts
- ┣ 📂exception
- ┃ ┗ 📜message-deserialization.exception.ts
- ┣ 📂interface
- ┃ ┣ 📜rabbitmq-client-options.interface.ts
- ┃ ┗ 📜rabbitmq-module-options.interface.ts
- ┣ 📂message
- ┃ ┗ 📜base.message.ts
- ┣ 📜rabbitmq.constant.ts
- ┗ 📜rabbitmq.module.ts
+s3-storage
+ ┣ decorator
+ ┃ ┗ inject-s3-client.decorator.ts
+ ┣ interface
+ ┃ ┣ s3-client-options.interface.ts
+ ┃ ┗ s3-storage-module-options.interface.ts
+ ┣ s3-storage.constant.ts
+ ┗ s3-storage.module.ts
 ```
 
 #### 模块内容
 
 |                                                                                                   | 类型      | 说明                                   |
 | ------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------- |
-|                                             [BaseMessage](./src/rabbitmq/message/base.message.ts) | class     | 队列消息基类                           |
 |                                   [S3_CLIENTS_MAP_TOKEN](./src/s3-storage/s3-storage.constant.ts) | symbol    | S3客户端Map IoC注入Token               |
 |                                [S3_CLIENT_OPTIONS_TOKEN](./src/s3-storage/s3-storage.constant.ts) | symbol    | S3客户端配置IoC注入Token               |
 |                          [getS3ClientToken(name:string)](./src/s3-storage/s3-storage.constant.ts) | function  | 获取指定名称S3存储的客户端IoC注入Token |
@@ -386,36 +381,36 @@ S3对象存储模块
 
 ### Sample
 
-示例模块
+示例业务模块
 
-MySQL, Context, Internationalization, Rabbitmq, Redis模块实际使用示例
+上述模块实际使用示例
 
 模块目录结构
 
 ```bash
-📦sample
- ┣ 📂consumer
- ┃ ┗ 📜sample.consumer.ts
- ┣ 📂controller
- ┃ ┗ 📜sample.controller.ts
- ┣ 📂dto
- ┃ ┗ 📜sample.dto.ts
- ┣ 📂entity
- ┃ ┗ 📜sample.default.entity.ts
- ┣ 📂enum
- ┃ ┣ 📜sample-event-pattern.enum.ts
- ┃ ┗ 📜sample-message-pattern.enum.ts
- ┣ 📂event
- ┃ ┗ 📜sample.event.ts
- ┣ 📂event-handler
- ┃ ┗ 📜sample.event-handler.ts
- ┣ 📂message
- ┃ ┗ 📜sample.message.ts
- ┣ 📂pipe
- ┃ ┗ 📜sample-message.pipe.ts
- ┣ 📂scheduler
- ┃ ┗ 📜sample.scheduler.ts
- ┣ 📂service
- ┃ ┗ 📜sample.service.ts
- ┗ 📜sample.module.ts
+sample
+ ┣ consumer
+ ┃ ┗ sample.consumer.ts
+ ┣ controller
+ ┃ ┗ sample.controller.ts
+ ┣ dto
+ ┃ ┗ sample.dto.ts
+ ┣ entity
+ ┃ ┗ sample.default.entity.ts
+ ┣ enum
+ ┃ ┣ sample-event-pattern.enum.ts
+ ┃ ┗ sample-message-pattern.enum.ts
+ ┣ event
+ ┃ ┗ sample.event.ts
+ ┣ event-handler
+ ┃ ┗ sample.event-handler.ts
+ ┣ message
+ ┃ ┗ sample.message.ts
+ ┣ pipe
+ ┃ ┗ sample-message.pipe.ts
+ ┣ scheduler
+ ┃ ┗ sample.scheduler.ts
+ ┣ service
+ ┃ ┗ sample.service.ts
+ ┗ sample.module.ts
 ```
