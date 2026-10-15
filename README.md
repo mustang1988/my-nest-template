@@ -290,28 +290,34 @@ Redis动态模块
 
 #### 模块内容
 
-1. 国际化语言包
-
-- zh-CN目录: 简体中文语言包
-- en-US目录: 美式英语语言包
+- 国际化语言包
+  - zh-CN目录: 简体中文语言包
+  - en-US目录: 美式英语语言包
 
 语言包分类
 
-- entity.json: 实体名称语言包; 定义项目实体名称翻译
-- exception.json: 异常信息语言包; 定义异常错误信息翻译
-- property.json: 参数名称语言包; 定义class-validator参数校验失败时返回错误信息中字的字段名称翻译
-- validation.json: 参数校验规则语言包; 定义class-validator参数校验失败时返回的错误信息翻译
+|          文件名 | 文件说明                                                                        |
+| --------------: | :------------------------------------------------------------------------------ |
+|     entity.json | 实体名称语言包; 定义项目实体名称翻译                                            |
+|  exception.json | 异常信息语言包; 定义异常错误信息翻译                                            |
+|   property.json | 参数名称语言包; 定义class-validator参数校验失败时返回错误信息中字的字段名称翻译 |
+| validation.json | 参数校验规则语言包; 定义class-validator参数校验失败时返回的错误信息翻译         |
 
-2. 国际化语言处理器
+- 国际化语言处理器
 
 已配置以下语言处理器
 
-- CookieResolver: 根据请求Cookie中的`language`或`lang`字段确定客户端语言
-- QueryResolver: 根据请求Query参数中的`language`或`lang`字段确定客户端语言
-- AcceptLanguageResolver: 根据请求头中accept-language字段确定客户端语言
+|                   类名 | 说明                                                      |
+| ---------------------: | :-------------------------------------------------------- |
+|         CookieResolver | 根据请求Cookie中的`language`或`lang`字段确定客户端语言    |
+|          QueryResolver | 根据请求Query参数中的`language`或`lang`字段确定客户端语言 |
+| AcceptLanguageResolver | 根据请求头中accept-language字段确定客户端语言             |
 
 语言处理器优先级
-CookieResolver > QueryResolver > AcceptLanguageResolver
+
+1. CookieResolver
+2. QueryResolver
+3. AcceptLanguageResolver
 
 ### Rabbitmq
 
