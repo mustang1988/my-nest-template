@@ -1,37 +1,39 @@
 import { Logger } from 'winston';
 import { Channel, Message } from 'amqplib';
 import { Controller, Inject } from '@nestjs/common';
-import { SampleEntity } from '../entity/sample.default.entity';
+import { BaseMessage } from '../../rabbitmq/message/base.message';
+import { ContextService } from '../../context/service/context.service';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
+import { InjectClsContext } from '../../context/decorator/inject-cls-context.decorator';
 
 /**
  * 示例队列消费
  */
 @Controller()
 export class SampleConsumer {
-  constructor(@InjectLogger() private readonly logger: Logger) {
+  constructor(
+    @Inject() private readonly ctx: ContextService,
+    @InjectLogger() private readonly logger: Logger,
+  ) {
     this.logger = this.logger.child({ context: this.constructor.name });
   }
 
   /**
    * 示例队列消息消费
-   * @param payload 队列消息负载
+   * @param message 队列消息负载
    * @param rmqContext 队列上下文
    */
   @MessagePattern(ESampleMessagePattern.SAMPLE_MESSAGE)
-  async consumeSampleMessage(@Payload() payload: SampleEntity & { requestId: string }, @Ctx() rmqContext: RmqContext) {
+  @InjectClsContext()
+  async consumeSampleMessage(@Payload() payload: unknown, @Ctx() rmqContext: RmqContext) {
     try {
-      this.logger.info('[%s] 收到RMQ消息: pattern = %s, payload: %j', payload.requestId, ESampleMessagePattern.SAMPLE_MESSAGE, payload);
+      const message = BaseMessage.fromJsonObject(payload);
+      this.logger.info('[%s] 收到队列消息: message = %j', message.getRequestId(), message);
+      // console.log(this.ctx.getRequestId(), message.getRequestId());
     } catch (error) {
-      this.logger.error(
-        '[%s] RMQ消息消费异常: pattern = %s, payload: %j, error: %o',
-        payload.requestId,
-        ESampleMessagePattern.SAMPLE_MESSAGE,
-        payload.requestId,
-        error,
-      );
+      this.logger.error('[%s] 收到队列消息, 消费失败: error = %o, payload = %j', this.ctx.getRequestId(), error, payload);
     } finally {
       /**
        * 手动ack消息

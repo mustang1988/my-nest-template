@@ -4,11 +4,11 @@ import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RedisModule } from './redis/redis.module';
 import { MySQLModule } from './mysql/mysql.module';
+import { EventModule } from './event/event.module';
 import { LoggerModule } from './logger/logger.module';
 import { CommonModule } from './common/common.module';
 import { SampleModule } from './sample/sample.module';
 import { ContextModule } from './context/context.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { S3StorageModule } from './s3-storage/s3-storage.module';
@@ -28,14 +28,10 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     ScheduleModule.forRoot({ cronJobs: true, intervals: true, timeouts: true }),
 
     /**
-     * NestJS 事件驱动模块
-     */
-    EventEmitterModule.forRoot({ global: true }),
-
-    /**
      * NestJS HTTP客户端模块
      */
     HttpModule.register({ global: true, timeout: ms('5min') }),
+    EventModule,
     CommonModule,
     LoggerModule,
     ContextModule,

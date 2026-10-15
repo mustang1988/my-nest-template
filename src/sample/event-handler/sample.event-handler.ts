@@ -1,8 +1,10 @@
 import { Logger } from 'winston';
-import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
-import { SampleEntity } from '../entity/sample.default.entity';
+import { SampleEvent } from '../event/sample.event';
+import { Inject, Injectable } from '@nestjs/common';
+import { SampleMessage } from '../message/sample.message';
+import { ContextService } from '../../context/service/context.service';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
@@ -15,6 +17,7 @@ import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-c
 @Injectable()
 export class SampleEventHandler {
   constructor(
+    @Inject() private readonly ctx: ContextService,
     @InjectLogger() private readonly logger: Logger,
     @InjectRabbitmqClient('default') private readonly rmqClient: ClientProxy,
   ) {
@@ -30,11 +33,14 @@ export class SampleEventHandler {
    */
   @OnEvent(ESampleEventPattern.SAMPLE_EVENT)
   @InjectClsContext()
-  onSampleEvent(eventPayload: SampleEntity, { requestId }: { requestId: string }): void {
-    this.logger.info('[%s] 收到事件委托: event: %s, payload = %j', requestId, ESampleEventPattern.SAMPLE_EVENT, eventPayload);
+  onSampleEvent(event: SampleEvent): void {
+    this.logger.info('[%s] 收到事件委托: event: %j', event.getRequestId(), event);
+    // console.log(this.ctx.getRequestId(), event.getRequestId());
     /**
      * 发送RMQ队列消息
      */
-    this.rmqClient.send(ESampleMessagePattern.SAMPLE_MESSAGE, { ...eventPayload, requestId }).subscribe();
+    const message = new SampleMessage(event.getRequestId(), ESampleMessagePattern.SAMPLE_MESSAGE, event.getPayload());
+    this.rmqClient.send(message.getPattern(), message).subscribe();
+    this.logger.info('[%s] 发送队列消息: message: %j', message.getRequestId(), message);
   }
 }

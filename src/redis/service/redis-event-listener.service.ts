@@ -2,10 +2,10 @@ import { Logger } from 'winston';
 import { ConfigService } from '@nestjs/config';
 import type { RedisClientType } from '@redis/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { BaseEvent } from '../../event/event/base.event';
 import { REDIS_SUBSCRIBERS_MAP_TOKEN } from '../redis.constant';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { EventType, IRedisEventMessage } from '../interface/redis-event-message.interface';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
 
 /**
@@ -46,20 +46,9 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
         redisSubscriber.subscribe(this.channelMap.get(name) as string, (message: string, channel: string) => {
           this.logger.debug('Redis事件订阅, 收到订阅消息: name = %s, channel = %s, message = %j', name, channel, message);
           try {
-            const jsonMessage = JSON.parse(message) as Required<IRedisEventMessage<EventType, unknown>>;
-            const { event, payload, targetInstance, requestId } = jsonMessage;
-            /**
-             * 如果事件发送方制定了事件处理的实例ID, 则检查被指定实例是否为当前实例, 如果不是, 则不做处理
-             */
-            if (targetInstance !== undefined) {
-              const currentInstanceId = Number(process.env.INSTANCE_ID ?? 0);
-              if (currentInstanceId !== targetInstance) {
-                this.logger.info('Redis事件订阅, 目标实例非当前实例: expect = %s, currentInstanceId = %s', targetInstance, currentInstanceId);
-                return;
-              }
-            }
-            const emitRes = this.eventEmitter.emit(event, payload, { requestId });
-            this.logger.info('[%s] Redis事件订阅, 事件已处理: event = %s, payload = %j, emitRes = %s', requestId, event, payload, emitRes);
+            const event = BaseEvent.fromJsonString(message);
+            const emitRes = this.eventEmitter.emit(event.getEventName(), event);
+            this.logger.info('[%s] Redis事件订阅, 事件已处理: event = %j, emitRes = %s', event.getRequestId(), event, emitRes);
           } catch (error) {
             this.logger.error('Redis事件订阅, 事件消息格式无效: error = %o', error);
           }

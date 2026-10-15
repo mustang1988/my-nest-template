@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { get, isObject } from 'lodash';
+import { first, get, isObject } from 'lodash';
 import { ClsService, UseCls } from 'nestjs-cls';
 import { applyDecorators } from '@nestjs/common';
 import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../../common/common.constant';
@@ -13,12 +13,17 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../../common/common.constant';
  */
 export const InjectClsContext = () => {
   return applyDecorators(
-    UseCls<unknown[]>({
-      setup: (cls: ClsService, ...args: unknown[] /* 被装饰函数的入参列表 */) => {
-        const requestIdInArg: Array<{ requestId: string }> = args.filter((arg) => isObject(arg) && get(arg, 'requestId')) as Array<{
-          requestId: string;
-        }>;
-        cls.setIfUndefined(CLS_REQUEST_ID, requestIdInArg[0]?.requestId ?? randomUUID());
+    UseCls<any[]>({
+      setup: (cls: ClsService, ...args: any[] /* 被装饰函数的入参列表 */) => {
+        /**
+         * 提取被装饰函数入参中可能存在的requestId
+         */
+        const requestIdInArgs: string | undefined = first(
+          args.filter((arg) => isObject(arg) && get(arg, 'requestId')) as Array<{
+            requestId: string;
+          }>,
+        )?.requestId;
+        cls.setIfUndefined(CLS_REQUEST_ID, requestIdInArgs ?? randomUUID());
         cls.setIfUndefined(CLS_INSTANCE_ID, Number(process.env.INSTANCE_ID ?? 0));
       },
     }) as MethodDecorator,

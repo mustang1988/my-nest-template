@@ -3,6 +3,7 @@ import { lastValueFrom } from 'rxjs';
 import { I18nService } from 'nestjs-i18n';
 import { HttpService } from '@nestjs/axios';
 import { DataSource, Repository } from 'typeorm';
+import { SampleEvent } from '../event/sample.event';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ContextService } from '../../context/service/context.service';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
@@ -41,10 +42,11 @@ export class SampleService {
     const response = await lastValueFrom(this.axios.get<unknown>('http://localhost:3000/api/healthcheck'));
     this.logger.debug('[%s] 示例数据详情查询, 外部API响应: response = %j', requestId, response.data);
 
+    const event = new SampleEvent(this.ctx.getRequestId(), ESampleEventPattern.SAMPLE_EVENT, foundSample);
     /**
      * 触发事件委托
      */
-    await this.redisEventEmitter.emit<ESampleEventPattern, SampleEntity>(ESampleEventPattern.SAMPLE_EVENT, foundSample, { clientName: 'default' });
+    await this.redisEventEmitter.emit<ESampleEventPattern, SampleEntity>(event, { clientName: 'default' });
     return foundSample;
   }
 }
