@@ -1,9 +1,10 @@
 import { SampleQueryDto } from '../dto/sample.dto';
+import { SampleGuard } from '../guard/sample.guard';
 import { SampleService } from '../service/sample.service';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { PerformanceInterseptor } from '../../common/interceptor/performance.interceptor';
 import { FileInterceptor, type StorageFile, UploadedFile } from '@blazity/nest-file-fastify';
-import { Controller, Get, Inject, Param, ParseIntPipe, Post, Query, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, HttpCode, Inject, Param, ParseIntPipe, Post, Query, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
 
 @Controller('/api/sample')
 export class SampleController {
@@ -25,6 +26,8 @@ export class SampleController {
 
   // #region 单文件上传API示例
   @Post('/upload')
+  @UseGuards(SampleGuard)
+  @HttpCode(200)
   @UseInterceptors(PerformanceInterseptor, FileInterceptor('file'))
   async actionUploadFile(@UploadedFile() file: StorageFile) {
     return {
