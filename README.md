@@ -57,7 +57,6 @@
  ┃ ┗ 📜json-response.interface.ts
  ┣ 📂util
  ┃ ┗ 📜data-masking.util.ts
- ┣ 📜common.constant.ts
  ┗ 📜common.module.ts
 ```
 
@@ -65,8 +64,6 @@
 
 |                                                                                        | 类型      | 说明                                                                       |
 | -------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------------------------------- |
-|                                      [CLS_REQUEST_ID](./src/common/common.constant.ts) | symbol    | 请求唯一ID写入请求上下文的Key                                              |
-|                                     [CLS_INSTANCE_ID](./src/common/common.constant.ts) | symbol    | 当前请求处理进程实例ID写入请求上下文的Key                                  |
 |                             [DataMaskingUtil](./src//common/util/data-masking.util.ts) | class     | 数据脱敏工具类; 可用于对字符串类型敏感数据(例如密码)进行数据脱敏           |
 |                     [IJsonResponse](./src/common/interface/json-response.interface.ts) | interface | 统一JSON响应格式                                                           |
 |                  [@Cookies(name?:string)](./src/common/decorator/cookies.decorator.ts) | decorator | 控制器接口函数装饰器, 用于获取请求的Cookie参数                             |
@@ -127,18 +124,21 @@
 ```bash
 📦context
  ┣ 📂decorator
- ┃ ┗ 📜inject-cls-context.decorator.ts
+ ┃ ┗ 📜inject-context.decorator.ts
  ┣ 📂service
  ┃ ┗ 📜context.service.ts
+ ┣ 📜context.constant.ts
  ┗ 📜context.module.ts
 ```
 
 #### 模块内容
 
-|                                                                             | 类型      | 说明                                                                                 |
-| --------------------------------------------------------------------------: | :-------- | :----------------------------------------------------------------------------------- |
-|                  [ContextService](./src/context/service/context.service.ts) | class     | 请求上下文服务; 提供获取当前请求唯一ID(requestId)和当前实例ID(instanceId)的实现      |
-| [@InjectContext()](./src/context/decorator/inject-cls-context.decorator.ts) | decorator | 注入CLS上下文; 用于非HTTP请求处理的流程入口; 诸如: 定时/计划任务, 事件委托, 队列消费 |
+|                                                                         | 类型      | 说明                                                                                 |
+| ----------------------------------------------------------------------: | :-------- | :----------------------------------------------------------------------------------- |
+|                     [CLS_REQUEST_ID](./src/context/context.constant.ts) | symbol    | 请求唯一ID写入请求上下文的Key                                                        |
+|                    [CLS_INSTANCE_ID](./src/context/context.constant.ts) | symbol    | 当前请求处理进程实例ID写入请求上下文的Key                                            |
+|              [ContextService](./src/context/service/context.service.ts) | class     | 请求上下文服务; 提供获取当前请求唯一ID(requestId)和当前实例ID(instanceId)的实现      |
+| [@InjectContext()](./src/context/decorator/inject-context.decorator.ts) | decorator | 注入CLS上下文; 用于非HTTP请求处理的流程入口; 诸如: 定时/计划任务, 事件委托, 队列消费 |
 
 ### Event
 
@@ -251,20 +251,18 @@ Redis动态模块
 
 #### 模块内容
 
-|                                                                                               | 类型      | 说明                                    |
-| --------------------------------------------------------------------------------------------: | :-------- | :-------------------------------------- |
-|                                      [REDIS_CLIENTS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis连接客户端IoC注入Token             |
-|                                   [REDIS_CLIENT_OPTIONS_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis模块异步初始化选项IoC注入Token     |
-|                                  [REDIS_SUBSCRIBERS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis订阅端IoC注入Token                 |
-|                             [getRedisClientToken(name:string)](./src/redis/redis.constant.ts) | function  | 获取指定名称Redis连接客户端IoC注入Token |
-|                         [getRedisSubscriberToken(name:string)](./src/redis/redis.constant.ts) | function  | 获取指定名称Redis订阅客户端IoC注入Token |
-|                [IRedisClientOptions](./src/redis/interface/redis-client-options.interface.ts) | interface | Redis客户端/订阅端配置选项              |
-|                [RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts) | class     | 基于Redis发布订阅实现的事件发布服务     |
-|              [RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts) | class     | 基于Redis发布订阅实现的事件订阅监听服务 |
-|           [IRedisModuleAsyncOptions](./src/redis/interface/redis-module-options.interface.ts) | interface | Redis模块异步初始化选项                 |
-|         [IRedisEventEmitOptions](./src/redis/interface/redis-event-emit-options.interface.ts) | interface | Redis事件发布选项                       |
-|     [@InjectRedisClient(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | decorator | 注入指定名称的Redis连接客户端           |
-| [@InjectRedisSubscriber(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | decorator | 注入指定名称的Redis订阅客户端           |
+|                                                                                           | 类型      | 说明                                    |
+| ----------------------------------------------------------------------------------------: | :-------- | :-------------------------------------- |
+|                                  [REDIS_CLIENTS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis连接客户端IoC注入Token             |
+|                               [REDIS_CLIENT_OPTIONS_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis模块异步初始化选项IoC注入Token     |
+|                              [REDIS_SUBSCRIBERS_MAP_TOKEN](./src/redis/redis.constant.ts) | symbol    | Redis订阅端IoC注入Token                 |
+|                         [getRedisClientToken(name:string)](./src/redis/redis.constant.ts) | function  | 获取指定名称Redis连接客户端IoC注入Token |
+|            [IRedisClientOptions](./src/redis/interface/redis-client-options.interface.ts) | interface | Redis客户端/订阅端配置选项              |
+|            [RedisEventEmitterService](./src/redis/service/redis-event-emitter.service.ts) | class     | 基于Redis发布订阅实现的事件发布服务     |
+|          [RedisEventListenerService](./src/redis/service/redis-event-listener.service.ts) | class     | 基于Redis发布订阅实现的事件订阅监听服务 |
+|       [IRedisModuleAsyncOptions](./src/redis/interface/redis-module-options.interface.ts) | interface | Redis模块异步初始化选项                 |
+|     [IRedisEventEmitOptions](./src/redis/interface/redis-event-emit-options.interface.ts) | interface | Redis事件发布选项                       |
+| [@InjectRedisClient(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | decorator | 注入指定名称的Redis连接客户端           |
 
 ### Internationalization
 
@@ -384,7 +382,6 @@ S3对象存储模块
 |                          [getS3ClientToken(name:string)](./src/s3-storage/s3-storage.constant.ts) | function  | 获取指定名称S3存储的客户端IoC注入Token |
 |                     [IS3ClientOptions](./src/s3-storage/interface/s3-client-options.interface.ts) | interface | S3客户端选项                           |
 |          [@InjectS3Client(name:string)](./src/s3-storage/decorator/inject-s3-client.decorator.ts) | decorator | 注入指定名称的S3客户端                 |
-|  [MessageDeserializationException](./src/rabbitmq/exception/message-deserialization.exception.ts) | class     | 队列消息反序列化异常                   |
 | [IS3StorageModuleAsyncOptions](./src/s3-storage/interface/s3-storage-module-options.interface.ts) | interface | S3存储模块异步初始化选项               |
 
 ### Sample

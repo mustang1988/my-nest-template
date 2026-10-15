@@ -1,5 +1,4 @@
 import { Logger } from 'winston';
-import { ClsService } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
 import type { RedisClientType } from '@redis/client';
 import { EventType } from '../../event/type/event.type';
@@ -23,7 +22,6 @@ export class RedisEventEmitterService {
   private readonly channelMap: Map<string, string>;
 
   constructor(
-    @Inject() private readonly cls: ClsService,
     @InjectLogger() private readonly logger: Logger,
     @Inject() private readonly configService: ConfigService,
     @Inject(REDIS_CLIENTS_MAP_TOKEN) private readonly redisClientsMap: Map<string, RedisClientType>,

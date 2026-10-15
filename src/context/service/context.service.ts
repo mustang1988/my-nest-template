@@ -1,13 +1,13 @@
-import { ClsService } from 'nestjs-cls';
-import { Inject, Injectable } from '@nestjs/common';
-import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../../common/common.constant';
+import { Injectable } from '@nestjs/common';
+import { ClsService, InjectCls } from 'nestjs-cls';
+import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
 
 /**
  * 上下文服务
  */
 @Injectable()
 export class ContextService {
-  constructor(@Inject() private readonly cls: ClsService) {}
+  constructor(@InjectCls() private readonly cls: ClsService) {}
 
   /**
    * 从上下文中获取本次请求的唯一ID

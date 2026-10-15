@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ContextService } from '../../context/service/context.service';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { InjectContext } from '../../context/decorator/inject-cls-context.decorator';
+import { InjectContext } from '../../context/decorator/inject-context.decorator';
 
 /**
  * 示例定时/计划任务执行器

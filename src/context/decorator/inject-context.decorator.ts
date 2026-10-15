@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { first, get, isObject } from 'lodash';
 import { ClsService, UseCls } from 'nestjs-cls';
 import { applyDecorators } from '@nestjs/common';
-import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../../common/common.constant';
+import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
 
 /**
  * 注入CLS上下文

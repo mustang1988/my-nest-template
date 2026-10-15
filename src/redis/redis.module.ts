@@ -1,10 +1,3 @@
-import {
-  getRedisClientToken,
-  REDIS_CLIENTS_MAP_TOKEN,
-  getRedisSubscriberToken,
-  REDIS_CLIENT_OPTIONS_TOKEN,
-  REDIS_SUBSCRIBERS_MAP_TOKEN,
-} from './redis.constant';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -16,6 +9,7 @@ import { RedisEventEmitterService } from './service/redis-event-emitter.service'
 import { IRedisClientOptions } from './interface/redis-client-options.interface';
 import { RedisEventListenerService } from './service/redis-event-listener.service';
 import { IRedisModuleAsyncOptions } from './interface/redis-module-options.interface';
+import { getRedisClientToken, REDIS_CLIENTS_MAP_TOKEN, REDIS_CLIENT_OPTIONS_TOKEN, REDIS_SUBSCRIBERS_MAP_TOKEN } from './redis.constant';
 
 /**
  * Redis模块
@@ -117,22 +111,6 @@ export class RedisModule {
       };
     });
 
-    const redisSubscribers: Array<Provider<RedisClientType>> = names.map((name) => {
-      return {
-        provide: getRedisSubscriberToken(name),
-        inject: [REDIS_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
-        useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
-          logger = logger.child({ context: this.name });
-          const redisSubscriber = redisClientsMap.get(name);
-          if (!redisSubscriber) {
-            logger.error('未找到指定名称的Redis订阅端对象: name = %s', name);
-            throw new Error(`未找到指定名称的Redis订阅端对象: ${name}`);
-          }
-          return redisSubscriber;
-        },
-      };
-    });
-
     return {
       global: isGlobal,
       imports: [...imports],
@@ -144,9 +122,8 @@ export class RedisModule {
         redisClientsMapProvider,
         redisSubscribersMapProvider,
         ...redisClients,
-        ...redisSubscribers,
       ],
-      exports: [RedisEventEmitterService, ...redisClients, ...redisSubscribers],
+      exports: [RedisEventEmitterService, ...redisClients],
     };
   }
 }

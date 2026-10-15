@@ -25,10 +25,3 @@ export const REDIS_SUBSCRIBERS_MAP_TOKEN: symbol = Symbol('token:redis-subscribe
  * @return Redis连接客户端IoC注入Token
  */
 export const getRedisClientToken = (name: string): string => `token:redis-client:${name}`;
-
-/**
- * 获取指定名称Redis订阅客户端IoC注入Token
- * @param name Redis连接名称
- * @return Redis订阅客户端IoC注入Token
- */
-export const getRedisSubscriberToken = (name: string): string => `token:redis-subscruber:${name}`;

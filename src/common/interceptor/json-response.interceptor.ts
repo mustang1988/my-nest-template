@@ -1,10 +1,9 @@
-import { map, Observable } from 'rxjs';
 import { FastifyReply } from 'fastify';
-import { ClsService } from 'nestjs-cls';
+import { map, Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { CLS_REQUEST_ID } from '../common.constant';
 import { JsonResp } from '../decorator/json-response.decorator';
 import { IJsonResponse } from '../interface/json-response.interface';
+import { ContextService } from '../../context/service/context.service';
 import { Inject, Injectable, CallHandler, NestInterceptor, ExecutionContext } from '@nestjs/common';
 
 /**
@@ -17,12 +16,12 @@ import { Inject, Injectable, CallHandler, NestInterceptor, ExecutionContext } fr
 @Injectable()
 export class JsonResponseInterceptor implements NestInterceptor {
   constructor(
-    @Inject() private readonly cls: ClsService,
+    @Inject() private readonly ctx: ContextService,
     @Inject() private readonly reflector: Reflector,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-    const requestId = this.cls.get<string>(CLS_REQUEST_ID);
+    const requestId = this.ctx.getRequestId();
     const response = context.switchToHttp().getResponse<FastifyReply>();
     const isJsonResponse = this.reflector.get(JsonResp, context.getHandler()) ?? true;
     return next.handle().pipe(

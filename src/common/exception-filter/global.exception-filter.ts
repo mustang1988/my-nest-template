@@ -1,10 +1,9 @@
 import { get } from 'lodash';
 import { Logger } from 'winston';
-import { ClsService } from 'nestjs-cls';
-import { CLS_REQUEST_ID } from '../common.constant';
 import { I18nValidationException } from 'nestjs-i18n';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { IJsonResponse } from '../interface/json-response.interface';
+import { ContextService } from '../../context/service/context.service';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Injectable } from '@nestjs/common';
 
@@ -19,7 +18,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Injectabl
 @Catch(HttpException, Error)
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(
-    @Inject() private readonly cls: ClsService,
+    @Inject() private readonly ctx: ContextService,
     @InjectLogger() private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
@@ -28,7 +27,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException | Error, host: ArgumentsHost) {
     const request = host.switchToHttp().getRequest<FastifyRequest>();
     const response = host.switchToHttp().getResponse<FastifyReply>();
-    const requestId = this.cls.get(CLS_REQUEST_ID);
+    const requestId = this.ctx.getRequestId();
+    const instanceId = this.ctx.getInstanceId();
     const errorMessage =
       exception instanceof I18nValidationException
         ? /**
@@ -55,6 +55,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       data: undefined,
       error: errorMessage,
       request: { method, url, query, params, body, headers },
+      instanceId,
     };
     response.code(statusCode).send(formatedResp);
   }

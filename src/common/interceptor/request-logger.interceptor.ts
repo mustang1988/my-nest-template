@@ -2,9 +2,8 @@ import { Logger } from 'winston';
 import { Observable, tap } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { FastifyRequest } from 'fastify';
-import { ClsService, InjectCls } from 'nestjs-cls';
-import { CLS_REQUEST_ID } from '../common.constant';
 import { JsonResp } from '../decorator/json-response.decorator';
+import { ContextService } from '../../context/service/context.service';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from '@nestjs/common';
 
@@ -18,7 +17,7 @@ import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } fr
 @Injectable()
 export class RequestLoggerInterceptor implements NestInterceptor {
   constructor(
-    @InjectCls() private readonly cls: ClsService,
+    @Inject() private readonly ctx: ContextService,
     @Inject() private readonly reflector: Reflector,
     @InjectLogger() private readonly logger: Logger,
   ) {
@@ -27,7 +26,7 @@ export class RequestLoggerInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest<FastifyRequest>();
-    const requestId = this.cls.get(CLS_REQUEST_ID);
+    const requestId = this.ctx.getRequestId();
     const controller = context.getClass().name;
     const action = context.getHandler().name;
     const isJsonResp = this.reflector.get(JsonResp, context.getHandler()) ?? true;

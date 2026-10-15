@@ -43,4 +43,9 @@ export interface IJsonResponse<T> {
    * 仅在异常响应中返回, 用于复现异常请求
    */
   request?: unknown;
+
+  /**
+   * 处理请求的实例ID
+   */
+  instanceId?: number;
 }

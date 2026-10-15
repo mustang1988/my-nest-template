@@ -3,7 +3,7 @@ import { IncomingMessage } from 'node:http';
 import { Global, Module } from '@nestjs/common';
 import { ClsModule, type ClsService } from 'nestjs-cls';
 import { ContextService } from './service/context.service';
-import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../common/common.constant';
+import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from './context.constant';
 
 /**
  * 上下文模块

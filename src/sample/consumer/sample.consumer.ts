@@ -6,8 +6,8 @@ import { SampleMessagePipe } from '../pipe/sample-message.pipe';
 import { ContextService } from '../../context/service/context.service';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { InjectContext } from '../../context/decorator/inject-context.decorator';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
-import { InjectContext } from '../../context/decorator/inject-cls-context.decorator';
 
 /**
  * 示例队列消费
