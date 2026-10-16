@@ -1,5 +1,6 @@
 import { basename } from 'node:path';
 import { Test } from '@nestjs/testing';
+import { faker } from '@faker-js/faker';
 import { RedisModule } from './redis.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -7,19 +8,62 @@ import configurationLoader from 'src/configuration/configuration-loader';
 import { IRedisConfiguration } from 'src/configuration/interface/redis-configuration.interface';
 
 describe(basename(__filename), () => {
-  it('forRootAsync()', async () => {
-    const redisModule = await Test.createTestingModule({
-      imports: [
-        LoggerModule,
-        RedisModule.forRootAsync({
-          useFactory: (configService: ConfigService) => {
-            const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
-            return Object.keys(redisConfig).map((name) => ({ name, ...redisConfig[name] }));
-          },
-        }),
-        ConfigModule.forRoot({ isGlobal: true, load: [configurationLoader], ignoreEnvFile: true }),
-      ],
-    }).compile();
-    expect(redisModule);
+  describe('forRootAsync()', () => {
+    it('全默认', async () => {
+      const redisModule = await Test.createTestingModule({
+        imports: [
+          LoggerModule,
+          RedisModule.forRootAsync({
+            useFactory: (configService: ConfigService) => {
+              const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
+              return Object.keys(redisConfig).map((name) => ({ name, ...redisConfig[name] }));
+            },
+          }),
+          ConfigModule.forRoot({ isGlobal: true, load: [configurationLoader], ignoreEnvFile: true }),
+        ],
+      }).compile();
+      expect(redisModule);
+    });
+
+    it('指定名称配置不初始化', async () => {
+      const redisModule = await Test.createTestingModule({
+        imports: [
+          LoggerModule,
+          RedisModule.forRootAsync({
+            useFactory: (configService: ConfigService) => {
+              const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
+              const options = Object.keys(redisConfig).map((name) => ({ name, ...redisConfig[name] }));
+              options.push({
+                name: faker.lorem.word(), // 不存在
+                host: faker.internet.ipv4(),
+              });
+              return options;
+            },
+          }),
+          ConfigModule.forRoot({ isGlobal: true, load: [configurationLoader], ignoreEnvFile: true }),
+        ],
+      }).compile();
+      expect(redisModule);
+    });
+
+    it('指定名称不存在', async () => {
+      try {
+        await Test.createTestingModule({
+          imports: [
+            LoggerModule,
+            RedisModule.forRootAsync({
+              names: [faker.lorem.word()], // 随机名称
+              useFactory: (configService: ConfigService) => {
+                const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
+                return Object.keys(redisConfig).map((name) => ({ name, ...redisConfig[name] }));
+              },
+            }),
+            ConfigModule.forRoot({ isGlobal: true, load: [configurationLoader], ignoreEnvFile: true }),
+          ],
+        }).compile();
+      } catch (error) {
+        expect(error);
+      }
+    });
   });
 });
