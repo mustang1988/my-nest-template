@@ -5,7 +5,7 @@ import {
   InvalidBooleanEnvException,
   InvalidIntegerEnvException,
 } from '../exception/invalid-env.exception';
-import { isEmpty, isInteger, isNil, isNumber } from 'lodash';
+import { isBoolean, isEmpty, isInteger, isNil, isNumber } from 'lodash';
 import { MissingRequiredEnvException } from '../exception/missing-required-env.exception';
 
 /**
@@ -80,6 +80,9 @@ export class EnvValueLoadUtil {
    */
   static loadOptionalBoolean(name: string, defaultValue?: boolean): boolean {
     const envValue = process.env[name]?.trim() ?? defaultValue;
+    if (isBoolean(envValue)) {
+      return envValue;
+    }
     if (envValue === 'true' || envValue === 'false') {
       return envValue === 'true';
     }
