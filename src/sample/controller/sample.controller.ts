@@ -2,6 +2,7 @@ import { SampleQueryDto } from '../dto/sample.dto';
 import { SampleGuard } from '../guard/sample.guard';
 import { SampleService } from '../service/sample.service';
 import { SampleEntity } from '../entity/sample.default.entity';
+import { Cookies } from 'src/common/decorator/cookies.decorator';
 import { PerformanceInterseptor } from '../../common/interceptor/performance.interceptor';
 import { FileInterceptor, type StorageFile, UploadedFile } from '@blazity/nest-file-fastify';
 import { Controller, Get, HttpCode, Inject, Param, ParseIntPipe, Post, Query, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
@@ -12,8 +13,8 @@ export class SampleController {
 
   // #region 参数校验示例
   @Get()
-  actionQueryValidation(@Query(new ValidationPipe()) query: SampleQueryDto): string {
-    return JSON.stringify(query);
+  actionQueryValidation(@Query(new ValidationPipe()) query: SampleQueryDto, @Cookies() cookie: Record<string, string | undefined>): string {
+    return JSON.stringify({ query, cookie });
   }
   // #endregion
 
