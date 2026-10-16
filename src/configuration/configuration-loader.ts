@@ -1,11 +1,15 @@
 import { EnvValueLoadUtil } from './util/env-value-load.util';
 import { IConfiguration } from './interface/configuration.interface';
 
+/**
+ * 配置加载
+ */
 export default (): IConfiguration => ({
   app: {
     title: EnvValueLoadUtil.loadOptionalString('APP_TITLE', ''),
     port: EnvValueLoadUtil.loadRequiredInteger('APP_PORT'),
   },
+
   logger: {
     level: EnvValueLoadUtil.loadOptionalString('LOGGER_LEVEL', 'debug'),
     maxFile: EnvValueLoadUtil.loadOptionalInteger('LOGGER_MAX_FILE', 30),
@@ -15,6 +19,7 @@ export default (): IConfiguration => ({
     jsonLogger: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_JSON', false),
     zippedArchive: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_ZIP', true),
   },
+
   redis: {
     default: {
       host: EnvValueLoadUtil.loadRequiredString('DEFAULT_REDIS_HOST'),
@@ -25,6 +30,7 @@ export default (): IConfiguration => ({
       eventChannel: EnvValueLoadUtil.loadOptionalString('DEFAULT_REDIS_EVENT_CHANNEL', 'channel:default'),
     },
   },
+
   mysql: {
     default: {
       host: EnvValueLoadUtil.loadRequiredString('DEFAULT_MYSQL_HOST'),
@@ -38,6 +44,7 @@ export default (): IConfiguration => ({
       enableSynchronize: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_SYNC', false),
     },
   },
+
   rabbitmq: {
     default: {
       host: EnvValueLoadUtil.loadRequiredString('DEFAULT_RABBITMQ_HOST'),
@@ -51,9 +58,11 @@ export default (): IConfiguration => ({
       noAck: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_RABBITMQ_AUTO_ACK', true),
     },
   },
+
   i18n: {
     fallbackLanguage: EnvValueLoadUtil.loadOptionalString('I18N_FALLBACK_LANGUAGE', 'en-US'),
   },
+
   s3Storage: {
     default: {
       endpoint: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_ENDPOINT'),
@@ -62,6 +71,7 @@ export default (): IConfiguration => ({
       secretAccessKey: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_SECRET_KEY'),
     },
   },
+
   constants: {
     performance: {
       /**

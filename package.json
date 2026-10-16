@@ -58,9 +58,10 @@
   },
   "devDependencies": {
     "@compodoc/compodoc": "^2.0.0",
-    "@nestjs/cli": "^12.0.0",
+    "@faker-js/faker": "^10.6.0",
+    "@nestjs/cli": "^11.0.0",
     "@nestjs/mau": "^0.2.6",
-    "@nestjs/schematics": "^12.0.0",
+    "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/amqplib": "^0.10.8",
     "@types/axios": "^0.9.36",
@@ -85,6 +86,31 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^6.0.2"
+    "typescript": "^5.7.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "rootDir": ".",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/src/$1"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "testRegex": ".*\\.test\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.(t)s",
+      "!src/main.ts"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!@faker-js/faker)"
+    ]
   }
 }

@@ -5,12 +5,14 @@ import { applyDecorators } from '@nestjs/common';
 import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
 
 /**
- * 注入CLS上下文
+ * @InjectContext(name?:string) 函数装饰器
  *
- * 用于非HTTP请求的场景中需要使用CLS上下文的情形, 诸如
- * - 定时/计划任务
- * - 事件委托
- * - 队列消费
+ * 在函数中注入CLS上下文
+ *
+ * 适用于非HTTP请求的场景中需要使用CLS上下文的情形, 诸如
+ * - 定时/计划任务执行函数
+ * - 事件委托处理函数
+ * - 队列消费函数
  *
  * 注入到上下文中的请求ID会优先读取被装饰函数入参列表中可能存在的requestId; 若入参中没有, 则以随机UUID注入
  */

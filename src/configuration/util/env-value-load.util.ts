@@ -1,4 +1,6 @@
 import { isEmpty, isInteger, isNil, isNumber } from 'lodash';
+import { MissingRequiredEnvException } from '../exception/missing-required-env.exception';
+import { InvalidBooleanEnvException, InvalidIntegerEnvException, InvalidNumberEnvException } from '../exception/invalid-env.exception';
 
 /**
  * 环境变量值加载工具类
@@ -11,7 +13,7 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadOptionalString(name: string, defaultValue?: string): string | undefined {
-    return process.env[name] ?? defaultValue;
+    return process.env[name]?.trim() ?? defaultValue;
   }
 
   /**
@@ -20,9 +22,9 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadRequiredString(name: string): string {
-    const value = process.env[name];
+    const value = process.env[name]?.trim();
     if (isNil(value) || isEmpty(value)) {
-      throw new Error(`缺少必须环境变量: ${name}`);
+      throw new MissingRequiredEnvException(name);
     }
     return value;
   }
@@ -34,11 +36,12 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadOptionalInteger(name: string, defaultValue?: number): number {
-    const envValue = process.env[name] ?? defaultValue;
-    if (isInteger(Number(envValue))) {
-      return Number(envValue);
+    const envValue = process.env[name]?.trim() ?? defaultValue;
+    const numberEnvValue = Number(envValue);
+    if (!isNaN(numberEnvValue) && isInteger(numberEnvValue)) {
+      return numberEnvValue;
     }
-    throw new Error(`环境变量配置错误, 应配置为整数: ${name}`);
+    throw new InvalidIntegerEnvException(name);
   }
 
   /**
@@ -47,14 +50,15 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadRequiredInteger(name: string): number {
-    const envValue = process.env[name];
+    const envValue = process.env[name]?.trim();
     if (envValue) {
-      if (isInteger(Number(envValue))) {
-        return Number(envValue);
+      const numberEnvValue = Number(envValue);
+      if (!isNaN(numberEnvValue) && isInteger(numberEnvValue)) {
+        return numberEnvValue;
       }
-      throw new Error(`环境变量配置错误, 应配置为整数: ${name}`);
+      throw new InvalidIntegerEnvException(name);
     }
-    throw new Error(`缺少必须环境变量: ${name}`);
+    throw new MissingRequiredEnvException(name);
   }
 
   /**
@@ -64,11 +68,11 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadOptionalBoolean(name: string, defaultValue?: boolean): boolean {
-    const envValue = process.env[name] ?? defaultValue;
+    const envValue = process.env[name]?.trim() ?? defaultValue;
     if (envValue === 'true' || envValue === 'false') {
       return envValue === 'true';
     }
-    throw new Error(`环境变量配置错误, 应配置为布尔值: ${name}`);
+    throw new InvalidBooleanEnvException(name);
   }
 
   /**
@@ -77,14 +81,14 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadRequiredBoolean(name: string): boolean {
-    const envValue = process.env[name];
+    const envValue = process.env[name]?.trim();
     if (envValue) {
       if (envValue === 'true' || envValue === 'false') {
         return envValue === 'true';
       }
-      throw new Error(`环境变量配置错误, 应配置为布尔值: ${name}`);
+      throw new InvalidBooleanEnvException(name);
     }
-    throw new Error(`缺少必须环境变量: ${name}`);
+    throw new MissingRequiredEnvException(name);
   }
 
   /**
@@ -94,11 +98,12 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadOptionalNumber(name: string, defaultValue?: number): number {
-    const envValue = process.env[name] ?? defaultValue;
-    if (isNumber(Number(envValue))) {
-      return Number(envValue);
+    const envValue = process.env[name]?.trim() ?? defaultValue;
+    const numberEnvValue = Number(envValue);
+    if (!isNaN(numberEnvValue) && isNumber(numberEnvValue)) {
+      return numberEnvValue;
     }
-    throw new Error(`环境变量配置错误, 应配置为数值: ${name}`);
+    throw new InvalidNumberEnvException(name);
   }
 
   /**
@@ -107,13 +112,14 @@ export class EnvValueLoadUtil {
    * @returns 环境变量值
    */
   static loadRequiredNumber(name: string): number {
-    const envValue = process.env[name];
+    const envValue = process.env[name]?.trim();
     if (envValue) {
-      if (isNumber(Number(envValue))) {
-        return Number(envValue);
+      const numberEnvValue = Number(envValue);
+      if (!isNaN(numberEnvValue) && isNumber(numberEnvValue)) {
+        return numberEnvValue;
       }
-      throw new Error(`环境变量配置错误, 应配置为数值: ${name}`);
+      throw new InvalidNumberEnvException(name);
     }
-    throw new Error(`缺少必须环境变量: ${name}`);
+    throw new MissingRequiredEnvException(name);
   }
 }
