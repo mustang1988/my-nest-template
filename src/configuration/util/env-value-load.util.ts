@@ -1,6 +1,13 @@
 import { isEmpty, isInteger, isNil, isNumber } from 'lodash';
 import { MissingRequiredEnvException } from '../exception/missing-required-env.exception';
-import { InvalidBooleanEnvException, InvalidIntegerEnvException, InvalidNumberEnvException } from '../exception/invalid-env.exception';
+import {
+  InvalidBooleanEnvException,
+  InvalidIntegerEnvException,
+  InvalidNumberEnvException,
+  InvalidUrlEnvException,
+} from '../exception/invalid-env.exception';
+import { env } from 'process';
+import { isURL } from 'class-validator';
 
 /**
  * 环境变量值加载工具类
@@ -20,6 +27,7 @@ export class EnvValueLoadUtil {
    * 加载必填字符串类型环境变量
    * @param name 环境变量名称
    * @returns 环境变量值
+   * @throws {MissingRequiredEnvException}
    */
   static loadRequiredString(name: string): string {
     const value = process.env[name]?.trim();
@@ -34,6 +42,7 @@ export class EnvValueLoadUtil {
    * @param name 环境变量名称
    * @param defaultValue 默认值
    * @returns 环境变量值
+   * @throws {InvalidIntegerEnvException}
    */
   static loadOptionalInteger(name: string, defaultValue?: number): number {
     const envValue = process.env[name]?.trim() ?? defaultValue;
@@ -48,6 +57,8 @@ export class EnvValueLoadUtil {
    * 加载必填整数类型环境变量
    * @param name 环境变量名称
    * @returns 环境变量值
+   * @throws {InvalidIntegerEnvException}
+   * @throws {MissingRequiredEnvException}
    */
   static loadRequiredInteger(name: string): number {
     const envValue = process.env[name]?.trim();
@@ -66,6 +77,7 @@ export class EnvValueLoadUtil {
    * @param name 环境变量名称
    * @param defaultValue 默认值
    * @returns 环境变量值
+   * @throws {InvalidBooleanEnvException}
    */
   static loadOptionalBoolean(name: string, defaultValue?: boolean): boolean {
     const envValue = process.env[name]?.trim() ?? defaultValue;
@@ -79,6 +91,8 @@ export class EnvValueLoadUtil {
    * 加载必填布尔类型环境变量
    * @param name 环境变量名称
    * @returns 环境变量值
+   * @throws {InvalidBooleanEnvException}
+   * @throws {MissingRequiredEnvException}
    */
   static loadRequiredBoolean(name: string): boolean {
     const envValue = process.env[name]?.trim();
@@ -96,6 +110,7 @@ export class EnvValueLoadUtil {
    * @param name 环境变量名称
    * @param defaultValue 默认值
    * @returns 环境变量值
+   * @throws {InvalidNumberEnvException}
    */
   static loadOptionalNumber(name: string, defaultValue?: number): number {
     const envValue = process.env[name]?.trim() ?? defaultValue;
@@ -110,6 +125,8 @@ export class EnvValueLoadUtil {
    * 加载必填数值类型环境变量
    * @param name 环境变量名称
    * @returns 环境变量值
+   * @throws {InvalidNumberEnvException}
+   * @throws {MissingRequiredEnvException}
    */
   static loadRequiredNumber(name: string): number {
     const envValue = process.env[name]?.trim();
@@ -119,6 +136,39 @@ export class EnvValueLoadUtil {
         return numberEnvValue;
       }
       throw new InvalidNumberEnvException(name);
+    }
+    throw new MissingRequiredEnvException(name);
+  }
+
+  /**
+   * 加载可选URL环境变量
+   * @param name 环境变量名称
+   * @param defaultValue 默认值
+   * @returns 环境变量值
+   * @throws {InvalidUrlEnvException}
+   */
+  static loadOptionalUrl(name: string, defaultValue?: string): string | undefined {
+    const envValue = process.env[name]?.trim() ?? defaultValue;
+    if (isURL(envValue as string, { require_protocol: true })) {
+      return envValue;
+    }
+    throw new InvalidUrlEnvException(name);
+  }
+
+  /**
+   * 加载必填URL环境变量
+   * @param name 环境变量名称
+   * @returns 环境变量值
+   * @throws {InvalidUrlEnvException}
+   * @throws {MissingRequiredEnvException}
+   */
+  static loadRequiredUrl(name: string): string {
+    const envValue = process.env[name]?.trim();
+    if (envValue) {
+      if (!isURL(envValue, { require_protocol: true })) {
+        throw new InvalidUrlEnvException(name);
+      }
+      return envValue;
     }
     throw new MissingRequiredEnvException(name);
   }

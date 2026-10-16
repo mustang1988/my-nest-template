@@ -4,6 +4,7 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": [{ "include": "internationalization/translations/**/*", "watchAssets": true }]
+    "assets": ["**/*.proto", "i18n/**/*", "**/*.pug", { "include": "internationalization/translations/**/*", "watchAssets": true }],
+    "watchAssets": true
   }
 }

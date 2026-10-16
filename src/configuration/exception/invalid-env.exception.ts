@@ -24,3 +24,9 @@ export class InvalidBooleanEnvException extends InvalidEnvExeception {
     super(`环境变量配置错误: ${envName}, 应配置为有效的布尔值`, options);
   }
 }
+
+export class InvalidUrlEnvException extends InvalidEnvExeception {
+  constructor(envName: string, options?: ErrorOptions) {
+    super(`环境变量配置错误: ${envName}, 应配置为有效的URL`, options);
+  }
+}

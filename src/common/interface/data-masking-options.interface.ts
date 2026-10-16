@@ -7,6 +7,7 @@ export interface IDataMaskingOptions {
    *
    * - 整数
    * - 取值范围: [0, 100]
+   *   - 若输入值大于100时会自动缩限到100
    * - 单位: %
    * - 默认值: 50
    */

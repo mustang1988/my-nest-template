@@ -65,7 +65,7 @@ export default (): IConfiguration => ({
 
   s3Storage: {
     default: {
-      endpoint: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_ENDPOINT'),
+      endpoint: EnvValueLoadUtil.loadRequiredUrl('DEFAULT_S3_ENDPOINT'),
       region: EnvValueLoadUtil.loadOptionalString('DEFAULT_S3_REGION', 'default'),
       accessKeyId: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_ACCESS_KEY'),
       secretAccessKey: EnvValueLoadUtil.loadRequiredString('DEFAULT_S3_SECRET_KEY'),
