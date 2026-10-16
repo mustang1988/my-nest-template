@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { ValueTransformer } from 'typeorm';
-import { IDateTimeValueTransformerOptions } from '../interface/datetime-value-transformer-options';
+import { IDateTimeValueTransformerOptions } from '../interface/datetime-value-transformer-options.interface';
 
 /**
  * datetime类型字段值转换器
@@ -36,6 +36,6 @@ export class DatetimeValueTransformer implements ValueTransformer {
    * @return 转换后的查询返回值
    */
   from(value: Date | null): string | null {
-    return value instanceof Date ? DateTime.fromJSDate(value, { zone: this.zone }).toFormat(this.format) : value;
+    return value instanceof Date ? DateTime.fromJSDate(value).setZone(this.zone).toFormat(this.format) : value;
   }
 }

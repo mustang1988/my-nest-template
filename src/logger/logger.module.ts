@@ -21,8 +21,11 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
         const appConfig = configService.getOrThrow<Required<IAppConfiguration>>('app');
         const loggerConfig = configService.getOrThrow<Required<ILoggerConfiguration>>('logger');
 
+        const loggerTransports: winston.transport[] = [];
+
+        // #region 文件日志
         /**
-         * 文件日志格式
+         * 文件日志输出格式
          */
         const fileLoggerFormat = winston.format.combine(
           winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS Z' }),
@@ -35,55 +38,56 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
           }),
         );
 
-        const loggerTransports: winston.transport[] = [
-          /**
-           * 每日切分`主`文件日志
-           *
-           * 记录配置的level值及以上级别的日志
-           */
-          new DailyRotateFile({
-            level: loggerConfig.level,
-            dirname: loggerConfig.dirname,
-            maxSize: loggerConfig.maxSize,
-            maxFiles: loggerConfig.maxFile,
-            format: fileLoggerFormat,
-            filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log`,
-            zippedArchive: loggerConfig.zippedArchive,
-          }),
-
-          /**
-           * 每日切分`异常`文件日志
-           *
-           * 仅记录error及以上级别的日志
-           */
-          new DailyRotateFile({
-            level: 'error',
-            dirname: loggerConfig.dirname,
-            maxSize: loggerConfig.maxSize,
-            maxFiles: loggerConfig.maxFile,
-            format: fileLoggerFormat,
-            filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-error.log`,
-            zippedArchive: loggerConfig.zippedArchive,
-          }),
-        ];
+        /**
+         * 每日切分`主`文件日志
+         *
+         * 记录配置的level值及以上级别的日志
+         */
+        const mainDailyLoggerTransport = new DailyRotateFile({
+          level: loggerConfig.level,
+          dirname: loggerConfig.dirname,
+          maxSize: loggerConfig.maxSize,
+          maxFiles: loggerConfig.maxFile,
+          format: fileLoggerFormat,
+          filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log`,
+          zippedArchive: loggerConfig.zippedArchive,
+        });
+        loggerTransports.push(mainDailyLoggerTransport);
 
         /**
-         * JSON日志
+         * 每日切分`异常`文件日志
+         *
+         * 仅记录error及以上级别的日志
+         */
+        const errorDailyLoggerTransport = new DailyRotateFile({
+          level: 'error',
+          dirname: loggerConfig.dirname,
+          maxSize: loggerConfig.maxSize,
+          maxFiles: loggerConfig.maxFile,
+          format: fileLoggerFormat,
+          filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-error.log`,
+          zippedArchive: loggerConfig.zippedArchive,
+        });
+        loggerTransports.push(errorDailyLoggerTransport);
+
+        /**
+         * 每日切分JSON格式`主`文件日志
          */
         if (loggerConfig.jsonLogger) {
-          loggerTransports.push(
-            new DailyRotateFile({
-              level: loggerConfig.level,
-              dirname: loggerConfig.dirname,
-              maxFiles: loggerConfig.maxFile,
-              maxSize: loggerConfig.maxSize,
-              format: winston.format.combine(winston.format.splat(), winston.format.json()),
-              filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log.json`,
-              zippedArchive: loggerConfig.zippedArchive,
-            }),
-          );
+          const jsonDailyLoggerTransport = new DailyRotateFile({
+            level: loggerConfig.level,
+            dirname: loggerConfig.dirname,
+            maxFiles: loggerConfig.maxFile,
+            maxSize: loggerConfig.maxSize,
+            format: winston.format.combine(winston.format.splat(), winston.format.json()),
+            filename: `${appConfig.title.toLocaleLowerCase()}-%DATE%-main.log.json`,
+            zippedArchive: loggerConfig.zippedArchive,
+          });
+          loggerTransports.push(jsonDailyLoggerTransport);
         }
+        // #endregion
 
+        // #region 控制台日志
         /**
          * 控制台日志
          */
@@ -106,6 +110,7 @@ import { ILoggerConfiguration } from '../configuration/interface/logger-configur
             }),
           );
         }
+        // #endregion
 
         return {
           level: loggerConfig.level,

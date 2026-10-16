@@ -15,6 +15,9 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from './context.constant';
   imports: [
     ClsModule.forRoot({
       global: true,
+      /**
+       * 在所有路由上全局挂载中间件
+       */
       middleware: {
         mount: true,
         debug: false,

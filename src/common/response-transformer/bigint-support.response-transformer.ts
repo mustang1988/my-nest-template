@@ -18,7 +18,7 @@ export const BigintSupportResponseTransformer: AxiosResponseTransformer = functi
   this: InternalAxiosRequestConfig,
   data: any,
   headers: AxiosResponseHeaders,
-  status?: number,
+  // status?: number,
 ) {
   if (headers['Content-Type'] === 'application/json' && typeof data === 'string') {
     try {

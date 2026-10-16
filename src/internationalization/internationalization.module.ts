@@ -20,7 +20,7 @@ import { AcceptLanguageResolver, CookieResolver, I18nJsonLoader, I18nModule, Que
           fallbackLanguage: i18nConfig.fallbackLanguage,
           loader: I18nJsonLoader,
           loaderOptions: {
-            path: join(__dirname, 'translations'),
+            path: join(__dirname, 'translations'), // 从当前文件所在目录同层的translations目录下加载语言包
             watch: true,
           },
         };
