@@ -8,6 +8,7 @@ import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { IRedisEventEmitOptions } from '../interface/redis-event-emit-options.interface';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
+import { RedisClientNotFoundException } from '../exception/redis-client-not-found.exception';
 
 /**
  * Redis事件发布服务
@@ -39,14 +40,10 @@ export class RedisEventEmitterService {
       const redisClient = await this.redisClientsMap.get(options?.clientName);
       if (!redisClient) {
         this.logger.warn('[%s] 发布Redis事件, 指定的发布端名称无效: clientName = %s', event.requestId, options?.clientName);
-        throw new InternalServerErrorException('Redis client not found');
+        throw new RedisClientNotFoundException(options.clientName);
       }
       const channelToPublish = this.channelMap.get(options?.clientName);
-      if (!channelToPublish) {
-        this.logger.warn('[%s] 发布Redis事件, 指定的发布通道无效: clientName = %s', event.requestId, options?.clientName);
-        throw new InternalServerErrorException('Redis channel not found');
-      }
-      publishResult = await redisClient.publish(channelToPublish, event.toString());
+      publishResult = await redisClient.publish(channelToPublish as string, event.toString());
     }
     /**
      * 未指定Redis客户端
