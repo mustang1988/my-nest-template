@@ -6,6 +6,7 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
 
 /**
  * @InjectContext(name?:string) 函数装饰器
+ * @param name 需要从入参列表中获取的作为唯一标识的字段名称
  *
  * 在函数中注入CLS上下文
  *
@@ -15,6 +16,7 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
  * - 队列消费函数
  *
  * 注入到上下文中的请求ID会优先读取被装饰函数入参列表中可能存在的requestId; 若入参中没有, 则以随机UUID注入
+ *
  */
 export const InjectContext = (name?: string) => {
   name = name ?? 'requestId';
@@ -24,12 +26,8 @@ export const InjectContext = (name?: string) => {
         /**
          * 提取被装饰函数入参中可能存在的requestId
          */
-        const requestIdInArgs: string | undefined = first(
-          args.filter((arg) => isObject(arg) && get(arg, name)) as Array<{
-            requestId: string;
-          }>,
-        )?.requestId;
-        cls.setIfUndefined(CLS_REQUEST_ID, requestIdInArgs ?? randomUUID());
+        const requestIdInArgs: string | undefined = first(args.filter((arg) => isObject(arg) && get(arg, name)));
+        cls.setIfUndefined(CLS_REQUEST_ID, get(requestIdInArgs, name, undefined) ?? randomUUID());
         cls.setIfUndefined(CLS_INSTANCE_ID, Number(process.env.INSTANCE_ID ?? 0));
       },
       initializePlugins: false, // 此处必须设置为false

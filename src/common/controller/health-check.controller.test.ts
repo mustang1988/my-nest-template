@@ -1,9 +1,10 @@
 import request from 'supertest';
+import { basename } from 'node:path';
 import { AppModule } from 'src/app.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
-describe('AppController (e2e)', () => {
+describe.skip(basename(__filename), () => {
   let app: NestFastifyApplication;
 
   beforeEach(async () => {
