@@ -4,6 +4,8 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
 
 /**
  * 上下文服务
+ *
+ * CLS的封装, 项目中不建议通过@InjectCls()来注入CLS提供的上下文服务而是注入本类的实例
  */
 @Injectable()
 export class ContextService {
