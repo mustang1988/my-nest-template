@@ -49,7 +49,6 @@
     "nest-winston": "^2.0.0",
     "nestjs-cls": "^7.0.1",
     "nestjs-i18n": "^10.8.5",
-    "npm": "^12.2.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^1.1.1",

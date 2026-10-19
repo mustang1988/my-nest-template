@@ -83,5 +83,18 @@ export default (): IConfiguration => ({
        */
       threshold: EnvValueLoadUtil.loadOptionalInteger('PERFORMANCE_THRESHOLD', 100),
     },
+
+    security: {
+      encrypt: {
+        /**
+         * AES加密密钥
+         */
+        aesKey: Buffer.from(EnvValueLoadUtil.loadRequiredHexString('AES_KEY'), 'hex'),
+        /**
+         * AES加密IV
+         */
+        aesIv: Buffer.from(EnvValueLoadUtil.loadRequiredHexString('AES_IV'), 'hex'),
+      },
+    },
   },
 });

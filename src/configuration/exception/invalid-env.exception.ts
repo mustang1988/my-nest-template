@@ -30,3 +30,9 @@ export class InvalidUrlEnvException extends InvalidEnvExeception {
     super(`环境变量配置错误: ${envName}, 应配置为有效的URL`, options);
   }
 }
+
+export class InvalidHexEnvException extends InvalidEnvExeception {
+  constructor(envName: string, options?: ErrorOptions) {
+    super(`环境变量配置错误: ${envName}, 应配置为有效的16进制字符串`, options);
+  }
+}

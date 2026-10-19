@@ -1,14 +1,14 @@
 import { Logger } from 'winston';
 import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
 import type { RedisClientType } from '@redis/client';
 import { EventType } from '../../event/type/event.type';
 import { BaseEvent } from '../../event/event/base.event';
 import { REDIS_CLIENTS_MAP_TOKEN } from '../redis.constant';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { IRedisEventEmitOptions } from '../interface/redis-event-emit-options.interface';
-import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
 import { RedisClientNotFoundException } from '../exception/redis-client-not-found.exception';
+import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
 
 /**
  * Redis事件发布服务

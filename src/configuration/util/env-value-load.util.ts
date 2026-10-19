@@ -1,5 +1,6 @@
 import { isURL } from 'class-validator';
 import {
+  InvalidHexEnvException,
   InvalidUrlEnvException,
   InvalidNumberEnvException,
   InvalidBooleanEnvException,
@@ -32,6 +33,39 @@ export class EnvValueLoadUtil {
     const value = process.env[name]?.trim();
     if (isNil(value) || isEmpty(value)) {
       throw new MissingRequiredEnvException(name);
+    }
+    return value;
+  }
+
+  /**
+   * 加载可选16进制字符串类型环境变量
+   * @param name 环境变量名称
+   * @param defaultValue 默认值
+   * @returns 环境变量值
+   */
+  static loadOptionalHexString(name: string, defaultValue?: string): string | undefined {
+    const str = EnvValueLoadUtil.loadOptionalString(name, defaultValue);
+    const hexRegex = /^[0-9,A-F,a-f]+$/;
+    if (str && !hexRegex.test(str)) {
+      throw new InvalidHexEnvException(name);
+    }
+    return str;
+  }
+
+  /**
+   * 加载必填16进制字符串类型环境变量
+   * @param name 环境变量名称
+   * @returns 环境变量值
+   * @throws {MissingRequiredEnvException}
+   */
+  static loadRequiredHexString(name: string): string {
+    const value = process.env[name]?.trim();
+    if (isNil(value) || isEmpty(value)) {
+      throw new MissingRequiredEnvException(name);
+    }
+    const hexRegex = /^[0-9,A-F,a-f]+$/;
+    if (!hexRegex.test(value)) {
+      throw new InvalidHexEnvException(name);
     }
     return value;
   }

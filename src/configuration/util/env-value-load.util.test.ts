@@ -1,7 +1,9 @@
 import { basename } from 'node:path';
 import { faker } from '@faker-js/faker';
+import { randomBytes } from 'node:crypto';
 import {
   InvalidUrlEnvException,
+  InvalidHexEnvException,
   InvalidNumberEnvException,
   InvalidBooleanEnvException,
   InvalidIntegerEnvException,
@@ -36,6 +38,68 @@ describe(basename(__filename), () => {
     it('正常', () => {
       const result = EnvValueLoadUtil.loadRequiredString('PATH');
       expect(result).toStrictEqual(process.env.PATH);
+    });
+  });
+
+  describe('loadOptionalHexString()', () => {
+    it('正常', () => {
+      const result = EnvValueLoadUtil.loadOptionalHexString('UNIT_TEST_HEX');
+      expect(result);
+    });
+
+    it('找到指定环境变量, 值非16进制', () => {
+      try {
+        EnvValueLoadUtil.loadOptionalHexString('UNIT_TEST_BOOLEAN');
+      } catch (error) {
+        expect(error);
+        expect(error instanceof InvalidHexEnvException);
+      }
+    });
+
+    it('未找到指定环境变量, 返回undefined', () => {
+      const result = EnvValueLoadUtil.loadOptionalHexString(faker.lorem.word());
+      expect(result).toStrictEqual(undefined);
+    });
+
+    it('未找到指定环境变量, 返回指定的默认值', () => {
+      const defaultValue = randomBytes(32).toString('hex');
+      const result = EnvValueLoadUtil.loadOptionalHexString(faker.lorem.word(), defaultValue);
+      expect(result).toStrictEqual(defaultValue);
+    });
+
+    it('未找到指定环境变量, 默认值无效', () => {
+      const defaultValue = faker.lorem.word();
+      try {
+        EnvValueLoadUtil.loadOptionalHexString(faker.lorem.word(), defaultValue);
+      } catch (error) {
+        expect(error);
+        expect(error instanceof InvalidHexEnvException);
+      }
+    });
+  });
+
+  describe('loadRequiredHexString()', () => {
+    it('正常', () => {
+      const result = EnvValueLoadUtil.loadRequiredHexString('UNIT_TEST_HEX');
+      expect(result).toStrictEqual(process.env.UNIT_TEST_HEX);
+    });
+
+    it('找到指定环境变量, 类型错误', () => {
+      try {
+        EnvValueLoadUtil.loadRequiredHexString('PATH');
+      } catch (error) {
+        expect(error);
+        expect(error instanceof InvalidHexEnvException);
+      }
+    });
+
+    it('未找到指定环境变量, 抛出MissingRequiredEnvException异常', () => {
+      try {
+        EnvValueLoadUtil.loadRequiredHexString(faker.lorem.word());
+      } catch (error) {
+        expect(error);
+        expect(error instanceof MissingRequiredEnvException);
+      }
     });
   });
 

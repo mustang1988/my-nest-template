@@ -5,6 +5,12 @@ import { IStringAesEncryptValueTransformerOptions } from '../interface/string-en
 
 /**
  * 字符串AES加密转换器
+ *
+ * 数据入库前进行aes-256-cbc加密, 将加密后的密文存入数据库
+ *
+ * 数据查询后进行aes-256-cbc解密, 返回解密后的原文
+ *
+ * 需要注意: 环境变量 AES_KEY 和 AES_IV 在项目首次启动加密数据入库前必须先确定, 运行期间不允许修改
  */
 export class StringAesEncryptValueTransformer implements ValueTransformer {
   private readonly key: Buffer;
@@ -21,6 +27,10 @@ export class StringAesEncryptValueTransformer implements ValueTransformer {
     if (value === null) {
       return value;
     }
+
+    /**
+     * aes-256-cbc 加密
+     */
     const cipher = createCipheriv('aes-256-cbc', this.key, this.iv);
     let encrypted = cipher.update(value, 'utf8', 'hex');
     encrypted += cipher.final('hex');
@@ -31,6 +41,10 @@ export class StringAesEncryptValueTransformer implements ValueTransformer {
     if (value === null) {
       return value;
     }
+
+    /**
+     * aes-256-cbc 解密
+     */
     const decipher = createDecipheriv('aes-256-cbc', this.key, this.iv);
     let decrypted = decipher.update(value, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
