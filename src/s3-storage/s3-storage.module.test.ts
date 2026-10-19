@@ -11,7 +11,7 @@ import { IS3StorageConfiguration } from 'src/configuration/interface/s3-storage.
 describe(basename(__filename), () => {
   describe('forRootAsync()', () => {
     it('全默认', async () => {
-      const redisModule = await Test.createTestingModule({
+      const s3StorageModule = await Test.createTestingModule({
         imports: [
           LoggerModule,
           S3StorageModule.forRootAsync({
@@ -23,11 +23,11 @@ describe(basename(__filename), () => {
           ConfigModule.forRoot({ isGlobal: true, load: [configurationLoader], ignoreEnvFile: true }),
         ],
       }).compile();
-      expect(redisModule);
+      expect(s3StorageModule);
     });
 
     it('指定名称配置不初始化', async () => {
-      const redisModule = await Test.createTestingModule({
+      const s3StorageModule = await Test.createTestingModule({
         imports: [
           LoggerModule,
           S3StorageModule.forRootAsync({
@@ -47,7 +47,7 @@ describe(basename(__filename), () => {
           ConfigModule.forRoot({ isGlobal: true, load: [configurationLoader], ignoreEnvFile: true }),
         ],
       }).compile();
-      expect(redisModule);
+      expect(s3StorageModule);
     });
 
     it('指定名称不存在', async () => {

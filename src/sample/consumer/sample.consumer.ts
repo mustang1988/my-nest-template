@@ -2,10 +2,10 @@ import { Logger } from 'winston';
 import { Channel, Message } from 'amqplib';
 import { Controller, Inject } from '@nestjs/common';
 import { SampleMessage } from '../message/sample.message';
-import { SampleMessagePipe } from '../pipe/sample-message.pipe';
 import { ContextService } from '../../context/service/context.service';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { RabbitmqMessagePipe } from 'src/rabbitmq/pipe/rabbitmq-message.pipe';
 import { InjectContext } from '../../context/decorator/inject-context.decorator';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 
@@ -28,7 +28,7 @@ export class SampleConsumer {
    */
   @MessagePattern(ESampleMessagePattern.SAMPLE_MESSAGE)
   @InjectContext()
-  async consumeSampleMessage(@Payload(new SampleMessagePipe()) payload: SampleMessage, @Ctx() rmqContext: RmqContext) {
+  async consumeSampleMessage(@Payload(new RabbitmqMessagePipe()) payload: SampleMessage, @Ctx() rmqContext: RmqContext) {
     this.logger.info('[%s] 示例消息消费: payload = %j', payload.requestId, payload);
     try {
       // Do something
