@@ -1,6 +1,16 @@
+import {
+  CLS_REQUEST_ID,
+  CLS_INSTANCE_ID,
+  CLS_REQUEST_BODY,
+  CLS_REQUEST_PARAM,
+  CLS_REQUEST_QUERY,
+  CLS_REQUEST_COOKIE,
+  CLS_REQUEST_HEADER,
+} from '../context.constant';
 import { Injectable } from '@nestjs/common';
 import { ClsService, InjectCls } from 'nestjs-cls';
-import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
+import { ContextStore } from '../interface/context-store.interface';
+import { ContextRequest } from '../interface/context-request.interface';
 
 /**
  * 上下文服务
@@ -9,7 +19,15 @@ import { CLS_INSTANCE_ID, CLS_REQUEST_ID } from '../context.constant';
  */
 @Injectable()
 export class ContextService {
-  constructor(@InjectCls() private readonly cls: ClsService) {}
+  constructor(@InjectCls() private readonly cls: ClsService<ContextStore>) {}
+
+  /**
+   * 获取所有上下文参数
+   * @return 所有上下文参数
+   */
+  getAll(): ContextStore {
+    return this.cls.get();
+  }
 
   /**
    * 从上下文中获取本次请求的唯一ID
@@ -25,6 +43,60 @@ export class ContextService {
    */
   getInstanceId(): number {
     return this.cls.get<number>(CLS_INSTANCE_ID);
+  }
+
+  /**
+   * 从上下文中获取当前请求参数
+   * @return 请求参数
+   */
+  getRequest(): ContextRequest {
+    return {
+      body: this.cls.get(CLS_REQUEST_BODY),
+      query: this.cls.get(CLS_REQUEST_QUERY),
+      param: this.cls.get(CLS_REQUEST_PARAM),
+      header: this.cls.get(CLS_REQUEST_HEADER),
+      cookie: this.cls.get(CLS_REQUEST_COOKIE),
+    };
+  }
+
+  /**
+   * 从上下文中获取当前请求Body参数
+   * @return 请求Body参数
+   */
+  getRequestBody(): undefined | unknown {
+    return this.cls.get(CLS_REQUEST_BODY);
+  }
+
+  /**
+   * 从上下文中获取当前请求Param参数
+   * @return 请求Param参数
+   */
+  getRequestParam(): undefined | unknown {
+    return this.cls.get(CLS_REQUEST_PARAM);
+  }
+
+  /**
+   * 从上下文中获取当前请求Query参数
+   * @return 请求Query参数
+   */
+  getRequestQuery(): undefined | unknown {
+    return this.cls.get(CLS_REQUEST_QUERY);
+  }
+
+  /**
+   * 从上下文中获取当前请求Header参数
+   * @return 请求Header参数
+   */
+  getRequestHeader(): undefined | unknown {
+    return this.cls.get(CLS_REQUEST_HEADER);
+  }
+
+  /**
+   * 从上下文中获取当前请求Cookie参数
+   * @return 请求Cookie参数
+   */
+  getRequestCookie(): undefined | unknown {
+    return this.cls.get(CLS_REQUEST_COOKIE);
   }
 
   /**

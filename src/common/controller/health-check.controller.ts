@@ -8,6 +8,7 @@ import { Get, Controller, Inject } from '@nestjs/common';
 import { AmqpConnectionManager } from 'amqp-connection-manager';
 import { getRedisClientToken } from '../../redis/redis.constant';
 import { S3Client, ListBucketsCommand } from '@aws-sdk/client-s3';
+import { ContextService } from 'src/context/service/context.service';
 import { getMySQLDataSourceToken } from '../../mysql/mysql.constant';
 import { getS3ClientToken } from '../../s3-storage/s3-storage.constant';
 import { getRabbitmqClientToken } from '../../rabbitmq/rabbitmq.constant';
@@ -23,6 +24,7 @@ import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-c
 @Controller('/api')
 export class HealthCheckController {
   constructor(
+    @Inject() private readonly ctx: ContextService,
     @Inject() private readonly moduleRef: ModuleRef,
     @Inject() private readonly configService: ConfigService,
   ) {}
@@ -111,6 +113,8 @@ export class HealthCheckController {
       }
     }
     // #endregion
+
+    console.log('%o', this.ctx.getAll());
 
     return result;
   }
