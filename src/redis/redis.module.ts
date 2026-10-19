@@ -9,6 +9,7 @@ import { RedisEventEmitterService } from './service/redis-event-emitter.service'
 import { IRedisClientOptions } from './interface/redis-client-options.interface';
 import { RedisEventListenerService } from './service/redis-event-listener.service';
 import { IRedisModuleAsyncOptions } from './interface/redis-module-options.interface';
+import { RedisClientNotFoundException } from './exception/redis-client-not-found.exception';
 import { getRedisClientToken, REDIS_CLIENTS_MAP_TOKEN, REDIS_CLIENT_OPTIONS_TOKEN, REDIS_SUBSCRIBERS_MAP_TOKEN } from './redis.constant';
 
 /**
@@ -104,7 +105,7 @@ export class RedisModule {
           const redisClient = redisClientsMap.get(name);
           if (!redisClient) {
             logger.error('未找到指定名称的Redis客户端对象: name = %s', name);
-            throw new Error(`未找到指定名称的Redis客户端对象: ${name}`);
+            throw new RedisClientNotFoundException(name);
           }
           return redisClient;
         },

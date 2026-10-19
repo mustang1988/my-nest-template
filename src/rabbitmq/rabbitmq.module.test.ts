@@ -1,11 +1,12 @@
-import { Test } from '@nestjs/testing';
 import { basename } from 'node:path';
+import { Test } from '@nestjs/testing';
+import { faker } from '@faker-js/faker';
 import { RabbitmqModule } from './rabbitmq.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configurationLoader from 'src/configuration/configuration-loader';
+import { RabbitmqClientNotFoundException } from './exception/rabbitmq-client-not-found.exception';
 import { IRabbitmqConfiguration } from 'src/configuration/interface/rabbitmq-configuration.interface';
-import { faker } from '@faker-js/faker';
 
 describe(basename(__filename), () => {
   describe('forRootAsync()', () => {
@@ -71,6 +72,7 @@ describe(basename(__filename), () => {
         }).compile();
       } catch (error) {
         expect(error);
+        expect(error instanceof RabbitmqClientNotFoundException);
       }
     });
   });

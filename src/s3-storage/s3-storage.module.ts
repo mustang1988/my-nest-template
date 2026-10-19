@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { DataMaskingUtil } from '../common/util/data-masking.util';
 import { IS3ClientOptions } from './interface/s3-client-options.interface';
+import { S3ClientNotFoundException } from './exception/s3-client-not-found.exception';
 import { IS3StorageModuleAsyncOptions } from './interface/s3-storage-module-options.interface';
 import { getS3ClientToken, S3_CLIENT_OPTIONS_TOKEN, S3_CLIENTS_MAP_TOKEN } from './s3-storage.constant';
 
@@ -62,7 +63,7 @@ export class S3StorageModule {
           const s3Client = s3ClientsMap.get(name);
           if (!s3Client) {
             logger.error('未找到指定名称的S3客户端对象', name);
-            throw new Error(`未找到指定名称的S3客户端对象: ${name}`);
+            throw new S3ClientNotFoundException(name);
           }
           return s3Client;
         },

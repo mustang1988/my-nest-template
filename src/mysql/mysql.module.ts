@@ -6,6 +6,7 @@ import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { DataMaskingUtil } from '../common/util/data-masking.util';
 import { IMySQLModuleAsyncOptions } from './interface/mysq-module-options.interface';
 import { IMySQLDataSourceOptions } from './interface/mysql-datasource-options.interface';
+import { MySQLDataSourceNotFoundException } from './exception/mysql-datasource-not-found.exception';
 import { getMySQLDataSourceToken, MYSQL_DATASOURCE_MAP_TOKEN, MYSQL_DATASOURCE_OPTIONS_TOKEN } from './mysql.constant';
 
 /**
@@ -70,7 +71,7 @@ export class MySQLModule {
         const dataSource = mysqlDataSourceMap.get(name);
         if (!dataSource) {
           logger.error('未找到指定名称的MySQL数据源对象: name = %s', name);
-          throw new Error(`未找到指定名称的MySQL数据源对象: ${name}`);
+          throw new MySQLDataSourceNotFoundException(name);
         }
         return dataSource;
       },

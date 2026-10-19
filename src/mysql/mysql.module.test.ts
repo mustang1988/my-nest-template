@@ -1,11 +1,12 @@
 import { basename } from 'node:path';
 import { Test } from '@nestjs/testing';
+import { faker } from '@faker-js/faker';
 import { MySQLModule } from './mysql.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configurationLoader from 'src/configuration/configuration-loader';
 import { IMySQLConfiguration } from 'src/configuration/interface/mysql-configuration.interface';
-import { faker } from '@faker-js/faker';
+import { MySQLDataSourceNotFoundException } from './exception/mysql-datasource-not-found.exception';
 
 describe(basename(__filename), () => {
   describe('forRootAsync()', () => {
@@ -71,6 +72,7 @@ describe(basename(__filename), () => {
         }).compile();
       } catch (error) {
         expect(error);
+        expect(error instanceof MySQLDataSourceNotFoundException);
       }
     });
   });

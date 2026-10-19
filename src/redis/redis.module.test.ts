@@ -5,6 +5,7 @@ import { RedisModule } from './redis.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configurationLoader from 'src/configuration/configuration-loader';
+import { RedisClientNotFoundException } from './exception/redis-client-not-found.exception';
 import { IRedisConfiguration } from 'src/configuration/interface/redis-configuration.interface';
 
 describe(basename(__filename), () => {
@@ -63,6 +64,7 @@ describe(basename(__filename), () => {
         }).compile();
       } catch (error) {
         expect(error);
+        expect(error instanceof RedisClientNotFoundException);
       }
     });
   });

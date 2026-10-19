@@ -1,11 +1,12 @@
 import { basename } from 'node:path';
 import { Test } from '@nestjs/testing';
+import { faker } from '@faker-js/faker';
 import { S3StorageModule } from './s3-storage.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configurationLoader from 'src/configuration/configuration-loader';
+import { S3ClientNotFoundException } from './exception/s3-client-not-found.exception';
 import { IS3StorageConfiguration } from 'src/configuration/interface/s3-storage.interface';
-import { faker } from '@faker-js/faker';
 
 describe(basename(__filename), () => {
   describe('forRootAsync()', () => {
@@ -66,6 +67,7 @@ describe(basename(__filename), () => {
         }).compile();
       } catch (error) {
         expect(error);
+        expect(error instanceof S3ClientNotFoundException);
       }
     });
   });

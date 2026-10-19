@@ -32,6 +32,7 @@ export const InjectContext = (name?: string) => {
         cls.setIfUndefined(CLS_REQUEST_ID, requestIdInArgs ?? randomUUID());
         cls.setIfUndefined(CLS_INSTANCE_ID, Number(process.env.INSTANCE_ID ?? 0));
       },
+      initializePlugins: false, // 此处必须设置为false
     }) as MethodDecorator,
   );
 };

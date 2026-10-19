@@ -6,6 +6,7 @@ import { DataMaskingUtil } from '../common/util/data-masking.util';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { IRabbitmqClientOptions } from './interface/rabbitmq-client-options.interface';
 import { IRabbitmqModuleAsyncOptions } from './interface/rabbitmq-module-options.interface';
+import { RabbitmqClientNotFoundException } from './exception/rabbitmq-client-not-found.exception';
 import { getRabbitmqClientToken, RABBITMQ_CLIENTS_MAP_TOKEN, RABBITMQ_CLIENT_OPTIONS_TOKEN } from './rabbitmq.constant';
 
 /**
@@ -69,7 +70,7 @@ export class RabbitmqModule {
         const client = rmqClientsMap.get(name);
         if (!client) {
           logger.error('未找到指定名称的Rabbitmq客户端对象: name = %s', name);
-          throw new Error(`未找到指定名称的Rabbitmq客户端对象: ${name}`);
+          throw new RabbitmqClientNotFoundException(name);
         }
         return client;
       },
