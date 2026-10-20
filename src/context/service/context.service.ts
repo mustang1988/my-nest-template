@@ -1,14 +1,14 @@
 import {
   CLS_REQUEST_ID,
   CLS_INSTANCE_ID,
-  CLS_REQUEST_BODY,
-  CLS_REQUEST_PARAM,
-  CLS_REQUEST_QUERY,
-  CLS_REQUEST_COOKIE,
-  CLS_REQUEST_HEADER,
+  CLS_HTTP_BODY,
+  CLS_HTTP_PARAM,
+  CLS_HTTP_QUERY,
+  CLS_HTTP_COOKIE,
+  CLS_HTTP_HEADER,
 } from '../context.constant';
-import { Injectable } from '@nestjs/common';
-import { ClsService, InjectCls } from 'nestjs-cls';
+import { CLS_CTX, ClsService, InjectCls } from 'nestjs-cls';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { ContextStore } from '../interface/context-store.interface';
 import { ContextRequest } from '../interface/context-request.interface';
 
@@ -20,6 +20,10 @@ import { ContextRequest } from '../interface/context-request.interface';
 @Injectable()
 export class ContextService {
   constructor(@InjectCls() private readonly cls: ClsService<ContextStore>) {}
+
+  getCls(): ClsService<ContextStore> {
+    return this.cls;
+  }
 
   /**
    * 获取所有上下文参数
@@ -45,17 +49,21 @@ export class ContextService {
     return this.cls.get<number>(CLS_INSTANCE_ID);
   }
 
+  getExecutionContext(): ExecutionContext {
+    return this.cls.get(CLS_CTX);
+  }
+
   /**
    * 从上下文中获取当前请求参数
    * @return 请求参数
    */
   getRequest(): ContextRequest {
     return {
-      body: this.cls.get(CLS_REQUEST_BODY),
-      query: this.cls.get(CLS_REQUEST_QUERY),
-      param: this.cls.get(CLS_REQUEST_PARAM),
-      header: this.cls.get(CLS_REQUEST_HEADER),
-      cookie: this.cls.get(CLS_REQUEST_COOKIE),
+      body: this.cls.get(CLS_HTTP_BODY),
+      query: this.cls.get(CLS_HTTP_QUERY),
+      param: this.cls.get(CLS_HTTP_PARAM),
+      header: this.cls.get(CLS_HTTP_HEADER),
+      cookie: this.cls.get(CLS_HTTP_COOKIE),
     };
   }
 
@@ -64,7 +72,7 @@ export class ContextService {
    * @return 请求Body参数
    */
   getRequestBody(): undefined | unknown {
-    return this.cls.get(CLS_REQUEST_BODY);
+    return this.cls.get(CLS_HTTP_BODY);
   }
 
   /**
@@ -72,7 +80,7 @@ export class ContextService {
    * @return 请求Param参数
    */
   getRequestParam(): undefined | unknown {
-    return this.cls.get(CLS_REQUEST_PARAM);
+    return this.cls.get(CLS_HTTP_PARAM);
   }
 
   /**
@@ -80,7 +88,7 @@ export class ContextService {
    * @return 请求Query参数
    */
   getRequestQuery(): undefined | unknown {
-    return this.cls.get(CLS_REQUEST_QUERY);
+    return this.cls.get(CLS_HTTP_QUERY);
   }
 
   /**
@@ -88,7 +96,7 @@ export class ContextService {
    * @return 请求Header参数
    */
   getRequestHeader(): undefined | unknown {
-    return this.cls.get(CLS_REQUEST_HEADER);
+    return this.cls.get(CLS_HTTP_HEADER);
   }
 
   /**
@@ -96,7 +104,7 @@ export class ContextService {
    * @return 请求Cookie参数
    */
   getRequestCookie(): undefined | unknown {
-    return this.cls.get(CLS_REQUEST_COOKIE);
+    return this.cls.get(CLS_HTTP_COOKIE);
   }
 
   /**

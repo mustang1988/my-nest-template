@@ -1,19 +1,11 @@
-import {
-  CLS_REQUEST_ID,
-  CLS_INSTANCE_ID,
-  CLS_REQUEST_BODY,
-  CLS_REQUEST_PARAM,
-  CLS_REQUEST_QUERY,
-  CLS_REQUEST_COOKIE,
-  CLS_REQUEST_HEADER,
-} from './context.constant';
 import { randomUUID } from 'node:crypto';
 import { FastifyRequest } from 'fastify';
 import { IncomingMessage } from 'node:http';
-import { ClsModule, type ClsService } from 'nestjs-cls';
+import { ClsModule, ClsService } from 'nestjs-cls';
 import { ContextService } from './service/context.service';
 import { ExecutionContext, Global, Module } from '@nestjs/common';
 import { ContextStore } from './interface/context-store.interface';
+import { CLS_REQUEST_ID, CLS_INSTANCE_ID, CLS_HTTP_BODY, CLS_HTTP_PARAM, CLS_HTTP_QUERY, CLS_HTTP_COOKIE, CLS_HTTP_HEADER } from './context.constant';
 
 /**
  * 上下文模块
@@ -64,18 +56,19 @@ import { ContextStore } from './interface/context-store.interface';
        */
       guard: {
         mount: true,
-        saveCtx: true, //
+        saveCtx: true, // 上下文中记录 ExecutionContext
         setup: (cls: ClsService, context: ExecutionContext) => {
-          if (context.getType() === 'http') {
-            /**
-             * HTTP请求将请求参数存入CLS上下文
-             */
-            const request = context.switchToHttp().getRequest<FastifyRequest>();
-            cls.setIfUndefined(CLS_REQUEST_BODY, request.body);
-            cls.setIfUndefined(CLS_REQUEST_QUERY, request.query);
-            cls.setIfUndefined(CLS_REQUEST_PARAM, request.params);
-            cls.setIfUndefined(CLS_REQUEST_HEADER, request.headers);
-            cls.setIfUndefined(CLS_REQUEST_COOKIE, request.cookies);
+          const contextType = context.getType();
+          /**
+           * HTTP请求将请求参数存入CLS上下文
+           */
+          if (contextType === 'http') {
+            const httpRequest = context.switchToHttp().getRequest<FastifyRequest>();
+            cls.setIfUndefined(CLS_HTTP_BODY, httpRequest.body);
+            cls.setIfUndefined(CLS_HTTP_QUERY, httpRequest.query);
+            cls.setIfUndefined(CLS_HTTP_PARAM, httpRequest.params);
+            cls.setIfUndefined(CLS_HTTP_HEADER, httpRequest.headers);
+            cls.setIfUndefined(CLS_HTTP_COOKIE, httpRequest.cookies);
           }
         },
       },

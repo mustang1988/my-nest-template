@@ -12,6 +12,7 @@ import { DataMaskingUtil } from './common/util/data-masking.util';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { RedisSocketIoAdapter } from './websocket/adapter/redis-socket-io.adapter';
 import { WINSTON_MODULE_PROVIDER, WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { PerformanceInterseptor } from './common/interceptor/performance.interceptor';
 import { JsonResponseInterceptor } from './common/interceptor/json-response.interceptor';
@@ -92,6 +93,13 @@ void (async () => {
    * 注意: 多异常过滤器注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
   app.useGlobalFilters(new I18nValidationExceptionFilter({ detailedErrors: false }), app.get(GlobalExceptionFilter));
+
+  /**
+   * 设置Socket.IO适配器
+   */
+  const redisSocketIoAdapter = new RedisSocketIoAdapter(app);
+  await redisSocketIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisSocketIoAdapter);
 
   /**
    * Rabbitmq队列消费

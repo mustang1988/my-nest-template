@@ -1,34 +1,43 @@
+// #region 通用
 /**
  * 本次请求的唯一ID在CLS上下文中存储的Key
  */
-export const CLS_REQUEST_ID = Symbol('cls:request-id');
+export const CLS_REQUEST_ID: unique symbol = Symbol('cls:request-id');
 
 /**
- * 当前实例编号上下文中存储的Key
+ * 处理本次请求的worker实例ID在CLS上下文中存储的Key
  */
-export const CLS_INSTANCE_ID = Symbol('cls:instance-id');
+export const CLS_INSTANCE_ID: unique symbol = Symbol('cls:instance-id');
+
+// #endregion
+
+// #region HTTP
+/**
+ * 本次HTTP请求的Body参数在CLS上下文中存储的Key
+ */
+export const CLS_HTTP_BODY: unique symbol = Symbol('cls:http:body');
 
 /**
- * 本次请求的Body参数在CLS上下文中存储的Key
+ * 本次HTTP请求的Param参数在CLS上下文中存储的Key
  */
-export const CLS_REQUEST_BODY = Symbol('cls:request:body');
+export const CLS_HTTP_PARAM: unique symbol = Symbol('cls:http:param');
 
 /**
- * 本次请求的Param参数在CLS上下文中存储的Key
+ * 本次HTTP请求的Query参数在CLS上下文中存储的Key
  */
-export const CLS_REQUEST_PARAM = Symbol('cls:request:param');
+export const CLS_HTTP_QUERY: unique symbol = Symbol('cls:http:query');
 
 /**
- * 本次请求的Query参数在CLS上下文中存储的Key
+ * 本次HTTP请求的Header参数在CLS上下文中存储的Key
  */
-export const CLS_REQUEST_QUERY = Symbol('cls:request:query');
+export const CLS_HTTP_HEADER: unique symbol = Symbol('cls:http:header');
 
 /**
- * 本次请求的Header参数在CLS上下文中存储的Key
+ * 本次HTTP请求的Cookie参数在CLS上下文中存储的Key
  */
-export const CLS_REQUEST_HEADER = Symbol('cls:request:header');
+export const CLS_HTTP_COOKIE: unique symbol = Symbol('cls:http:cookie');
+// #endregion
 
-/**
- * 本次请求的Cookie参数在CLS上下文中存储的Key
- */
-export const CLS_REQUEST_COOKIE = Symbol('cls:request:cookie');
+// #region WebSocket
+export const CLS_WS_ID: unique symbol = Symbol('cls:ws:id');
+// #endregion

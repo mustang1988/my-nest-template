@@ -11,6 +11,7 @@ import { CommonModule } from './common/common.module';
 import { SampleModule } from './sample/sample.module';
 import { ContextModule } from './context/context.module';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { WebSocketModule } from './websocket/websocket.module';
 import { S3StorageModule } from './s3-storage/s3-storage.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { IS3StorageConfiguration } from './configuration/interface/s3-storage.interface';
@@ -34,6 +35,7 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     CommonModule,
     LoggerModule,
     ContextModule,
+    WebSocketModule,
     ConfigurationModule,
     InternationalizationModule,
     RedisModule.forRootAsync({

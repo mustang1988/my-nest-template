@@ -1,14 +1,13 @@
 import {
   CLS_REQUEST_ID,
   CLS_INSTANCE_ID,
-  CLS_REQUEST_BODY,
-  CLS_REQUEST_PARAM,
-  CLS_REQUEST_QUERY,
-  CLS_REQUEST_COOKIE,
-  CLS_REQUEST_HEADER,
+  CLS_HTTP_BODY,
+  CLS_HTTP_PARAM,
+  CLS_HTTP_QUERY,
+  CLS_HTTP_COOKIE,
+  CLS_HTTP_HEADER,
 } from '../context.constant';
 import { basename } from 'node:path';
-import { ClsService } from 'nestjs-cls';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { ContextModule } from '../context.module';
@@ -20,16 +19,19 @@ import { ContextRequest } from '../interface/context-request.interface';
 describe(basename(__filename), () => {
   let contextService: ContextService;
   let contextModule: TestingModule;
-  let clsService: ClsService;
 
   beforeAll(async () => {
     contextModule = await Test.createTestingModule({ imports: [ContextModule] }).compile();
-    clsService = contextModule.get(ClsService);
   });
 
   it('constructor()', () => {
     contextService = contextModule.get(ContextService);
     expect(contextService);
+  });
+
+  it('getCls()', () => {
+    const result = contextService.getCls();
+    expect(result);
   });
 
   describe('getAll()', () => {
@@ -43,7 +45,7 @@ describe(basename(__filename), () => {
       const store: ContextStore = {
         [CLS_REQUEST_ID]: requestId,
       };
-      const result = clsService.runWith(store, () => contextService.getAll());
+      const result = contextService.getCls().runWith(store, () => contextService.getAll());
       expect(result);
       expect(result[CLS_REQUEST_ID]).toStrictEqual(requestId);
     });
@@ -57,7 +59,7 @@ describe(basename(__filename), () => {
 
     it('normal', () => {
       const requestId = randomUUID();
-      const result = clsService.runWith({ [CLS_REQUEST_ID]: requestId }, () => contextService.getRequestId());
+      const result = contextService.getCls().runWith({ [CLS_REQUEST_ID]: requestId }, () => contextService.getRequestId());
       expect(result).toStrictEqual(requestId);
     });
   });
@@ -70,7 +72,7 @@ describe(basename(__filename), () => {
 
     it('normal', () => {
       const instanceId = faker.number.int({ min: 0, max: 100 });
-      const result = clsService.runWith({ [CLS_INSTANCE_ID]: instanceId }, () => contextService.getInstanceId());
+      const result = contextService.getCls().runWith({ [CLS_INSTANCE_ID]: instanceId }, () => contextService.getInstanceId());
       expect(result).toStrictEqual(instanceId);
     });
   });
@@ -85,9 +87,9 @@ describe(basename(__filename), () => {
     it('有值', () => {
       const body = { id: faker.number.int({ min: 1, max: 5 }) };
       const store: ContextStore = {
-        [CLS_REQUEST_BODY]: body,
+        [CLS_HTTP_BODY]: body,
       };
-      const result = clsService.runWith(store, () => contextService.getRequest());
+      const result = contextService.getCls().runWith(store, () => contextService.getRequest());
       expect(result);
       expect(result.body).toStrictEqual(body);
     });
@@ -102,9 +104,9 @@ describe(basename(__filename), () => {
     it('有值', () => {
       const body = { id: faker.number.int({ min: 1, max: 5 }) };
       const store: ContextStore = {
-        [CLS_REQUEST_BODY]: body,
+        [CLS_HTTP_BODY]: body,
       };
-      const result = clsService.runWith(store, () => contextService.getRequestBody());
+      const result = contextService.getCls().runWith(store, () => contextService.getRequestBody());
       expect(result).toStrictEqual(body);
     });
   });
@@ -118,9 +120,9 @@ describe(basename(__filename), () => {
     it('有值', () => {
       const params = { id: faker.number.int({ min: 1, max: 5 }) };
       const store: ContextStore = {
-        [CLS_REQUEST_PARAM]: params,
+        [CLS_HTTP_PARAM]: params,
       };
-      const result = clsService.runWith(store, () => contextService.getRequestParam());
+      const result = contextService.getCls().runWith(store, () => contextService.getRequestParam());
       expect(result).toStrictEqual(params);
     });
   });
@@ -134,9 +136,9 @@ describe(basename(__filename), () => {
     it('有值', () => {
       const query = { id: faker.number.int({ min: 1, max: 5 }) };
       const store: ContextStore = {
-        [CLS_REQUEST_QUERY]: query,
+        [CLS_HTTP_QUERY]: query,
       };
-      const result = clsService.runWith(store, () => contextService.getRequestQuery());
+      const result = contextService.getCls().runWith(store, () => contextService.getRequestQuery());
       expect(result).toStrictEqual(query);
     });
   });
@@ -150,9 +152,9 @@ describe(basename(__filename), () => {
     it('有值', () => {
       const header = { id: faker.number.int({ min: 1, max: 5 }) };
       const store: ContextStore = {
-        [CLS_REQUEST_HEADER]: header,
+        [CLS_HTTP_HEADER]: header,
       };
-      const result = clsService.runWith(store, () => contextService.getRequestHeader());
+      const result = contextService.getCls().runWith(store, () => contextService.getRequestHeader());
       expect(result).toStrictEqual(header);
     });
   });
@@ -166,9 +168,9 @@ describe(basename(__filename), () => {
     it('有值', () => {
       const cookie = { id: faker.number.int({ min: 1, max: 5 }) };
       const store: ContextStore = {
-        [CLS_REQUEST_COOKIE]: cookie,
+        [CLS_HTTP_COOKIE]: cookie,
       };
-      const result = clsService.runWith(store, () => contextService.getRequestCookie());
+      const result = contextService.getCls().runWith(store, () => contextService.getRequestCookie());
       expect(result).toStrictEqual(cookie);
     });
   });
@@ -176,7 +178,7 @@ describe(basename(__filename), () => {
   it('getCtxValue(), getCtxValue()', () => {
     const key = faker.lorem.word();
     const value = faker.lorem.word();
-    const result = clsService.runWith({}, () => {
+    const result = contextService.getCls().runWith({}, () => {
       contextService.setCtxValue(key, value);
       return contextService.getCtxValue(key);
     });
@@ -187,7 +189,7 @@ describe(basename(__filename), () => {
     it('true', () => {
       const key = faker.lorem.word();
       const value = faker.lorem.word();
-      const result = clsService.runWith({}, () => {
+      const result = contextService.getCls().runWith({}, () => {
         return contextService.setCtxValueIfUndefined(key, value);
       });
       expect(result).toStrictEqual(true);
@@ -196,7 +198,7 @@ describe(basename(__filename), () => {
     it('false', () => {
       const key = faker.lorem.word();
       const value = faker.lorem.word();
-      const result = clsService.runWith({ [key]: value }, () => {
+      const result = contextService.getCls().runWith({ [key]: value }, () => {
         return contextService.setCtxValueIfUndefined(key, faker.lorem.text());
       });
       expect(result).toStrictEqual(false);

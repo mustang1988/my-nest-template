@@ -1,11 +1,11 @@
 import {
   CLS_REQUEST_ID,
   CLS_INSTANCE_ID,
-  CLS_REQUEST_BODY,
-  CLS_REQUEST_PARAM,
-  CLS_REQUEST_QUERY,
-  CLS_REQUEST_COOKIE,
-  CLS_REQUEST_HEADER,
+  CLS_HTTP_BODY,
+  CLS_HTTP_PARAM,
+  CLS_HTTP_QUERY,
+  CLS_HTTP_COOKIE,
+  CLS_HTTP_HEADER,
 } from '../context.constant';
 import { ClsStore } from 'nestjs-cls';
 
@@ -15,9 +15,9 @@ import { ClsStore } from 'nestjs-cls';
 export interface ContextStore extends ClsStore {
   [CLS_REQUEST_ID]?: string;
   [CLS_INSTANCE_ID]?: number;
-  [CLS_REQUEST_BODY]?: unknown;
-  [CLS_REQUEST_QUERY]?: unknown;
-  [CLS_REQUEST_PARAM]?: unknown;
-  [CLS_REQUEST_HEADER]?: unknown;
-  [CLS_REQUEST_COOKIE]?: unknown;
+  [CLS_HTTP_BODY]?: unknown;
+  [CLS_HTTP_QUERY]?: unknown;
+  [CLS_HTTP_PARAM]?: unknown;
+  [CLS_HTTP_HEADER]?: unknown;
+  [CLS_HTTP_COOKIE]?: unknown;
 }
