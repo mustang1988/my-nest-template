@@ -19,6 +19,7 @@ import { IRedisConfiguration } from './configuration/interface/redis-configurati
 import { IMySQLConfiguration } from './configuration/interface/mysql-configuration.interface';
 import { InternationalizationModule } from './internationalization/internationalization.module';
 import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-configuration.interface';
+import { BigintSupportResponseTransformer } from './common/response-transformer/bigint-support.response-transformer';
 
 @Module({
   imports: [
@@ -30,7 +31,14 @@ import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-confi
     /**
      * NestJS HTTP客户端模块
      */
-    HttpModule.register({ global: true, timeout: ms('5min') }),
+    HttpModule.registerAsync({
+      global: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        timeout: configService.get<number>('constants.axios.timeout', ms('5min')),
+        transformResponse: [BigintSupportResponseTransformer],
+      }),
+    }),
     EventModule,
     CommonModule,
     LoggerModule,

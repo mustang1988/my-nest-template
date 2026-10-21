@@ -26,10 +26,12 @@ export interface ILoggerConfiguration {
    * 日志文件最大保留数量
    *
    * - 可选
-   * - 整数
-   * - 默认值: 30
+   * - 整数字符串或整数字符串+'d'
+   *   - 整数字符串: 日志文件保留数量
+   *   - 整数字符串+'d': 日志文件保留天数
+   * - 默认值: 30d
    */
-  maxFile?: number;
+  maxFile?: string;
 
   /**
    * 控制台日志开关
@@ -56,6 +58,7 @@ export interface ILoggerConfiguration {
    * - 可选
    * - 布尔值
    * - 默认值: false
+   * - json日志可用于日志收集, 如: ELK
    */
   jsonLogger?: boolean;
 

@@ -1,3 +1,4 @@
+import ms from 'ms';
 import { EnvValueLoadUtil } from './util/env-value-load.util';
 import { IConfiguration } from './interface/configuration.interface';
 
@@ -12,7 +13,7 @@ export default (): IConfiguration => ({
 
   logger: {
     level: EnvValueLoadUtil.loadOptionalString('LOGGER_LEVEL', 'debug'),
-    maxFile: EnvValueLoadUtil.loadOptionalInteger('LOGGER_MAX_FILE', 30),
+    maxFile: EnvValueLoadUtil.loadOptionalString('LOGGER_MAX_FILE', '30d'),
     maxSize: EnvValueLoadUtil.loadOptionalString('LOGGER_MAX_SIZE', '2g'),
     enableConsole: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_CONSOLE', false),
     dirname: EnvValueLoadUtil.loadOptionalString('LOGGER_DIR', '/tmp'),
@@ -95,6 +96,10 @@ export default (): IConfiguration => ({
          */
         aesIv: Buffer.from(EnvValueLoadUtil.loadRequiredHexString('AES_IV'), 'hex'),
       },
+    },
+
+    axios: {
+      timeout: EnvValueLoadUtil.loadOptionalInteger('AXIOS_TIMEOUT_MS', ms('5min')),
     },
   },
 });
