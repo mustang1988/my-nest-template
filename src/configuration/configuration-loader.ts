@@ -86,7 +86,7 @@ export default (): IConfiguration => ({
     },
 
     security: {
-      encrypt: {
+      crypto: {
         /**
          * AES加密密钥
          */
@@ -99,6 +99,9 @@ export default (): IConfiguration => ({
     },
 
     axios: {
+      /**
+       * axios全局超时时间
+       */
       timeout: EnvValueLoadUtil.loadOptionalInteger('AXIOS_TIMEOUT_MS', ms('5min')),
     },
   },

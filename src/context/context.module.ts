@@ -38,7 +38,8 @@ import { CLS_REQUEST_ID, CLS_INSTANCE_ID, CLS_HTTP_BODY, CLS_HTTP_PARAM, CLS_HTT
            * - 如果请求头中有x-request-id则优先使用此值作为请求ID, 可用于跨服务请求ID追踪
            * - 其次创建随机UUID作为本次请求ID
            */
-          const requestId = (req.headers['x-request-id'] as string) ?? randomUUID();
+          const requstInHeader = req.headers['x-request-id']?.toString();
+          const requestId = requstInHeader ?? randomUUID();
           /**
            * 将本次请求ID存入上下文
            */

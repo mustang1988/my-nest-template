@@ -45,7 +45,7 @@ export class EnvValueLoadUtil {
    */
   static loadOptionalHexString(name: string, defaultValue?: string): string | undefined {
     const str = EnvValueLoadUtil.loadOptionalString(name, defaultValue);
-    const hexRegex = /^[0-9,A-F,a-f]+$/;
+    const hexRegex = /^[0-9A-Fa-f]+$/;
     if (str && !hexRegex.test(str)) {
       throw new InvalidHexEnvException(name);
     }
@@ -78,8 +78,12 @@ export class EnvValueLoadUtil {
    * @throws {InvalidIntegerEnvException}
    */
   static loadOptionalInteger(name: string, defaultValue?: number): number {
-    const envValue = process.env[name]?.trim() ?? defaultValue;
-    const numberEnvValue = Number(envValue);
+    const envValue = process.env[name]?.trim();
+    if (envValue !== undefined && envValue === '') {
+      throw new InvalidIntegerEnvException(name);
+    }
+    const value = envValue ?? defaultValue;
+    const numberEnvValue = Number(value);
     if (!isNaN(numberEnvValue) && isInteger(numberEnvValue)) {
       return numberEnvValue;
     }

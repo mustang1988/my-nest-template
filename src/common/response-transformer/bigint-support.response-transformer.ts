@@ -20,7 +20,7 @@ export const BigintSupportResponseTransformer: AxiosResponseTransformer = functi
   headers: AxiosResponseHeaders,
   // status?: number,
 ) {
-  if (headers['Content-Type'] === 'application/json' && typeof data === 'string') {
+  if (headers['Content-Type']?.toString()?.includes('application/json') && typeof data === 'string') {
     try {
       return jsonBigintParse(data);
     } catch {

@@ -37,7 +37,7 @@ export class RedisEventEmitterService {
 
     let publishResult;
     if (options?.clientName) {
-      const redisClient = await this.redisClientsMap.get(options?.clientName);
+      const redisClient = this.redisClientsMap.get(options?.clientName);
       if (!redisClient) {
         this.logger.warn('[%s] 发布Redis事件, 指定的发布端名称无效: clientName = %s', event.requestId, options?.clientName);
         throw new RedisClientNotFoundException(options.clientName);

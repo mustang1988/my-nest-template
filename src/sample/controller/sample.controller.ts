@@ -13,7 +13,7 @@ export class SampleController {
 
   // #region 参数校验示例
   @Get()
-  actionQueryValidation(@Query(new ValidationPipe()) query: SampleQueryDto, @Cookies() cookie: Record<string, string | undefined>): string {
+  actionQueryValidation(@Query() query: SampleQueryDto, @Cookies() cookie: Record<string, string | undefined>): string {
     return JSON.stringify({ query, cookie });
   }
   // #endregion

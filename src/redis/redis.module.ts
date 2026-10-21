@@ -20,13 +20,7 @@ import { getRedisClientToken, REDIS_CLIENTS_MAP_TOKEN, REDIS_CLIENT_OPTIONS_TOKE
 @Module({})
 export class RedisModule {
   static forRootAsync(options: IRedisModuleAsyncOptions): DynamicModule {
-    const {
-      isGlobal = true,
-      inject = [ConfigService],
-      imports = [ConfigModule, EventEmitterModule.forRoot({ global: true, inheritRequestContextId: true })],
-      names = ['default'],
-      useFactory,
-    } = options;
+    const { isGlobal = true, inject = [ConfigService], imports = [ConfigModule], names = ['default'], useFactory } = options;
 
     const redisClientOptionsProvider: Provider<Array<IRedisClientOptions>> = {
       provide: REDIS_CLIENT_OPTIONS_TOKEN,

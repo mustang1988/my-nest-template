@@ -15,7 +15,7 @@ export class PerformanceInterseptor implements NestInterceptor {
     @InjectLogger() private readonly logger: Logger,
     @Inject() private readonly configService: ConfigService,
   ) {
-    this.logger.child({ context: this.constructor.name });
+    this.logger = this.logger.child({ context: this.constructor.name });
   }
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {

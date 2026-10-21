@@ -67,7 +67,8 @@ export class HealthCheckController {
           /**
            * 查询mysql版本信息进行健康检查
            */
-          const versionQueryRes = await mysqlDataSource.createQueryRunner().manager.query<Array<any>>(`SELECT version() as version FROM DUAL`);
+
+          const versionQueryRes = await mysqlDataSource.query<Array<{ version: string }>>(`SELECT version() as version FROM DUAL`);
           result.mysql[mysqlName] = versionQueryRes.length !== 0 ? 'healthy' : 'unhealthy';
         }
       }
@@ -113,8 +114,6 @@ export class HealthCheckController {
       }
     }
     // #endregion
-
-    console.log('%o', this.ctx.getAll());
 
     return result;
   }
