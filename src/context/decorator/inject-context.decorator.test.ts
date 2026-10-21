@@ -1,11 +1,12 @@
 import { basename } from 'node:path';
 import { Test } from '@nestjs/testing';
-import { Inject } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { ContextModule } from '../context.module';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectContext } from './inject-context.decorator';
 import { ContextService } from '../service/context.service';
 
+@Injectable()
 class TestClass {
   constructor(@Inject() private readonly ctx: ContextService) {}
   @InjectContext()

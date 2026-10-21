@@ -7,11 +7,11 @@ import { IJsonValueTransFormerOptions } from '../interface/json-value-transforme
  */
 export class JsonStringValueTransformer implements ValueTransformer {
   private readonly fallbackError: boolean;
-  private readonly fallbaclValue: unknown;
+  private readonly fallbackValue: unknown;
 
   constructor(options?: IJsonValueTransFormerOptions) {
     this.fallbackError = options?.fallbackError ?? true;
-    this.fallbaclValue = options?.fallbackValue ?? null;
+    this.fallbackValue = options?.fallbackValue ?? null;
   }
 
   to(value: string | null): string | null {
@@ -31,7 +31,7 @@ export class JsonStringValueTransformer implements ValueTransformer {
       if (this.fallbackError) {
         throw new JsonValueTransformException(error.message, { cause: value });
       } else {
-        return this.fallbaclValue;
+        return this.fallbackValue;
       }
     }
   }

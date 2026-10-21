@@ -20,8 +20,8 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
 
   constructor(
     @InjectLogger() private readonly logger: Logger,
-    @Inject() private readonly eventEmitter: EventEmitter2,
-    @Inject() private readonly configService: ConfigService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly configService: ConfigService,
     @Inject(REDIS_SUBSCRIBERS_MAP_TOKEN) private readonly redisSubscribers: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
@@ -34,7 +34,7 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
      * 关闭所有订阅者
      */
     await Promise.all(Array.from(this.redisSubscribers.values()).map((redisSubscriber) => redisSubscriber.unsubscribe()));
-    Array.from(this.redisSubscribers.values()).map((redisSubscriber) => redisSubscriber.destroy());
+    Array.from(this.redisSubscribers.values()).forEach((redisSubscriber) => redisSubscriber.destroy());
   }
 
   async onModuleInit() {
@@ -55,6 +55,6 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
         }),
       ),
     );
-    this.logger.info('Redis事件订阅启动: channel = %s', this.channelMap);
+    this.logger.info('Redis事件订阅启动: channelMap = %o', this.channelMap);
   }
 }

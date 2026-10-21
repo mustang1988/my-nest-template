@@ -2,10 +2,11 @@ import { Logger } from 'winston';
 import { Observable, tap } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { FastifyRequest } from 'fastify';
+import { DataMaskingUtil } from '../util/data-masking.util';
 import { JsonResp } from '../decorator/json-response.decorator';
 import { ContextService } from '../../context/service/context.service';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 
 /**
  * 请求参数日志拦截器
@@ -17,8 +18,8 @@ import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } fr
 @Injectable()
 export class RequestLoggerInterceptor implements NestInterceptor {
   constructor(
-    @Inject() private readonly ctx: ContextService,
-    @Inject() private readonly reflector: Reflector,
+    private readonly ctx: ContextService,
+    private readonly reflector: Reflector,
     @InjectLogger() private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
@@ -30,13 +31,17 @@ export class RequestLoggerInterceptor implements NestInterceptor {
     const controller = context.getClass().name;
     const action = context.getHandler().name;
     const isJsonResp = this.reflector.get(JsonResp, context.getHandler()) ?? true;
-    const { method, url, headers, params, query, body } = request;
+    const { method, url, params, query, body } = request;
+    /**
+     * 敏感请求头脱敏后输出
+     */
+    const maskedHeaders = DataMaskingUtil.maskingObject(request.headers, { fields: ['authorization', 'cookie'] });
     this.logger.debug(
       '[%s] 收到HTTP请求: method = %s, url = %s, headers = %j, params = %j, query = %j, body = %j, controller = %s, action = %s',
       requestId,
       method,
       url,
-      headers,
+      maskedHeaders,
       params,
       query,
       body,

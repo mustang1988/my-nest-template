@@ -6,7 +6,7 @@ import { RabbitmqMessagePipe } from './rabbitmq-message.pipe';
 import { MessageDeserializationException } from '../exception/message-deserialization.exception';
 
 describe(basename(__filename), () => {
-  const testPipe = new RabbitmqMessagePipe();
+  const testPipe = new RabbitmqMessagePipe(BaseMessage);
 
   describe('transform()', () => {
     it('input message instance', () => {

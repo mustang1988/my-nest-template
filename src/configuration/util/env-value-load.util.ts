@@ -10,6 +10,11 @@ import { isBoolean, isEmpty, isInteger, isNil, isNumber } from 'lodash';
 import { MissingRequiredEnvException } from '../exception/missing-required-env.exception';
 
 /**
+ * 16进制字符串校验正则
+ */
+const HEX_REGEX = /^[0-9A-Fa-f]+$/;
+
+/**
  * 环境变量值加载工具类
  */
 export class EnvValueLoadUtil {
@@ -45,8 +50,7 @@ export class EnvValueLoadUtil {
    */
   static loadOptionalHexString(name: string, defaultValue?: string): string | undefined {
     const str = EnvValueLoadUtil.loadOptionalString(name, defaultValue);
-    const hexRegex = /^[0-9A-Fa-f]+$/;
-    if (str && !hexRegex.test(str)) {
+    if (str && !HEX_REGEX.test(str)) {
       throw new InvalidHexEnvException(name);
     }
     return str;
@@ -63,8 +67,7 @@ export class EnvValueLoadUtil {
     if (isNil(value) || isEmpty(value)) {
       throw new MissingRequiredEnvException(name);
     }
-    const hexRegex = /^[0-9,A-F,a-f]+$/;
-    if (!hexRegex.test(value)) {
+    if (!HEX_REGEX.test(value)) {
       throw new InvalidHexEnvException(name);
     }
     return value;
@@ -153,8 +156,12 @@ export class EnvValueLoadUtil {
    * @throws {InvalidNumberEnvException}
    */
   static loadOptionalNumber(name: string, defaultValue?: number): number {
-    const envValue = process.env[name]?.trim() ?? defaultValue;
-    const numberEnvValue = Number(envValue);
+    const envValue = process.env[name]?.trim();
+    if (envValue !== undefined && envValue === '') {
+      throw new InvalidNumberEnvException(name);
+    }
+    const value = envValue ?? defaultValue;
+    const numberEnvValue = Number(value);
     if (!isNaN(numberEnvValue) && isNumber(numberEnvValue)) {
       return numberEnvValue;
     }

@@ -1,6 +1,5 @@
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createClient, RedisClientType } from '@redis/client';
 import { DynamicModule, Module, Provider } from '@nestjs/common';

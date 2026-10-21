@@ -51,7 +51,7 @@ import { CLS_REQUEST_ID, CLS_INSTANCE_ID, CLS_HTTP_BODY, CLS_HTTP_PARAM, CLS_HTT
         },
       },
       /**
-       * 在所有理由全局挂载守卫
+       * 在所有路由上全局挂载守卫
        *
        * 此守卫会在每次收到请求时, 将请求的Body, Query, Param, Header和Cookie参数写入到中间件创建的上下文中
        */

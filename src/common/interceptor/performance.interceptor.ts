@@ -3,17 +3,17 @@ import { Observable, tap } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { ContextService } from '../../context/service/context.service';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 
 /**
  * 性能指标拦截器
  */
 @Injectable()
-export class PerformanceInterseptor implements NestInterceptor {
+export class PerformanceInterceptor implements NestInterceptor {
   constructor(
-    @Inject() private readonly ctx: ContextService,
+    private readonly ctx: ContextService,
+    private readonly configService: ConfigService,
     @InjectLogger() private readonly logger: Logger,
-    @Inject() private readonly configService: ConfigService,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
   }

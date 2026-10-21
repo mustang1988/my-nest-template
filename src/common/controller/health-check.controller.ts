@@ -1,17 +1,18 @@
+import { Logger } from 'winston';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { randomUUID } from 'node:crypto';
 import { ConfigService } from '@nestjs/config';
 import { RedisClientType } from '@redis/client';
+import { Get, Controller } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Get, Controller, Inject } from '@nestjs/common';
 import { AmqpConnectionManager } from 'amqp-connection-manager';
 import { getRedisClientToken } from '../../redis/redis.constant';
 import { S3Client, ListBucketsCommand } from '@aws-sdk/client-s3';
-import { ContextService } from 'src/context/service/context.service';
 import { getMySQLDataSourceToken } from '../../mysql/mysql.constant';
 import { getS3ClientToken } from '../../s3-storage/s3-storage.constant';
 import { getRabbitmqClientToken } from '../../rabbitmq/rabbitmq.constant';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { IHealthCheckResult } from '../interface/health-check-result.interface';
 import { IS3StorageConfiguration } from '../../configuration/interface/s3-storage.interface';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
@@ -24,9 +25,9 @@ import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-c
 @Controller('/api')
 export class HealthCheckController {
   constructor(
-    @Inject() private readonly ctx: ContextService,
-    @Inject() private readonly moduleRef: ModuleRef,
-    @Inject() private readonly configService: ConfigService,
+    private readonly moduleRef: ModuleRef,
+    private readonly configService: ConfigService,
+    @InjectLogger() private readonly logger: Logger,
   ) {}
 
   /**
@@ -45,12 +46,17 @@ export class HealthCheckController {
       for (const redisName of redisNames) {
         const redisClient = this.moduleRef.get<RedisClientType>(getRedisClientToken(redisName), { strict: false });
         if (redisClient) {
-          /**
-           * 发送ping命令进行健康检查
-           */
-          const pingMsg = randomUUID();
-          const redisPingRes = await redisClient.ping(pingMsg);
-          result.redis[redisName] = pingMsg === redisPingRes ? 'healthy' : 'unhealthy';
+          try {
+            /**
+             * 发送ping命令进行健康检查
+             */
+            const pingMsg = randomUUID();
+            const redisPingRes = await redisClient.ping(pingMsg);
+            result.redis[redisName] = pingMsg === redisPingRes ? 'healthy' : 'unhealthy';
+          } catch (error) {
+            this.logger.warn('Redis健康检查失败: name = %s, error = %o', redisName, error);
+            result.redis[redisName] = 'unhealthy';
+          }
         }
       }
     }
@@ -64,12 +70,16 @@ export class HealthCheckController {
       for (const mysqlName of mysqlDataSourceNames) {
         const mysqlDataSource = this.moduleRef.get<DataSource>(getMySQLDataSourceToken(mysqlName), { strict: false });
         if (mysqlDataSource) {
-          /**
-           * 查询mysql版本信息进行健康检查
-           */
-
-          const versionQueryRes = await mysqlDataSource.query<Array<{ version: string }>>(`SELECT version() as version FROM DUAL`);
-          result.mysql[mysqlName] = versionQueryRes.length !== 0 ? 'healthy' : 'unhealthy';
+          try {
+            /**
+             * 查询mysql版本信息进行健康检查
+             */
+            const versionQueryRes = await mysqlDataSource.query<Array<{ version: string }>>(`SELECT version() as version FROM DUAL`);
+            result.mysql[mysqlName] = versionQueryRes.length !== 0 ? 'healthy' : 'unhealthy';
+          } catch (error) {
+            this.logger.warn('MySQL健康检查失败: name = %s, error = %o', mysqlName, error);
+            result.mysql[mysqlName] = 'unhealthy';
+          }
         }
       }
     }

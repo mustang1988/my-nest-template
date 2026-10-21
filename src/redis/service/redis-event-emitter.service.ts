@@ -23,8 +23,8 @@ export class RedisEventEmitterService {
   private readonly channelMap: Map<string, string>;
 
   constructor(
+    private readonly configService: ConfigService,
     @InjectLogger() private readonly logger: Logger,
-    @Inject() private readonly configService: ConfigService,
     @Inject(REDIS_CLIENTS_MAP_TOKEN) private readonly redisClientsMap: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });

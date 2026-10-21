@@ -1,6 +1,6 @@
 import ms from 'ms';
 import { Logger } from 'winston';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ContextService } from '../../context/service/context.service';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
@@ -12,7 +12,7 @@ import { InjectContext } from '../../context/decorator/inject-context.decorator'
 @Injectable()
 export class SampleScheduler {
   constructor(
-    @Inject() private readonly ctx: ContextService,
+    private readonly ctx: ContextService,
     @InjectLogger() private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });

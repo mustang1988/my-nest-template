@@ -14,7 +14,7 @@ export class RedisSocketIoAdapter extends IoAdapter {
   private readonly name: string;
   private adapterConstructor: ReturnType<typeof createAdapter>;
 
-  constructor(app, name?: string) {
+  constructor(app: NestFastifyApplication, name?: string) {
     super(app);
     this.app = app;
     this.name = name ?? 'default';

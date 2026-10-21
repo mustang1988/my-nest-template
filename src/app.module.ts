@@ -10,6 +10,7 @@ import { LoggerModule } from './logger/logger.module';
 import { CommonModule } from './common/common.module';
 import { SampleModule } from './sample/sample.module';
 import { ContextModule } from './context/context.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { WebSocketModule } from './websocket/websocket.module';
 import { S3StorageModule } from './s3-storage/s3-storage.module';
@@ -24,6 +25,10 @@ import { BigintSupportResponseTransformer } from './common/response-transformer/
 @Module({
   imports: [
     // #region 全局模块
+    /**
+     * NestJS 事件驱动模块
+     */
+    EventEmitterModule.forRoot({ global: true }),
     /**
      * NestJS 定时/计划任务模块
      */

@@ -2,9 +2,8 @@ import { Logger } from 'winston';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
 import { SampleEvent } from '../event/sample.event';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SampleMessage } from '../message/sample.message';
-import { ContextService } from '../../context/service/context.service';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
@@ -17,7 +16,6 @@ import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-c
 @Injectable()
 export class SampleEventHandler {
   constructor(
-    @Inject() private readonly ctx: ContextService,
     @InjectLogger() private readonly logger: Logger,
     @InjectRabbitmqClient('default') private readonly rmqClient: ClientProxy,
   ) {
@@ -29,7 +27,7 @@ export class SampleEventHandler {
    *
    * 监听事件: [ESampleEventPattern.SAMPLE_EVENT](../enum/sample-event-pattern.enum.ts)
    *
-   * @param eventPayload 事件委托负载
+   * @param event 事件委托负载
    */
   @OnEvent(ESampleEventPattern.SAMPLE_EVENT)
   @InjectContext()
@@ -39,15 +37,24 @@ export class SampleEventHandler {
      * 发送RMQ队列消息
      */
     const message = new SampleMessage(event.requestId, ESampleMessagePattern.SAMPLE_MESSAGE, event.payload);
-    /**
-     * 发送JSON字符串消息
-     */
-    this.rmqClient.send(message.pattern, message.toString()).subscribe();
 
     /**
-     * 发送对象消息
+     * 以下两种发送方式二选一即可; 两种同时发送时, 同一事件会被队列消费端消费两次
      */
-    this.rmqClient.send(message.pattern, message).subscribe();
+
+    /**
+     * 方式一: 发送JSON字符串消息
+     */
+    this.rmqClient
+      .send(message.pattern, message.toString())
+      .subscribe({ error: (error) => this.logger.error('[%s] 队列消息发送失败: error = %o', message.requestId, error) });
+
+    /**
+     * 方式二: 发送对象消息
+     */
+    this.rmqClient
+      .send(message.pattern, message)
+      .subscribe({ error: (error) => this.logger.error('[%s] 队列消息发送失败: error = %o', message.requestId, error) });
     this.logger.info('[%s] 发送队列消息: message: %j', message.requestId, message);
   }
 }

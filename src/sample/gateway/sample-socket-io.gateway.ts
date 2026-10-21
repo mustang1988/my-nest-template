@@ -26,15 +26,15 @@ export class SampleSocketIoGateway implements OnGatewayConnection<Socket>, OnGat
   }
 
   afterInit(server: Namespace) {
-    this.logger.info('afterInit: server = %o', server);
+    this.logger.info('afterInit: namespace = %s', server.name);
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.info('handleDisconnect: client = %o', client);
+    this.logger.info('handleDisconnect: client = %s', client.id);
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
-    this.logger.info('handleConnection: client = %o, args = %o, ', client, args);
+  handleConnection(client: Socket) {
+    this.logger.info('handleConnection: client = %s', client.id);
   }
 
   /**

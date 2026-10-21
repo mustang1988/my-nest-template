@@ -3,13 +3,13 @@ import { SampleGuard } from '../guard/sample.guard';
 import { SampleService } from '../service/sample.service';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { Cookies } from 'src/common/decorator/cookies.decorator';
-import { PerformanceInterseptor } from '../../common/interceptor/performance.interceptor';
+import { PerformanceInterceptor } from '../../common/interceptor/performance.interceptor';
 import { FileInterceptor, type StorageFile, UploadedFile } from '@blazity/nest-file-fastify';
-import { Controller, Get, HttpCode, Inject, Param, ParseIntPipe, Post, Query, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, ParseIntPipe, Post, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 
 @Controller('/api/sample')
 export class SampleController {
-  constructor(@Inject() private readonly sampleService: SampleService) {}
+  constructor(private readonly sampleService: SampleService) {}
 
   // #region 参数校验示例
   @Get()
@@ -29,7 +29,7 @@ export class SampleController {
   @Post('/upload')
   @UseGuards(SampleGuard)
   @HttpCode(200)
-  @UseInterceptors(PerformanceInterseptor, FileInterceptor('file'))
+  @UseInterceptors(PerformanceInterceptor, FileInterceptor('file'))
   async actionUploadFile(@UploadedFile() file: StorageFile) {
     return {
       size: file.size,

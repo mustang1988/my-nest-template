@@ -14,7 +14,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { RedisSocketIoAdapter } from './websocket/adapter/redis-socket-io.adapter';
 import { WINSTON_MODULE_PROVIDER, WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { PerformanceInterseptor } from './common/interceptor/performance.interceptor';
+import { PerformanceInterceptor } from './common/interceptor/performance.interceptor';
 import { JsonResponseInterceptor } from './common/interceptor/json-response.interceptor';
 import { GlobalExceptionFilter } from './common/exception-filter/global.exception-filter';
 import { RequestLoggerInterceptor } from './common/interceptor/request-logger.interceptor';
@@ -73,7 +73,7 @@ void (async () => {
    *
    * 注意: 多个拦截器注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
-  app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(PerformanceInterseptor), app.get(RequestLoggerInterceptor));
+  app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(PerformanceInterceptor), app.get(RequestLoggerInterceptor));
 
   /**
    * 全局管道注册
@@ -87,12 +87,19 @@ void (async () => {
   /**
    * 全局异常过滤器注册
    *
-   * - 国际化参数校验异常过滤器
    * - 全局异常过滤器
    *
-   * 注意: 多异常过滤器注册时需要注意注册顺序; 注册顺序影响执行顺序
+   * 注意: 多异常过滤器注册时需要注意注册顺序; 后注册的过滤器优先生效, 且过滤器不匹配时不会向后传递
    */
   app.useGlobalFilters(app.get(GlobalExceptionFilter));
+
+  /**
+   * 启用优雅停机
+   *
+   * 收到SIGTERM等终止信号时, 依次触发各模块的onModuleDestroy等生命周期钩子
+   * (Redis订阅退订, Rabbitmq连接关闭, MySQL数据源销毁等), 避免在途请求和队列消息丢失
+   */
+  app.enableShutdownHooks();
 
   /**
    * 设置Socket.IO适配器

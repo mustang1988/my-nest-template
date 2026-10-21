@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { HealthCheckController } from './controller/health-check.controller';
-import { PerformanceInterseptor } from './interceptor/performance.interceptor';
+import { PerformanceInterceptor } from './interceptor/performance.interceptor';
 import { JsonResponseInterceptor } from './interceptor/json-response.interceptor';
 import { GlobalExceptionFilter } from './exception-filter/global.exception-filter';
 import { RequestLoggerInterceptor } from './interceptor/request-logger.interceptor';
@@ -13,8 +13,8 @@ import { RequestLoggerInterceptor } from './interceptor/request-logger.intercept
 @Global()
 @Module({
   imports: [],
-  providers: [JsonResponseInterceptor, GlobalExceptionFilter, RequestLoggerInterceptor, PerformanceInterseptor],
-  exports: [JsonResponseInterceptor, GlobalExceptionFilter, RequestLoggerInterceptor, PerformanceInterseptor],
+  providers: [JsonResponseInterceptor, GlobalExceptionFilter, RequestLoggerInterceptor, PerformanceInterceptor],
+  exports: [JsonResponseInterceptor, GlobalExceptionFilter, RequestLoggerInterceptor, PerformanceInterceptor],
   controllers: [HealthCheckController],
 })
 export class CommonModule {}

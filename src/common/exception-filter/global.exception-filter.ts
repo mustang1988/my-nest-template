@@ -5,7 +5,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { IJsonResponse } from '../interface/json-response.interface';
 import { ContextService } from '../../context/service/context.service';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Injectable } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Injectable } from '@nestjs/common';
 
 /**
  * 全局异常过滤器
@@ -18,7 +18,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Injectabl
 @Catch(HttpException, Error)
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(
-    @Inject() private readonly ctx: ContextService,
+    private readonly ctx: ContextService,
     @InjectLogger() private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
@@ -35,17 +35,21 @@ export class GlobalExceptionFilter implements ExceptionFilter {
            * DTO参数校验Exception信息
            */
           exception.errors.map((err) => Object.values(err.constraints as Record<string, string>))
-        : /**
-           * 其他Exception信息
-           */
-          exception instanceof HttpException
-          ? get(exception, 'response.message', '')
+        : exception instanceof HttpException
+          ? /**
+             * 其他Exception信息
+             *
+             * getResponse()返回值可能是字符串(如new HttpException('msg', code))或包含message字段的对象
+             */
+            typeof exception.getResponse() === 'string'
+            ? exception.getResponse()
+            : (get(exception.getResponse(), 'message') ?? exception.message)
           : /**
              * Error信息
              */
             exception.message;
-    const statusCode = exception instanceof HttpException ? (exception.getStatus() ?? 500) : 500;
-    const { method, url, query, params, body, headers } = request;
+    const statusCode = exception instanceof HttpException ? exception.getStatus() : 500;
+    const { method, url, query, params, body } = request;
     this.logger.error('[%s] %o', requestId, exception);
     const formatedResp: IJsonResponse<undefined> = {
       requestId,
@@ -54,7 +58,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: Date.now(),
       data: undefined,
       error: errorMessage,
-      request: { method, url, query, params, body, headers },
+      /**
+       * 注意: 不回显请求headers, 其中可能包含Authorization/Cookie等敏感信息
+       */
+      request: { method, url, query, params, body },
       instanceId,
     };
     response.code(statusCode).send(formatedResp);

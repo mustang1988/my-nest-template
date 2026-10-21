@@ -6,8 +6,8 @@ import { DataSource, Repository } from 'typeorm';
 import { SampleEvent } from '../event/sample.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SampleEntity } from '../entity/sample.default.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ContextService } from '../../context/service/context.service';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
@@ -21,12 +21,12 @@ export class SampleService {
   private readonly sampleRepo: Repository<SampleEntity>;
 
   constructor(
-    @Inject() private readonly i18n: I18nService,
-    @Inject() private readonly axios: HttpService,
-    @Inject() private readonly ctx: ContextService,
+    private readonly i18n: I18nService,
+    private readonly axios: HttpService,
+    private readonly ctx: ContextService,
+    private readonly eventEmitter: EventEmitter2,
     @InjectLogger() private readonly logger: Logger,
-    @Inject() private readonly eventEmitter: EventEmitter2,
-    @Inject() private readonly redisEventEmitter: RedisEventEmitterService,
+    private readonly redisEventEmitter: RedisEventEmitterService,
     @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
