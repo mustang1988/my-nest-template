@@ -1,5 +1,5 @@
 import { basename } from 'node:path';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import { RabbitmqModule } from './rabbitmq.module';
 import { LoggerModule } from 'src/logger/logger.module';

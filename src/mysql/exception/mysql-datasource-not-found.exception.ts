@@ -3,6 +3,6 @@
  */
 export class MySQLDataSourceNotFoundException extends Error {
   constructor(name: string, options?: ErrorOptions) {
-    super(`未找到指定名称的MySQL数据源对象: ${name}`, options);
+    super(`未找到指定名称的MySQL数据源对象: ${name}`, options ?? { cause: name });
   }
 }

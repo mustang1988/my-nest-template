@@ -6,7 +6,5 @@ import { Global, Module } from '@nestjs/common';
  * - 全局模块
  */
 @Global()
-@Module({
-  providers: [],
-})
+@Module({})
 export class WebSocketModule {}

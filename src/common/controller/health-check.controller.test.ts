@@ -1,18 +1,31 @@
+import bytes from 'bytes';
 import request from 'supertest';
 import { basename } from 'node:path';
 import { AppModule } from 'src/app.module';
-import { Test, TestingModule } from '@nestjs/testing';
+import { NestFactory } from '@nestjs/core';
+import fastifyHelmet from '@fastify/helmet';
+import fastifyCompress from '@fastify/compress';
+import { I18nValidationPipe } from 'nestjs-i18n';
+import fastifyMultipart from '@fastify/multipart';
+import { PerformanceInterceptor } from '../interceptor/performance.interceptor';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { JsonResponseInterceptor } from '../interceptor/json-response.interceptor';
+import { GlobalExceptionFilter } from '../exception-filter/global.exception-filter';
+import { RequestLoggerInterceptor } from '../interceptor/request-logger.interceptor';
 
-describe.skip(basename(__filename), () => {
+describe(basename(__filename), () => {
   let app: NestFastifyApplication;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ bodyLimit: bytes('1GB') as number, trustProxy: true }));
+    await app.register(fastifyHelmet);
+    await app.register(fastifyCompress);
+    // await app.register(fastifyCookie);
+    await app.register(fastifyMultipart);
+    app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(PerformanceInterceptor), app.get(RequestLoggerInterceptor));
+    app.useGlobalPipes(new I18nValidationPipe());
+    app.useGlobalFilters(app.get(GlobalExceptionFilter));
 
-    app = app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
   });

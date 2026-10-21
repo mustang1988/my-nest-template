@@ -11,7 +11,7 @@ import { Controller, Get, HttpCode, Param, ParseIntPipe, Post, Query, UseGuards,
 export class SampleController {
   constructor(private readonly sampleService: SampleService) {}
 
-  // #region 参数校验示例
+  // #region @Cookies() 示例
   @Get()
   actionQueryValidation(@Query() query: SampleQueryDto, @Cookies() cookie: Record<string, string | undefined>): string {
     return JSON.stringify({ query, cookie });

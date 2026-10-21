@@ -1,7 +1,7 @@
 import { basename } from 'node:path';
+import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import { RedisModule } from './redis.module';
-import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerModule } from 'src/logger/logger.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';

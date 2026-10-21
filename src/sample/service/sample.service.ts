@@ -41,8 +41,14 @@ export class SampleService {
       this.logger.warn('[%s] 未找到指定示例数据: id = %s', requestId, id);
       throw new NotFoundException(this.i18n.t('exception.NotFoundException', { args: { entity: 'Sample' } }));
     }
-    const response = await lastValueFrom(this.axios.get<unknown>('http://localhost:3000/api/healthcheck'));
-    this.logger.debug('[%s] 示例数据详情查询, 外部API响应: response = %j', requestId, response.data);
+
+    const url = 'http://localhost:3000/api/healthcheck';
+    try {
+      const response = await lastValueFrom(this.axios.get<unknown>(url));
+      this.logger.debug('[%s] 示例数据详情查询, 外部API响应: response = %j', requestId, response.data);
+    } catch (error) {
+      this.logger.error('[%s] 外部接口请求失败: url = %s, error = %o', requestId, url, error);
+    }
 
     const event = new SampleEvent(this.ctx.getRequestId(), ESampleEventPattern.SAMPLE_EVENT, foundSample);
     /**

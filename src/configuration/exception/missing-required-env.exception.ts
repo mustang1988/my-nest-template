@@ -3,6 +3,6 @@
  */
 export class MissingRequiredEnvException extends Error {
   constructor(envName: string, options?: ErrorOptions) {
-    super(`缺少必须环境变量: ${envName}`, options);
+    super(`缺少必须环境变量: ${envName}`, options ?? { cause: envName });
   }
 }
