@@ -35,6 +35,10 @@ describe(basename(__filename), () => {
     expect(rabbitmqModule);
   });
 
+  afterAll(async () => {
+    await rabbitmqModule.close();
+  });
+
   it('constructor()', () => {
     testInstance = rabbitmqModule.get(TestClass);
     expect(testInstance.defaultRmqClient);

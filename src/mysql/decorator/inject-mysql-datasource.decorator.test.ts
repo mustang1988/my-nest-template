@@ -35,6 +35,10 @@ describe(basename(__filename), () => {
     expect(mysqlModule);
   });
 
+  afterAll(async () => {
+    await mysqlModule.close();
+  });
+
   it('constructor()', () => {
     testInstance = mysqlModule.get(TestClass);
     expect(testInstance.defaultMySQLDataSource);

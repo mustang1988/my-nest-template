@@ -11,6 +11,7 @@ import { RedisModule } from 'src/redis/redis.module';
 import { LoggerModule } from 'src/logger/logger.module';
 import { CommonModule } from 'src/common/common.module';
 import { ContextModule } from 'src/context/context.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RabbitmqModule } from 'src/rabbitmq/rabbitmq.module';
 import { S3StorageModule } from 'src/s3-storage/s3-storage.module';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
@@ -27,6 +28,7 @@ describe(basename(__filename), () => {
         SampleModule,
         ScheduleModule.forRoot({ cronJobs: true, intervals: true, timeouts: true }),
         HttpModule.register({ global: true, timeout: ms('5min') }),
+        EventEmitterModule.forRoot({ global: true }),
         EventModule,
         CommonModule,
         LoggerModule,

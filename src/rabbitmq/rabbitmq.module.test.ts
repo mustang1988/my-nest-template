@@ -1,5 +1,5 @@
 import { basename } from 'node:path';
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import { RabbitmqModule } from './rabbitmq.module';
 import { LoggerModule } from 'src/logger/logger.module';
@@ -24,6 +24,7 @@ describe(basename(__filename), () => {
         ],
       }).compile();
       expect(rabbitmqModule);
+      await rabbitmqModule.close();
     });
 
     it('指定名称配置不初始化', async () => {
@@ -53,6 +54,7 @@ describe(basename(__filename), () => {
         ],
       }).compile();
       expect(rabbitmqModule);
+      await rabbitmqModule.close();
     });
 
     it('指定名称不存在', async () => {

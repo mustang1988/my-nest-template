@@ -1,11 +1,12 @@
 import { isInteger } from 'lodash';
 import { basename } from 'node:path';
-import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { RedisModule } from '../redis.module';
+import { Test, TestingModule } from '@nestjs/testing';
 import { BaseEvent } from 'src/event/event/base.event';
 import { LoggerModule } from 'src/logger/logger.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { RedisEventEmitterService } from './redis-event-emitter.service';
 import configurationLoader from 'src/configuration/configuration-loader';
@@ -14,12 +15,14 @@ import { RedisClientNotFoundException } from '../exception/redis-client-not-foun
 import { IRedisConfiguration } from 'src/configuration/interface/redis-configuration.interface';
 
 describe(basename(__filename), () => {
+  let redisModule: TestingModule;
   let testService: RedisEventEmitterService;
 
   beforeAll(async () => {
-    const redisModule = await Test.createTestingModule({
+    redisModule = await Test.createTestingModule({
       imports: [
         LoggerModule,
+        EventEmitterModule.forRoot({ global: true }),
         RedisModule.forRootAsync({
           useFactory: (configService: ConfigService) => {
             const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
@@ -32,6 +35,10 @@ describe(basename(__filename), () => {
     expect(redisModule);
     testService = redisModule.get(RedisEventEmitterService);
     expect(testService);
+  });
+
+  afterAll(async () => {
+    await redisModule.close();
   });
 
   describe('emit()', () => {

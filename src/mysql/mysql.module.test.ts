@@ -24,6 +24,7 @@ describe(basename(__filename), () => {
         ],
       }).compile();
       expect(mysqlModule);
+      await mysqlModule.close();
     });
 
     it('指定名称配置不初始化', async () => {
@@ -53,6 +54,7 @@ describe(basename(__filename), () => {
         ],
       }).compile();
       expect(mysqlModule);
+      await mysqlModule.close();
     });
 
     it('指定名称不存在', async () => {

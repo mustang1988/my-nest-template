@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { RedisModule } from '../redis.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerModule } from 'src/logger/logger.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { RedisClient, type RedisClientType } from '@redis/client';
 import { InjectRedisClient } from './inject-redis-client.decorator';
@@ -22,6 +23,7 @@ describe(basename(__filename), () => {
     redisModule = await Test.createTestingModule({
       imports: [
         LoggerModule,
+        EventEmitterModule.forRoot({ global: true }),
         RedisModule.forRootAsync({
           useFactory: (configService: ConfigService) => {
             const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
@@ -33,6 +35,10 @@ describe(basename(__filename), () => {
       providers: [TestClass],
     }).compile();
     expect(redisModule);
+  });
+
+  afterAll(async () => {
+    await redisModule.close();
   });
 
   it('constructor()', () => {

@@ -12,9 +12,9 @@
     "start:dev": "dotenv -e .env -- nest start --watch",
     "start:prod": "node dist/main",
     "lint": "oxlint src/ test/",
-    "test": "dotenv -e .env.unit-test -- jest",
+    "test": "dotenv -e .env.unit-test -- jest --forceExit",
     "test:watch": "jest --watch",
-    "test:cov": "dotenv -e .env.unit-test -- jest --coverage",
+    "test:cov": "dotenv -e .env.unit-test -- jest --coverage --forceExit",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
