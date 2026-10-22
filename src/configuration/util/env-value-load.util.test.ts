@@ -176,7 +176,7 @@ describe(basename(__filename), () => {
     });
 
     it('未找到指定环境变量, 返回指定的默认值', () => {
-      const defaultValue = faker.number.int({ min: 0, max: 1 }) === 0;
+      const defaultValue = faker.datatype.boolean();
       const result = EnvValueLoadUtil.loadOptionalBoolean(faker.lorem.word(), defaultValue);
       expect(result).toStrictEqual(defaultValue);
     });

@@ -6,10 +6,10 @@ import { DataSource, Repository } from 'typeorm';
 import { SampleEvent } from '../event/sample.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SampleEntity } from '../entity/sample.default.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { ContextService } from '../../context/service/context.service';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
 import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-datasource.decorator';
 
@@ -35,7 +35,14 @@ export class SampleService {
 
   async viewSampleOrThrow(id: number): Promise<SampleEntity> {
     const requestId = this.ctx.getRequestId(); // CLS上下文中获取请求ID
-    this.logger.debug('[%s] 示例数据详情查询, 入参: id = %s', requestId, id);
+    const executionContext: ExecutionContext = this.ctx.getExecutionContext(); // CLS上下文中获取当前请求的ExecutionContext
+    this.logger.debug(
+      '[%s] 示例数据详情查询, 入参: id = %s, controller = %s, action = %s',
+      requestId,
+      id,
+      executionContext.getClass().name, // Controller类名
+      executionContext.getHandler().name, // Action函数名
+    );
     const foundSample = await this.sampleRepo.findOne({ where: { id } });
     if (foundSample === null) {
       this.logger.warn('[%s] 未找到指定示例数据: id = %s', requestId, id);
