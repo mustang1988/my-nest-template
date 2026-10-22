@@ -18,6 +18,37 @@ import { getRedisClientToken, REDIS_CLIENTS_MAP_TOKEN, REDIS_CLIENT_OPTIONS_TOKE
  */
 @Module({})
 export class RedisModule {
+  /**
+   * 创建Redis连接客户端
+   *
+   * @param options 连接配置选项
+   * @param logger 日志实例
+   * @param purpose 用途说明(输出日志用), 如: 客户端/订阅端
+   */
+  private static createRedisClient(options: IRedisClientOptions, logger: Logger, purpose: string): RedisClientType {
+    const redisClient = createClient({
+      socket: {
+        host: options.host,
+        port: options.port,
+        /**
+         * 断链自动重连策略
+         *
+         * 返回值为下次重连的等待毫秒数; 此处配置为重试次数 * 100ms, 上限3000ms, 无限重试
+         */
+        reconnectStrategy: (retries: number) => Math.min(retries * 100, 3000),
+      },
+      username: options.username,
+      password: options.password,
+      database: options.db,
+    });
+    /**
+     * 连接异常与断链重连事件日志
+     */
+    redisClient.on('error', (error) => logger.error('Redis%s连接异常: name = %s, error = %o', purpose, options.name, error));
+    redisClient.on('reconnecting', () => logger.warn('Redis%s断链, 自动重连中: name = %s', purpose, options.name));
+    return redisClient;
+  }
+
   static forRootAsync(options: IRedisModuleAsyncOptions): DynamicModule {
     const { isGlobal = true, inject = [ConfigService], imports = [ConfigModule], names = ['default'], useFactory } = options;
 
@@ -37,15 +68,7 @@ export class RedisModule {
           if (!names.includes(redisClientOpt.name)) {
             continue; // name中没有的配置不初始化连接客户端
           }
-          const redisClient = createClient({
-            socket: {
-              host: redisClientOpt.host,
-              port: redisClientOpt.port,
-            },
-            username: redisClientOpt.username,
-            password: redisClientOpt.password,
-            database: redisClientOpt.db,
-          });
+          const redisClient = RedisModule.createRedisClient(redisClientOpt, logger, '客户端');
           await redisClient.connect();
           logger.info(
             'Redis客户端初始化完成: name = %s, options = %j',
@@ -68,15 +91,7 @@ export class RedisModule {
           if (!names.includes(redisClientOpt.name)) {
             continue; // name中没有的配置不初始化连接客户端
           }
-          const redisClient = createClient({
-            socket: {
-              host: redisClientOpt.host,
-              port: redisClientOpt.port,
-            },
-            username: redisClientOpt.username,
-            password: redisClientOpt.password,
-            database: redisClientOpt.db,
-          });
+          const redisClient = RedisModule.createRedisClient(redisClientOpt, logger, '订阅端');
           await redisClient.connect();
           logger.info(
             'Redis订阅端初始化完成: name = %s, options = %j',

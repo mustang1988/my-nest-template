@@ -43,6 +43,7 @@ export default (): IConfiguration => ({
       timezone: EnvValueLoadUtil.loadOptionalString('DEFAULT_MYSQL_TIMEZONE', '+08:00'),
       enableLogger: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_LOGGER', false),
       enableSynchronize: EnvValueLoadUtil.loadOptionalBoolean('DEFAULT_MYSQL_SYNC', false),
+      poolSize: EnvValueLoadUtil.loadOptionalInteger('DEFAULT_MYSQL_POOL_SIZE', 10),
     },
   },
 

@@ -1,6 +1,7 @@
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AmqpConnectionManager } from 'amqp-connection-manager';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { DataMaskingUtil } from '../common/util/data-masking.util';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
@@ -48,9 +49,30 @@ export class RabbitmqModule {
               noAck: true,
               persistent: true,
               queueOptions: { durable: true },
+              socketOptions: {
+                /**
+                 * 断链自动重连配置(底层连接基于amqp-connection-manager)
+                 *
+                 * - heartbeatIntervalInSeconds: 心跳间隔(秒), 用于及时检测断链
+                 * - reconnectTimeInSeconds: 断链后重连间隔(秒), 默认与心跳间隔一致
+                 *
+                 * 断链后自动无限重连, 重连成功后自动重建channel
+                 */
+                heartbeatIntervalInSeconds: 5,
+                reconnectTimeInSeconds: 5,
+              },
             },
           });
           await rmqClient.connect();
+          /**
+           * 断链与自动重连事件日志
+           *
+           * 在connect()之后挂载, 首次连接的connect事件不会重复记录
+           */
+          const connectionManager = rmqClient.unwrap<AmqpConnectionManager>();
+          connectionManager.on('connect', () => logger.info('Rabbitmq发送端连接建立(含断链自动重连): name = %s', name));
+          connectionManager.on('disconnect', ({ err }) => logger.error('Rabbitmq发送端断链, 将自动重连: name = %s, error = %o', name, err));
+          connectionManager.on('connectFailed', ({ err }) => logger.error('Rabbitmq发送端连接失败, 将继续重试: name = %s, error = %o', name, err));
           logger.info(
             'Rabbitmq发送端初始化完成: name = %s, options = %j',
             name,

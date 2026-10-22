@@ -50,6 +50,17 @@ export class MySQLModule {
             logger: 'formatted-console',
             bigNumberStrings: false,
             entities: [__dirname + `/../**/*.${mysqlOpt.name}.entity{.ts,.js}`], // 加载其他模块下 xxx.{连接名称}.entity文件名的实体
+            extra: {
+              /**
+               * mysql2连接池选项(自动重连)
+               *
+               * - MySQL基于连接池访问, 无客户端级"重连"概念; 连接异常断链时连接池自动剔除损坏连接, 后续查询自动创建新连接, 服务恢复后无需干预
+               * - enableKeepAlive开启TCP keepAlive, 及时检测空闲连接断链, 避免拿到已断开的连接
+               */
+              connectionLimit: mysqlOpt.poolSize,
+              enableKeepAlive: true,
+              keepAliveInitialDelay: 10_000,
+            },
           });
           mysqlDataSourceMap.set(mysqlOpt.name, dataSource);
           await dataSource.initialize();

@@ -78,4 +78,13 @@ export interface IMySQLConfiguration {
    * - 默认值: false
    */
   enableSynchronize?: boolean;
+
+  /**
+   * 数据库连接池大小
+   *
+   * - 可选
+   * - 整数
+   * - 默认值: 10
+   */
+  poolSize?: number;
 }

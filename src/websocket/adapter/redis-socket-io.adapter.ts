@@ -27,6 +27,12 @@ export class RedisSocketIoAdapter extends IoAdapter {
       socket: {
         host: redisConfig.host,
         port: redisConfig.port,
+        /**
+         * 断链自动重连策略
+         *
+         * 返回值为下次重连的等待毫秒数; 此处配置为重试次数 * 100ms, 上限3000ms, 无限重试
+         */
+        reconnectStrategy: (retries: number) => Math.min(retries * 100, 3000),
       },
       username: redisConfig.username,
       password: redisConfig.password,

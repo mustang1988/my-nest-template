@@ -130,6 +130,18 @@ void (async () => {
             noAck,
             persistent: true,
             queueOptions: { durable: true },
+            socketOptions: {
+              /**
+               * 断链自动重连配置(底层连接基于amqp-connection-manager)
+               *
+               * - heartbeatIntervalInSeconds: 心跳间隔(秒), 用于及时检测断链
+               * - reconnectTimeInSeconds: 断链后重连间隔(秒), 默认与心跳间隔一致
+               *
+               * 断链后自动无限重连, 重连成功后自动重建channel并恢复队列消费
+               */
+              heartbeatIntervalInSeconds: 5,
+              reconnectTimeInSeconds: 5,
+            },
           },
         });
       });
