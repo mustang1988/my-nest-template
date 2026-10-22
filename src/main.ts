@@ -53,7 +53,7 @@ void (async () => {
   /**
    * 注册fastify-cookie插件
    *
-   * 用来支持获取请求Cookie
+   * 用来支持获取请求Cookie和设置响应Cookie
    */
   await app.register(fastifyCookie);
 
@@ -78,11 +78,11 @@ void (async () => {
   /**
    * 全局管道注册
    *
-   * - 国际化参数校验错误处理管道
+   * - 国际化参数校验错误处理管道(继承自@nestjs/common包中的ValidationPipe, 因此项目中所有的Controller中都不再需要使用ValidationPipe)
    *
    * 注意: 多个管道注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
-  app.useGlobalPipes(new I18nValidationPipe());
+  app.useGlobalPipes(new I18nValidationPipe({ stopAtFirstError: true }));
 
   /**
    * 全局异常过滤器注册
