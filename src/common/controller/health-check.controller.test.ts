@@ -11,6 +11,7 @@ import { PerformanceInterceptor } from '../interceptor/performance.interceptor';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { JsonResponseInterceptor } from '../interceptor/json-response.interceptor';
 import { GlobalExceptionFilter } from '../exception-filter/global.exception-filter';
+import { RedisSocketIoAdapter } from 'src/websocket/adapter/redis-socket-io.adapter';
 import { RequestLoggerInterceptor } from '../interceptor/request-logger.interceptor';
 
 describe(basename(__filename), () => {
@@ -25,6 +26,9 @@ describe(basename(__filename), () => {
     app.useGlobalInterceptors(app.get(JsonResponseInterceptor), app.get(PerformanceInterceptor), app.get(RequestLoggerInterceptor));
     app.useGlobalPipes(new I18nValidationPipe());
     app.useGlobalFilters(app.get(GlobalExceptionFilter));
+    const redisSocketIoAdapter = new RedisSocketIoAdapter(app);
+    await redisSocketIoAdapter.connectToRedis();
+    app.useWebSocketAdapter(redisSocketIoAdapter);
 
     await app.init();
     await app.getHttpAdapter().getInstance().ready();

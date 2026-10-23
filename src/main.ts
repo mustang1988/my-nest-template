@@ -102,7 +102,7 @@ void (async () => {
   app.enableShutdownHooks();
 
   /**
-   * 设置Socket.IO适配器
+   * 设置RedisSocketIoAdapter作为Socket.IO适配器
    */
   const redisSocketIoAdapter = new RedisSocketIoAdapter(app);
   await redisSocketIoAdapter.connectToRedis();

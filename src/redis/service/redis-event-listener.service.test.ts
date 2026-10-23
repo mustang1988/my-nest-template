@@ -3,10 +3,12 @@ import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { RedisModule } from '../redis.module';
+import { RedisClientType } from '@redis/client';
 import { EventModule } from 'src/event/event.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseEvent } from 'src/event/event/base.event';
 import { LoggerModule } from 'src/logger/logger.module';
+import { getRedisClientToken } from '../redis.constant';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import configurationLoader from 'src/configuration/configuration-loader';
 import { RedisEventEmitterService } from './redis-event-emitter.service';
@@ -72,6 +74,12 @@ describe(basename(__filename), () => {
     it('指定非当前实例ID', async () => {
       const event = new BaseEvent(randomUUID(), testEvent);
       await redisEventEmitterService.emit(event, { instanceId: faker.number.int({ min: 1, max: 5 }) });
+    });
+
+    it('发布无效格式的事件', async () => {
+      const redisClient: RedisClientType = redisModule.get(getRedisClientToken('default'));
+      expect(redisClient);
+      await redisClient.publish('channel:default', faker.lorem.text());
     });
   });
 });

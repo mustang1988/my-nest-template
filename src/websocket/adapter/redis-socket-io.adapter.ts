@@ -1,8 +1,8 @@
 import { ServerOptions } from 'socket.io';
-import { createClient } from '@redis/client';
 import { ConfigService } from '@nestjs/config';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
+import { createClient, RedisClientType } from '@redis/client';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { IRedisConfiguration } from 'src/configuration/interface/redis-configuration.interface';
 
@@ -10,20 +10,19 @@ import { IRedisConfiguration } from 'src/configuration/interface/redis-configura
  * 基于Redis的Socket.IO适配器
  */
 export class RedisSocketIoAdapter extends IoAdapter {
-  private readonly app: NestFastifyApplication;
   private readonly name: string;
+  private readonly app: NestFastifyApplication;
+  private readonly publishClient: RedisClientType;
+  private readonly subscrubeClient: RedisClientType;
   private adapterConstructor: ReturnType<typeof createAdapter>;
 
   constructor(app: NestFastifyApplication, name?: string) {
     super(app);
     this.app = app;
     this.name = name ?? 'default';
-  }
-
-  async connectToRedis(): Promise<void> {
     const configService = this.app.get(ConfigService);
     const redisConfig = configService.getOrThrow<IRedisConfiguration>(`redis.${this.name}`);
-    const pubClient = createClient({
+    this.publishClient = createClient({
       socket: {
         host: redisConfig.host,
         port: redisConfig.port,
@@ -38,9 +37,12 @@ export class RedisSocketIoAdapter extends IoAdapter {
       password: redisConfig.password,
       database: redisConfig.db,
     });
-    const subClient = pubClient.duplicate();
-    await Promise.all([pubClient.connect(), subClient.connect()]);
-    this.adapterConstructor = createAdapter(pubClient, subClient);
+    this.subscrubeClient = this.publishClient.duplicate();
+  }
+
+  async connectToRedis(): Promise<void> {
+    await Promise.all([this.publishClient.connect(), this.subscrubeClient.connect()]);
+    this.adapterConstructor = createAdapter(this.publishClient, this.subscrubeClient);
   }
 
   createIOServer(port: number, options?: ServerOptions): any {

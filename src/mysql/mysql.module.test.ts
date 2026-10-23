@@ -46,6 +46,7 @@ describe(basename(__filename), () => {
                 timezone: 'Z',
                 enableLogger: faker.datatype.boolean(),
                 enableSynchronize: faker.datatype.boolean(),
+                poolSize: faker.number.int({ min: 1, max: 10 }),
               });
               return options;
             },
