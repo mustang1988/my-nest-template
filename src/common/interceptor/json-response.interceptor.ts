@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core';
 import { JsonResp } from '../decorator/json-response.decorator';
 import { IJsonResponse } from '../interface/json-response.interface';
 import { ContextService } from '../../context/service/context.service';
-import { Inject, Injectable, CallHandler, NestInterceptor, ExecutionContext } from '@nestjs/common';
+import { Injectable, CallHandler, NestInterceptor, ExecutionContext } from '@nestjs/common';
 
 /**
  * JSON响应格式化拦截器
@@ -16,8 +16,8 @@ import { Inject, Injectable, CallHandler, NestInterceptor, ExecutionContext } fr
 @Injectable()
 export class JsonResponseInterceptor implements NestInterceptor {
   constructor(
-    @Inject() private readonly ctx: ContextService,
-    @Inject() private readonly reflector: Reflector,
+    private readonly ctx: ContextService,
+    private readonly reflector: Reflector,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {

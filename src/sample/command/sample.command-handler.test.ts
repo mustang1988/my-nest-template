@@ -14,9 +14,9 @@ import configurationLoader from 'src/configuration/configuration-loader';
 import { IMySQLConfiguration } from 'src/configuration/interface/mysql-configuration.interface';
 
 describe(basename(__filename), () => {
+  let dataSource: DataSource;
   let testingModule: TestingModule;
   let testHandler: SampleCommandHandler;
-  let dataSource: DataSource;
   /**
    * 测试过程中创建的示例数据ID, 用于测试结束后清理
    */
@@ -40,6 +40,14 @@ describe(basename(__filename), () => {
     dataSource = testingModule.get<DataSource>(getMySQLDataSourceToken('default'));
   });
 
+  afterAll(async () => {
+    /**
+     * 清理测试创建的示例数据
+     */
+    await dataSource.getRepository(SampleEntity).delete(createdSampleIds);
+    await testingModule.close();
+  });
+
   describe('execute()', () => {
     it('正常', async () => {
       const command = new SampleCommand(randomUUID(), faker.lorem.word());
@@ -49,13 +57,5 @@ describe(basename(__filename), () => {
       expect(result.name).toStrictEqual(command.name);
       createdSampleIds.push(result.id);
     });
-  });
-
-  afterAll(async () => {
-    /**
-     * 清理测试创建的示例数据
-     */
-    await dataSource.getRepository(SampleEntity).delete(createdSampleIds);
-    await testingModule.close();
   });
 });

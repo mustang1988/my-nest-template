@@ -12,8 +12,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { getMySQLDataSourceToken } from 'src/mysql/mysql.constant';
 import configurationLoader from 'src/configuration/configuration-loader';
-import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 import { IMySQLConfiguration } from 'src/configuration/interface/mysql-configuration.interface';
+import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 
 describe(basename(__filename), () => {
   let testingModule: TestingModule;

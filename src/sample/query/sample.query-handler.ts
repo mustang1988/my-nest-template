@@ -18,9 +18,9 @@ export class SampleQueryHandler implements IQueryHandler<SampleQuery> {
   private readonly sampleRepo: Repository<SampleEntity>;
 
   constructor(
-    @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
     private readonly i18n: I18nService,
     @InjectLogger() private readonly logger: Logger,
+    @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     this.sampleRepo = this.defaultDataSource.getRepository(SampleEntity);

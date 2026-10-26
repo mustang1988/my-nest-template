@@ -1,8 +1,8 @@
 import { Logger } from 'winston';
+import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
 import { SampleEvent } from '../event/sample.event';
-import { Injectable } from '@nestjs/common';
 import { SampleMessage } from '../message/sample.message';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';

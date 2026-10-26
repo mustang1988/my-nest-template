@@ -18,8 +18,8 @@ export class SampleCommandHandler implements ICommandHandler<SampleCommand> {
   private readonly sampleRepo: Repository<SampleEntity>;
 
   constructor(
-    @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
     @InjectLogger() private readonly logger: Logger,
+    @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
     this.sampleRepo = this.defaultDataSource.getRepository(SampleEntity);
