@@ -1,6 +1,7 @@
 import ms from 'ms';
 import { basename } from 'node:path';
 import { Test } from '@nestjs/testing';
+import { CqrsModule } from '@nestjs/cqrs';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { SampleModule } from '../sample.module';
@@ -32,6 +33,7 @@ describe(basename(__filename), () => {
         ScheduleModule.forRoot({ cronJobs: true, intervals: true, timeouts: true }),
         HttpModule.register({ global: true, timeout: ms('5min') }),
         EventEmitterModule.forRoot({ global: true }),
+        CqrsModule.forRoot(),
         EventModule,
         CommonModule,
         LoggerModule,

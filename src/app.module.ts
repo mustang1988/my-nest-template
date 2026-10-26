@@ -1,5 +1,6 @@
 import ms from 'ms';
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -44,6 +45,10 @@ import { BigintSupportResponseTransformer } from './common/response-transformer/
         transformResponse: [BigintSupportResponseTransformer],
       }),
     }),
+    /**
+     * NestJS CQRS模块
+     */
+    CqrsModule.forRoot(),
     EventModule,
     CommonModule,
     LoggerModule,

@@ -14,3 +14,10 @@ export class SampleQueryDto {
   @IsOptional()
   sample_bar: number;
 }
+
+export class SampleCreateDto {
+  @Length(1, 100, { message: i18nValidationMessage('validation.Length') })
+  @IsString({ message: i18nValidationMessage('validation.IsString') })
+  @IsNotEmpty({ message: i18nValidationMessage('validation.IsNotEmpty') })
+  name: string;
+}
