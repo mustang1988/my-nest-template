@@ -1,0 +1,3 @@
+{
+  "NotFoundException": "$t(entity.{entity}) Not Found"
+}
