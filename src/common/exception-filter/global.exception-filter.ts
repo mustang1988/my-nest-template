@@ -1,10 +1,9 @@
 import { get } from 'lodash';
-import { Logger } from 'winston';
 import { I18nValidationException } from 'nestjs-i18n';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { IJsonResponse } from '../interface/json-response.interface';
 import { ContextService } from '../../context/service/context.service';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Injectable } from '@nestjs/common';
 
 /**
@@ -16,12 +15,9 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Injectable } from
  */
 @Injectable()
 @Catch(HttpException, Error)
-export class GlobalExceptionFilter implements ExceptionFilter {
-  constructor(
-    private readonly ctx: ContextService,
-    @InjectLogger() private readonly logger: Logger,
-  ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+export class GlobalExceptionFilter extends AutoContextLogger implements ExceptionFilter {
+  constructor(private readonly ctx: ContextService) {
+    super();
   }
 
   catch(exception: HttpException | Error, host: ArgumentsHost) {

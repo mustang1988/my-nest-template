@@ -8,22 +8,17 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Logger } from 'winston';
 import { Namespace, Socket } from 'socket.io';
-import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from 'src/logger/auto-context-logger';
 import { ESampleWebSocketEvent } from '../enum/sample-websocket-event.enum';
 
 /**
  * 基于Socket.IO的WebSocket示例
  */
 @WebSocketGateway({ namespace: 'sample', transports: ['websocket'] })
-export class SampleSocketIoGateway implements OnGatewayConnection<Socket>, OnGatewayDisconnect<Socket>, OnGatewayInit<Namespace> {
+export class SampleSocketIoGateway extends AutoContextLogger implements OnGatewayConnection<Socket>, OnGatewayDisconnect<Socket>, OnGatewayInit<Namespace> {
   @WebSocketServer()
   namespace: Namespace;
-
-  constructor(@InjectLogger() private readonly logger: Logger) {
-    this.logger = this.logger.child({ context: this.constructor.name });
-  }
 
   afterInit(server: Namespace) {
     this.logger.info('afterInit: namespace = %s', server.name);

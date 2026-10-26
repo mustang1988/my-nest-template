@@ -1,11 +1,10 @@
-import { Logger } from 'winston';
 import { Channel, Message } from 'amqplib';
 import { Controller } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SampleMessage } from '../message/sample.message';
 import { ContextService } from '../../context/service/context.service';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { RabbitmqMessagePipe } from 'src/rabbitmq/pipe/rabbitmq-message.pipe';
 import { InjectContext } from '../../context/decorator/inject-context.decorator';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
@@ -14,7 +13,7 @@ import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices'
  * 示例队列消费
  */
 @Controller()
-export class SampleConsumer {
+export class SampleConsumer extends AutoContextLogger {
   /**
    * 队列消息是否自动ACK
    *
@@ -25,9 +24,8 @@ export class SampleConsumer {
   constructor(
     private readonly ctx: ContextService,
     private readonly configService: ConfigService,
-    @InjectLogger() private readonly logger: Logger,
   ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+    super();
     this.noAck = this.configService.getOrThrow<boolean>('rabbitmq.default.noAck');
   }
 

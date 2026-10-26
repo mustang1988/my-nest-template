@@ -1,10 +1,9 @@
-import { Logger } from 'winston';
 import { ConfigService } from '@nestjs/config';
 import type { RedisClientType } from '@redis/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BaseEvent } from '../../event/event/base.event';
 import { REDIS_SUBSCRIBERS_MAP_TOKEN } from '../redis.constant';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
 
@@ -12,7 +11,7 @@ import { IRedisConfiguration } from '../../configuration/interface/redis-configu
  * Redis事件订阅监听服务
  */
 @Injectable()
-export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy {
+export class RedisEventListenerService extends AutoContextLogger implements OnModuleInit, OnModuleDestroy {
   /**
    * Redis事件订阅通道
    */
@@ -21,10 +20,9 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
   constructor(
     private readonly eventEmitter: EventEmitter2,
     private readonly configService: ConfigService,
-    @InjectLogger() private readonly logger: Logger,
     @Inject(REDIS_SUBSCRIBERS_MAP_TOKEN) private readonly redisSubscribers: Map<string, RedisClientType>,
   ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+    super();
     const redisConfig = this.configService.getOrThrow<Record<string, Required<IRedisConfiguration>>>('redis');
     this.channelMap = new Map(Object.keys(redisConfig).map((name) => [name, redisConfig[name].eventChannel]));
   }

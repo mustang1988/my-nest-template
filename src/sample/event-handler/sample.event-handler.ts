@@ -1,4 +1,3 @@
-import { Logger } from 'winston';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
@@ -6,7 +5,7 @@ import { SampleEvent } from '../event/sample.event';
 import { SampleMessage } from '../message/sample.message';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { ESampleMessagePattern } from '../enum/sample-message-pattern.enum';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { InjectContext } from '../../context/decorator/inject-context.decorator';
 import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-client.decorator';
 
@@ -14,12 +13,9 @@ import { InjectRabbitmqClient } from '../../rabbitmq/decorator/inject-rabbitmq-c
  * 示例事件委托处理器
  */
 @Injectable()
-export class SampleEventHandler {
-  constructor(
-    @InjectLogger() private readonly logger: Logger,
-    @InjectRabbitmqClient('default') private readonly rmqClient: ClientProxy,
-  ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+export class SampleEventHandler extends AutoContextLogger {
+  constructor(@InjectRabbitmqClient('default') private readonly rmqClient: ClientProxy) {
+    super();
   }
 
   /**

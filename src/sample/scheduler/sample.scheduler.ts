@@ -1,21 +1,17 @@
 import ms from 'ms';
-import { Logger } from 'winston';
 import { Injectable } from '@nestjs/common';
 import { ContextService } from '../../context/service/context.service';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { InjectContext } from '../../context/decorator/inject-context.decorator';
 
 /**
  * 示例定时/计划任务执行器
  */
 @Injectable()
-export class SampleScheduler {
-  constructor(
-    private readonly ctx: ContextService,
-    @InjectLogger() private readonly logger: Logger,
-  ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+export class SampleScheduler extends AutoContextLogger {
+  constructor(private readonly ctx: ContextService) {
+    super();
   }
 
   /**

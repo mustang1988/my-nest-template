@@ -1,11 +1,10 @@
-import { Logger } from 'winston';
 import { Observable, tap } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { FastifyRequest } from 'fastify';
 import { DataMaskingUtil } from '../util/data-masking.util';
 import { JsonResp } from '../decorator/json-response.decorator';
 import { ContextService } from '../../context/service/context.service';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 
 /**
@@ -16,13 +15,12 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
  * 建议在开发调试阶段使用
  */
 @Injectable()
-export class RequestLoggerInterceptor implements NestInterceptor {
+export class RequestLoggerInterceptor extends AutoContextLogger implements NestInterceptor {
   constructor(
     private readonly ctx: ContextService,
     private readonly reflector: Reflector,
-    @InjectLogger() private readonly logger: Logger,
   ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+    super();
   }
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {

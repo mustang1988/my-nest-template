@@ -1,21 +1,19 @@
-import { Logger } from 'winston';
 import { Observable, tap } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { ContextService } from '../../context/service/context.service';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 
 /**
  * 性能指标拦截器
  */
 @Injectable()
-export class PerformanceInterceptor implements NestInterceptor {
+export class PerformanceInterceptor extends AutoContextLogger implements NestInterceptor {
   constructor(
     private readonly ctx: ContextService,
     private readonly configService: ConfigService,
-    @InjectLogger() private readonly logger: Logger,
   ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+    super();
   }
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {

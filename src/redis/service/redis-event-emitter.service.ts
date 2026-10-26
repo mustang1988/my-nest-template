@@ -1,11 +1,10 @@
-import { Logger } from 'winston';
 import { ConfigService } from '@nestjs/config';
 import { Inject, Injectable } from '@nestjs/common';
 import type { RedisClientType } from '@redis/client';
 import { EventType } from '../../event/type/event.type';
 import { BaseEvent } from '../../event/event/base.event';
 import { REDIS_CLIENTS_MAP_TOKEN } from '../redis.constant';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { IRedisEventEmitOptions } from '../interface/redis-event-emit-options.interface';
 import { RedisClientNotFoundException } from '../exception/redis-client-not-found.exception';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
@@ -16,7 +15,7 @@ import { IRedisConfiguration } from '../../configuration/interface/redis-configu
  * 通过Redis的PUB/SUB实现NestJS原有@nestjs/event-emitter在多实例部署下无法做到的跨实例事件委托
  */
 @Injectable()
-export class RedisEventEmitterService {
+export class RedisEventEmitterService extends AutoContextLogger {
   /**
    * Redis事件发布通道
    */
@@ -24,10 +23,9 @@ export class RedisEventEmitterService {
 
   constructor(
     private readonly configService: ConfigService,
-    @InjectLogger() private readonly logger: Logger,
     @Inject(REDIS_CLIENTS_MAP_TOKEN) private readonly redisClientsMap: Map<string, RedisClientType>,
   ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+    super();
     const redisConfig = this.configService.getOrThrow<Record<string, Required<IRedisConfiguration>>>('redis');
     this.channelMap = new Map(Object.keys(redisConfig).map((name) => [name, redisConfig[name].eventChannel]));
   }

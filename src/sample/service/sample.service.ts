@@ -1,4 +1,3 @@
-import { Logger } from 'winston';
 import { lastValueFrom } from 'rxjs';
 import { I18nService } from 'nestjs-i18n';
 import { HttpService } from '@nestjs/axios';
@@ -8,7 +7,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ContextService } from '../../context/service/context.service';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
 import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-datasource.decorator';
@@ -17,7 +16,7 @@ import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-dataso
  * 示例服务
  */
 @Injectable()
-export class SampleService {
+export class SampleService extends AutoContextLogger {
   private readonly sampleRepo: Repository<SampleEntity>;
 
   constructor(
@@ -25,11 +24,10 @@ export class SampleService {
     private readonly axios: HttpService,
     private readonly ctx: ContextService,
     private readonly eventEmitter: EventEmitter2,
-    @InjectLogger() private readonly logger: Logger,
     private readonly redisEventEmitter: RedisEventEmitterService,
     @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
   ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+    super();
     this.sampleRepo = this.defaultDataSource.getRepository(SampleEntity);
   }
 

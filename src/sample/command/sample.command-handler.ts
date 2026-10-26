@@ -1,9 +1,8 @@
-import { Logger } from 'winston';
 import { SampleCommand } from './sample.command';
 import { DataSource, Repository } from 'typeorm';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SampleEntity } from '../entity/sample.default.entity';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-datasource.decorator';
 
 /**
@@ -14,14 +13,11 @@ import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-dataso
  * @see [SampleService](../service/sample.service.ts) 流程示例中的事件委托发布
  */
 @CommandHandler(SampleCommand)
-export class SampleCommandHandler implements ICommandHandler<SampleCommand> {
+export class SampleCommandHandler extends AutoContextLogger implements ICommandHandler<SampleCommand> {
   private readonly sampleRepo: Repository<SampleEntity>;
 
-  constructor(
-    @InjectLogger() private readonly logger: Logger,
-    @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
-  ) {
-    this.logger = this.logger.child({ context: this.constructor.name });
+  constructor(@InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource) {
+    super();
     this.sampleRepo = this.defaultDataSource.getRepository(SampleEntity);
   }
 

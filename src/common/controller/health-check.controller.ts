@@ -1,4 +1,3 @@
-import { Logger } from 'winston';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { randomUUID } from 'node:crypto';
@@ -12,7 +11,7 @@ import { S3Client, ListBucketsCommand } from '@aws-sdk/client-s3';
 import { getMySQLDataSourceToken } from '../../mysql/mysql.constant';
 import { getS3ClientToken } from '../../s3-storage/s3-storage.constant';
 import { getRabbitmqClientToken } from '../../rabbitmq/rabbitmq.constant';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { AutoContextLogger } from '../../logger/auto-context-logger';
 import { IHealthCheckResult } from '../interface/health-check-result.interface';
 import { IS3StorageConfiguration } from '../../configuration/interface/s3-storage.interface';
 import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
@@ -23,12 +22,13 @@ import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-c
  * 服务健康检查控制器
  */
 @Controller('/api')
-export class HealthCheckController {
+export class HealthCheckController extends AutoContextLogger {
   constructor(
     private readonly moduleRef: ModuleRef,
     private readonly configService: ConfigService,
-    @InjectLogger() private readonly logger: Logger,
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * 服务健康检查API
