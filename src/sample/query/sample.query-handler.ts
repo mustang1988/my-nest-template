@@ -1,12 +1,12 @@
 import { Logger } from 'winston';
 import { I18nService } from 'nestjs-i18n';
 import { SampleQuery } from './sample.query';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-datasource.decorator';
+import { InjectRepo } from '../../mysql/decorator/inject-repo.decorator';
 
 /**
  * 示例Query处理器
@@ -15,15 +15,12 @@ import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-dataso
  */
 @QueryHandler(SampleQuery)
 export class SampleQueryHandler implements IQueryHandler<SampleQuery> {
-  private readonly sampleRepo: Repository<SampleEntity>;
-
   constructor(
     private readonly i18n: I18nService,
     @InjectLogger() private readonly logger: Logger,
-    @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
+    @InjectRepo('default', SampleEntity) private readonly sampleRepo: Repository<SampleEntity>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
-    this.sampleRepo = this.defaultDataSource.getRepository(SampleEntity);
   }
 
   async execute(query: SampleQuery): Promise<SampleEntity> {

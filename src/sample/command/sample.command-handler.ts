@@ -1,10 +1,10 @@
 import { Logger } from 'winston';
 import { SampleCommand } from './sample.command';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
-import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-datasource.decorator';
+import { InjectRepo } from '../../mysql/decorator/inject-repo.decorator';
 
 /**
  * 示例Command处理器
@@ -15,14 +15,11 @@ import { InjectMySQLDataSource } from '../../mysql/decorator/inject-mysql-dataso
  */
 @CommandHandler(SampleCommand)
 export class SampleCommandHandler implements ICommandHandler<SampleCommand> {
-  private readonly sampleRepo: Repository<SampleEntity>;
-
   constructor(
     @InjectLogger() private readonly logger: Logger,
-    @InjectMySQLDataSource('default') private readonly defaultDataSource: DataSource,
+    @InjectRepo('default', SampleEntity) private readonly sampleRepo: Repository<SampleEntity>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
-    this.sampleRepo = this.defaultDataSource.getRepository(SampleEntity);
   }
 
   async execute(command: SampleCommand): Promise<SampleEntity> {
