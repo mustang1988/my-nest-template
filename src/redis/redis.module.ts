@@ -8,6 +8,7 @@ import { RedisEventEmitterService } from './service/redis-event-emitter.service'
 import { IRedisClientOptions } from './interface/redis-client-options.interface';
 import { RedisEventListenerService } from './service/redis-event-listener.service';
 import { IRedisModuleAsyncOptions } from './interface/redis-module-options.interface';
+import { getInjectRedisClientRegistry } from './decorator/inject-redis-client.decorator';
 import { RedisClientNotFoundException } from './exception/redis-client-not-found.exception';
 import { getRedisClientToken, REDIS_CLIENTS_MAP_TOKEN, REDIS_CLIENT_OPTIONS_TOKEN, REDIS_SUBSCRIBERS_MAP_TOKEN } from './redis.constant';
 
@@ -104,21 +105,32 @@ export class RedisModule {
       },
     };
 
-    const redisClients: Array<Provider<RedisClientType>> = names.map((name) => {
-      return {
-        provide: getRedisClientToken(name),
-        inject: [REDIS_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
-        useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
-          logger = logger.child({ context: this.name });
-          const redisClient = redisClientsMap.get(name);
-          if (!redisClient) {
-            logger.error('未找到指定名称的Redis客户端对象: name = %s', name);
-            throw new RedisClientNotFoundException(name);
-          }
-          return redisClient;
-        },
-      };
-    });
+    /**
+     * per-name连接客户端Provider
+     *
+     * 取@InjectRedisClient()装饰器注册表与本模块`names`的交集, 仅为实际通过装饰器注入使用的名称注册Provider
+     *
+     * 注意: 与MySQL/Rabbitmq模块不同, 此处连接初始化(客户端Map与订阅端Map)仍覆盖全部`names`的连接而非仅注册表中的名称;
+     * 因为模块内建的[RedisEventEmitterService](./service/redis-event-emitter.service.ts)与[RedisEventListenerService](./service/redis-event-listener.service.ts)
+     * (跨实例事件发布/订阅体系)是无条件的连接消费者, 连接初始化不依赖@InjectRedisClient()的使用
+     */
+    const redisClients: Array<Provider<RedisClientType>> = names
+      .filter((name) => getInjectRedisClientRegistry().has(name))
+      .map((name) => {
+        return {
+          provide: getRedisClientToken(name),
+          inject: [REDIS_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
+          useFactory: (redisClientsMap: Map<string, RedisClientType>, logger: Logger) => {
+            logger = logger.child({ context: this.name });
+            const redisClient = redisClientsMap.get(name);
+            if (!redisClient) {
+              logger.error('未找到指定名称的Redis客户端对象: name = %s', name);
+              throw new RedisClientNotFoundException(name);
+            }
+            return redisClient;
+          },
+        };
+      });
 
     return {
       global: isGlobal,

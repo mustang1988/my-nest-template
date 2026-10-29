@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { RedisModule } from '../redis.module';
-import { RedisClientType } from '@redis/client';
+import type { RedisClientType } from '@redis/client';
 import { EventModule } from 'src/event/event.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseEvent } from 'src/event/event/base.event';
@@ -13,6 +13,7 @@ import { ConfigService, ConfigModule } from '@nestjs/config';
 import configurationLoader from 'src/configuration/configuration-loader';
 import { RedisEventEmitterService } from './redis-event-emitter.service';
 import { RedisEventListenerService } from './redis-event-listener.service';
+import { InjectRedisClient } from '../decorator/inject-redis-client.decorator';
 import { EventEmitter2, EventEmitterModule, OnEvent } from '@nestjs/event-emitter';
 import { IRedisConfiguration } from 'src/configuration/interface/redis-configuration.interface';
 
@@ -25,6 +26,11 @@ describe(basename(__filename), () => {
 
   @Injectable()
   class TestClass {
+    /**
+     * 注入default连接客户端: 登记装饰器注册表, 使forRootAsync()注册default连接的per-name Provider(下方用例直接通过token获取该客户端)
+     */
+    constructor(@InjectRedisClient('default') public readonly defaultRedisClient: RedisClientType) {}
+
     @OnEvent(testEvent)
     test(event: BaseEvent<string, undefined>): void {
       console.log(event);

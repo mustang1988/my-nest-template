@@ -7,15 +7,14 @@ import { RedisClientType } from '@redis/client';
 import { Get, Controller } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AmqpConnectionManager } from 'amqp-connection-manager';
-import { getRedisClientToken } from '../../redis/redis.constant';
 import { S3Client, ListBucketsCommand } from '@aws-sdk/client-s3';
+import { REDIS_CLIENTS_MAP_TOKEN } from '../../redis/redis.constant';
 import { getMySQLDataSourceToken } from '../../mysql/mysql.constant';
 import { getS3ClientToken } from '../../s3-storage/s3-storage.constant';
 import { getRabbitmqClientToken } from '../../rabbitmq/rabbitmq.constant';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { IHealthCheckResult } from '../interface/health-check-result.interface';
 import { IS3StorageConfiguration } from '../../configuration/interface/s3-storage.interface';
-import { IRedisConfiguration } from '../../configuration/interface/redis-configuration.interface';
 import { IMySQLConfiguration } from '../../configuration/interface/mysql-configuration.interface';
 import { IRabbitmqConfiguration } from '../../configuration/interface/rabbitmq-configuration.interface';
 
@@ -39,24 +38,23 @@ export class HealthCheckController {
     const result: IHealthCheckResult = {};
 
     // #region Redis连接客户端健康检查
-    const redisConfigs = this.configService.get<Record<string, IRedisConfiguration>>('redis');
-    if (redisConfigs) {
+    /**
+     * 从客户端Map中取各连接客户端(Redis的连接初始化不依赖@InjectRedisClient()的使用, Map始终覆盖全部names连接)
+     */
+    const redisClientsMap = this.moduleRef.get<Map<string, RedisClientType>>(REDIS_CLIENTS_MAP_TOKEN, { strict: false });
+    if (redisClientsMap) {
       result.redis = {};
-      const redisNames = Object.keys(redisConfigs);
-      for (const redisName of redisNames) {
-        const redisClient = this.moduleRef.get<RedisClientType>(getRedisClientToken(redisName), { strict: false });
-        if (redisClient) {
-          try {
-            /**
-             * 发送ping命令进行健康检查
-             */
-            const pingMsg = randomUUID();
-            const redisPingRes = await redisClient.ping(pingMsg);
-            result.redis[redisName] = pingMsg === redisPingRes ? 'healthy' : 'unhealthy';
-          } catch (error) {
-            this.logger.warn('Redis健康检查失败: name = %s, error = %o', redisName, error);
-            result.redis[redisName] = 'unhealthy';
-          }
+      for (const [redisName, redisClient] of redisClientsMap) {
+        try {
+          /**
+           * 发送ping命令进行健康检查
+           */
+          const pingMsg = randomUUID();
+          const redisPingRes = await redisClient.ping(pingMsg);
+          result.redis[redisName] = pingMsg === redisPingRes ? 'healthy' : 'unhealthy';
+        } catch (error) {
+          this.logger.warn('Redis健康检查失败: name = %s, error = %o', redisName, error);
+          result.redis[redisName] = 'unhealthy';
         }
       }
     }
