@@ -8,10 +8,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SampleEntity } from '../entity/sample.default.entity';
 import { ContextService } from '../../context/service/context.service';
 import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
+import { InjectRepo } from '../../mysql/decorator/inject-repo.decorator';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
-import { InjectRepo } from '../../mysql/decorator/inject-repo.decorator';
 
 /**
  * 示例服务
