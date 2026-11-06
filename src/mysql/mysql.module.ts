@@ -1,13 +1,15 @@
 import { Logger } from 'winston';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { DataMaskingUtil } from '../common/util/data-masking.util';
+import { getInjectRepoRegistry } from './decorator/inject-repo.decorator';
 import { IMySQLModuleAsyncOptions } from './interface/mysq-module-options.interface';
 import { IMySQLDataSourceOptions } from './interface/mysql-datasource-options.interface';
+import { getInjectMySQLDataSourceRegistry } from './decorator/inject-mysql-datasource.decorator';
 import { MySQLDataSourceNotFoundException } from './exception/mysql-datasource-not-found.exception';
-import { getMySQLDataSourceToken, MYSQL_DATASOURCE_MAP_TOKEN, MYSQL_DATASOURCE_OPTIONS_TOKEN } from './mysql.constant';
+import { getMySQLDataSourceToken, getMySQLRepoToken, MYSQL_DATASOURCE_MAP_TOKEN, MYSQL_DATASOURCE_OPTIONS_TOKEN } from './mysql.constant';
 
 /**
  * MySQL模块
@@ -19,6 +21,14 @@ import { getMySQLDataSourceToken, MYSQL_DATASOURCE_MAP_TOKEN, MYSQL_DATASOURCE_O
 export class MySQLModule {
   static forRootAsync(options: IMySQLModuleAsyncOptions): DynamicModule {
     const { isGlobal = true, imports = [ConfigModule], inject = [ConfigService], names = ['default'] } = options;
+
+    /**
+     * 待使用的MySQL连接名称集合
+     *
+     * 取@InjectMySQLDataSource()与@InjectRepo()两个装饰器注册表的并集, 再与本模块`names`取交集;
+     * 只有实际通过装饰器注入使用的连接才会建立连接与注册Provider, 配置中存在但未被使用的连接不初始化
+     */
+    const usedNames = new Set([...getInjectMySQLDataSourceRegistry(), ...getInjectRepoRegistry().keys()].filter((name) => names.includes(name)));
 
     const mysqlDataSourceOptionsProvider: Provider<Array<IMySQLDataSourceOptions>> = {
       provide: MYSQL_DATASOURCE_OPTIONS_TOKEN,
@@ -33,7 +43,7 @@ export class MySQLModule {
         logger = logger.child({ context: this.name });
         const mysqlDataSourceMap: Map<string, DataSource> = new Map();
         for (const mysqlOpt of mysqlDataSourceOptions) {
-          if (!names.includes(mysqlOpt.name)) {
+          if (!usedNames.has(mysqlOpt.name)) {
             continue;
           }
           const dataSource = new DataSource({
@@ -74,26 +84,61 @@ export class MySQLModule {
       },
     };
 
-    const mysqlDataSources: Array<Provider<DataSource>> = names.map((name) => ({
-      provide: getMySQLDataSourceToken(name),
-      inject: [MYSQL_DATASOURCE_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
-      useFactory: (mysqlDataSourceMap: Map<string, DataSource>, logger: Logger) => {
-        logger = logger.child({ context: this.name });
-        const dataSource = mysqlDataSourceMap.get(name);
-        if (!dataSource) {
-          logger.error('未找到指定名称的MySQL数据源对象: name = %s', name);
-          throw new MySQLDataSourceNotFoundException(name);
-        }
-        return dataSource;
-      },
-    }));
+    const mysqlDataSources: Array<Provider<DataSource>> = names
+      .filter((name) => usedNames.has(name))
+      .map((name) => ({
+        provide: getMySQLDataSourceToken(name),
+        inject: [MYSQL_DATASOURCE_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
+        useFactory: (mysqlDataSourceMap: Map<string, DataSource>, logger: Logger) => {
+          logger = logger.child({ context: this.name });
+          const dataSource = mysqlDataSourceMap.get(name);
+          if (!dataSource) {
+            logger.error('未找到指定名称的MySQL数据源对象: name = %s', name);
+            throw new MySQLDataSourceNotFoundException(name);
+          }
+          return dataSource;
+        },
+      }));
+
+    /**
+     * 各数据源下各实体的Repository Provider
+     *
+     * 从@InjectRepo()装饰器注册表中读取本模块连接名称范围内被注入的(连接名称, 实体类)组合,
+     * 为每个组合注册对应的Repository Provider
+     *
+     * 实体类的发现以数据源自身为准: 数据源初始化时按实体文件命名约定(xxx.{连接名称}.entity.ts/js)加载实体,
+     * 此处以数据源初始化后的实体元数据校验实体确已被加载
+     *
+     * @see [InjectRepo](./decorator/inject-repo.decorator.ts)
+     */
+    const mysqlRepos: Array<Provider<Repository<object>>> = Array.from(getInjectRepoRegistry().entries())
+      .filter(([name]) => names.includes(name))
+      .flatMap(([name, entities]) =>
+        Array.from(entities).map((entity) => ({
+          provide: getMySQLRepoToken(name, entity),
+          inject: [MYSQL_DATASOURCE_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
+          useFactory: (mysqlDataSourceMap: Map<string, DataSource>, logger: Logger) => {
+            logger = logger.child({ context: this.name });
+            const dataSource = mysqlDataSourceMap.get(name);
+            if (!dataSource) {
+              logger.error('未找到指定名称的MySQL数据源对象: name = %s', name);
+              throw new MySQLDataSourceNotFoundException(name);
+            }
+            if (!dataSource.hasMetadata(entity)) {
+              logger.error('指定实体未被数据源加载(请检查实体文件命名约定xxx.{连接名称}.entity.ts/js): name = %s, entity = %s', name, entity.name);
+              throw new Error(`实体未被数据源加载: name = ${name}, entity = ${entity.name}`);
+            }
+            return dataSource.getRepository(entity);
+          },
+        })),
+      );
 
     return {
       global: isGlobal,
       module: MySQLModule,
       imports,
-      providers: [mysqlDataSourceOptionsProvider, mysqlDataSourceMapProvider, ...mysqlDataSources],
-      exports: [...mysqlDataSources],
+      providers: [mysqlDataSourceOptionsProvider, mysqlDataSourceMapProvider, ...mysqlDataSources, ...mysqlRepos],
+      exports: [...mysqlDataSources, ...mysqlRepos],
     };
   }
 }

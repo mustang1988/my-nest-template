@@ -18,3 +18,11 @@ export const MYSQL_DATASOURCE_MAP_TOKEN: symbol = Symbol('token:mysql-datasource
  * @return MySQL数据源IoC注入Token
  */
 export const getMySQLDataSourceToken = (name: string): string => `token:mysql-datasource:${name}`;
+
+/**
+ * 获取指定数据源下指定实体的Repository IoC注入Token
+ * @param name MySQL连接名称
+ * @param entity 实体类
+ * @return Repository IoC注入Token
+ */
+export const getMySQLRepoToken = (name: string, entity: Function): string => `token:mysql-repo:${name}:${entity.name}`;

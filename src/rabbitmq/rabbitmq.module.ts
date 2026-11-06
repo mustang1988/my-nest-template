@@ -7,6 +7,7 @@ import { DataMaskingUtil } from '../common/util/data-masking.util';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { IRabbitmqClientOptions } from './interface/rabbitmq-client-options.interface';
 import { IRabbitmqModuleAsyncOptions } from './interface/rabbitmq-module-options.interface';
+import { getInjectRabbitmqClientRegistry } from './decorator/inject-rabbitmq-client.decorator';
 import { RabbitmqClientNotFoundException } from './exception/rabbitmq-client-not-found.exception';
 import { getRabbitmqClientToken, RABBITMQ_CLIENTS_MAP_TOKEN, RABBITMQ_CLIENT_OPTIONS_TOKEN } from './rabbitmq.constant';
 
@@ -19,6 +20,14 @@ import { getRabbitmqClientToken, RABBITMQ_CLIENTS_MAP_TOKEN, RABBITMQ_CLIENT_OPT
 export class RabbitmqModule {
   static forRootAsync(options: IRabbitmqModuleAsyncOptions): DynamicModule {
     const { inject = [ConfigService], names = ['default'], isGlobal = true, imports = [ConfigModule] } = options;
+
+    /**
+     * 待使用的Rabbitmq连接名称集合
+     *
+     * 取@InjectRabbitmqClient()装饰器注册表与本模块`names`的交集;
+     * 只有实际通过装饰器注入使用的连接才会建立连接与注册Provider, 配置中存在但未被使用的连接不初始化
+     */
+    const usedNames = new Set(Array.from(getInjectRabbitmqClientRegistry()).filter((name) => names.includes(name)));
 
     const rabbitmqClientOptionsProvider: Provider<Array<IRabbitmqClientOptions>> = {
       provide: RABBITMQ_CLIENT_OPTIONS_TOKEN,
@@ -33,7 +42,7 @@ export class RabbitmqModule {
         logger = logger.child({ context: this.name });
         const rabbitmqClientsMap = new Map<string, ClientProxy>();
         for (const rmqConfOpt of rabbitmqConfigs) {
-          if (!names.includes(rmqConfOpt.name)) {
+          if (!usedNames.has(rmqConfOpt.name)) {
             continue;
           }
           const { username, password, host, port, vhost, queue, name } = rmqConfOpt;
@@ -84,19 +93,21 @@ export class RabbitmqModule {
       },
     };
 
-    const rabbitmqClients: Array<Provider<ClientProxy>> = names.map((name) => ({
-      provide: getRabbitmqClientToken(name),
-      inject: [RABBITMQ_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
-      useFactory: (rmqClientsMap: Map<string, ClientProxy>, logger: Logger) => {
-        logger = logger.child({ context: this.name });
-        const client = rmqClientsMap.get(name);
-        if (!client) {
-          logger.error('未找到指定名称的Rabbitmq客户端对象: name = %s', name);
-          throw new RabbitmqClientNotFoundException(name);
-        }
-        return client;
-      },
-    }));
+    const rabbitmqClients: Array<Provider<ClientProxy>> = names
+      .filter((name) => usedNames.has(name))
+      .map((name) => ({
+        provide: getRabbitmqClientToken(name),
+        inject: [RABBITMQ_CLIENTS_MAP_TOKEN, WINSTON_MODULE_PROVIDER],
+        useFactory: (rmqClientsMap: Map<string, ClientProxy>, logger: Logger) => {
+          logger = logger.child({ context: this.name });
+          const client = rmqClientsMap.get(name);
+          if (!client) {
+            logger.error('未找到指定名称的Rabbitmq客户端对象: name = %s', name);
+            throw new RabbitmqClientNotFoundException(name);
+          }
+          return client;
+        },
+      }));
 
     return {
       global: isGlobal,

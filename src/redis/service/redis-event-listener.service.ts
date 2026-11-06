@@ -19,9 +19,9 @@ export class RedisEventListenerService implements OnModuleInit, OnModuleDestroy 
   private readonly channelMap: Map<string, string>;
 
   constructor(
-    @InjectLogger() private readonly logger: Logger,
     private readonly eventEmitter: EventEmitter2,
     private readonly configService: ConfigService,
+    @InjectLogger() private readonly logger: Logger,
     @Inject(REDIS_SUBSCRIBERS_MAP_TOKEN) private readonly redisSubscribers: Map<string, RedisClientType>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
