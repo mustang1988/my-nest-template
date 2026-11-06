@@ -11,6 +11,7 @@ import { ESampleEventPattern } from '../enum/sample-event-pattern.enum';
 import { InjectRepo } from '../../mysql/decorator/inject-repo.decorator';
 import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 import { ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
+import { LoggingPerformance } from 'src/logger/decorator/logging-performance.decorator';
 import { RedisEventEmitterService } from '../../redis/service/redis-event-emitter.service';
 
 /**
@@ -30,6 +31,7 @@ export class SampleService {
     this.logger = this.logger.child({ context: this.constructor.name });
   }
 
+  @LoggingPerformance({ threshold: 1 })
   async viewSampleOrThrow(id: number): Promise<SampleEntity> {
     const requestId = this.ctx.getRequestId(); // CLS上下文中获取请求ID
     const executionContext: ExecutionContext = this.ctx.getExecutionContext(); // CLS上下文中获取当前请求的ExecutionContext
