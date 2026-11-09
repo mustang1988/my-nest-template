@@ -230,7 +230,13 @@ internationalization
 ```bash
 logger
  ┣ decorator
- ┃ ┗ inject-logger.decorator.ts
+ ┃ ┣ inject-logger.decorator.test.ts
+ ┃ ┣ inject-logger.decorator.ts
+ ┃ ┣ logging-performance.decorator.test.ts
+ ┃ ┗ logging-performance.decorator.ts
+ ┣ interface
+ ┃ ┗ logging-performance-options.interface.ts
+ ┣ logger.module.test.ts
  ┗ logger.module.ts
 ```
 
@@ -245,9 +251,11 @@ logger
 
 #### 模块内容
 
-|                                                                      | 类型      | 说明     |
-| -------------------------------------------------------------------: | :-------- | :------- |
-| [@InjectLogger()](./src/logger/decorator/inject-logger.decorator.ts) | decorator | 注入日志 |
+|                                                                                                                    | 类型      | 说明                                                                                               |
+| -----------------------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------------------------------------------------------- |
+|                                               [@InjectLogger()](./src/logger/decorator/inject-logger.decorator.ts) | decorator | 注入Winston日志Logger                                                                              |
+|                       [LoggingPerformanceOptions](./src/logger/interface/logging-performance-options.interface.ts) | interface | [@LoggingPerformance()](./src/logger/decorator/logging-performance.decorator.ts)函数装饰器可选选项 |
+| [@LoggingPerformance(options?:LoggingPerformanceOptions)](./src/logger/decorator/logging-performance.decorator.ts) | decorator | 函数装饰器, 用于函数执行耗时的性能检测                                                             |
 
 ### MySQL
 
@@ -258,31 +266,47 @@ logger
 ```bash
 mysql
  ┣ decorator
- ┃ ┗ inject-mysql-datasource.decorator.ts
+ ┃ ┣ inject-mysql-datasource.decorator.test.ts
+ ┃ ┣ inject-mysql-datasource.decorator.ts
+ ┃ ┣ inject-repo.decorator.test.ts
+ ┃ ┗ inject-repo.decorator.ts
+ ┣ exception
+ ┃ ┣ json-value-transfor.exception.ts
+ ┃ ┗ mysql-datasource-not-found.exception.ts
  ┣ interface
- ┃ ┣ datetime-value-transformer-options.ts
+ ┃ ┣ datetime-value-transformer-options.interface.ts
+ ┃ ┣ json-value-transformer-options.interface.ts
  ┃ ┣ mysq-module-options.interface.ts
- ┃ ┗ mysql-datasource-options.interface.ts
+ ┃ ┣ mysql-datasource-options.interface.ts
+ ┃ ┗ string-encrypt-value-transformer-options.interface.ts
  ┣ value-transformer
+ ┃ ┣ datetime.value-transformer.test.ts
  ┃ ┣ datetime.value-transformer.ts
- ┃ ┗ json-string.value-transformer.ts
+ ┃ ┣ json-string.value-transformer.test.ts
+ ┃ ┣ json-string.value-transformer.ts
+ ┃ ┣ string-encrypt.value-transformer.test.ts
+ ┃ ┗ string-encrypt.value-transformer.ts
  ┣ mysql.constant.ts
+ ┣ mysql.module.test.ts
  ┗ mysql.module.ts
 ```
 
 #### 模块内容
 
-|                                                                                                   | 类型      | 说明                                               |
-| ------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------- |
-|                                       [MYSQL_DATASOURCE_MAP_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL数据源Map IoC注入Token                        |
-|                                   [MYSQL_DATASOURCE_OPTIONS_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL模块配置选项IoC注入Token                      |
-|                             [getMySQLDataSourceToken(name:string)](./src/mysql/mysql.constant.ts) | function  | 获取指定名称MySQL的TypeORM数据源的IoC注入Token     |
-|                [IMySQLModuleAsyncOptions](./src/mysql/interface/mysq-module-options.interface.ts) | interface | MySQL 模块动态初始化选项                           |
-|            [IMySQLDataSourceOptions](./src/mysql/interface/mysql-datasource-options.interface.ts) | interface | MySQL TypeORM数据源配置选项                        |
-|           [DatetimeValueTransformer](./src/mysql/value-transformer/datetime.value-transformer.ts) | class     | datetime类型字段值转换器                           |
-|      [JsonStringValueTransformer](./src/mysql/value-transformer/json-string.value-transformer.ts) | class     | json字符串字段值转换器                             |
-|   [IDateTimeValueTransformerOptions](./src/mysql/interface/datetime-value-transformer-options.ts) | interface | datetime类型字段转换器转换选项                     |
-| [@InjectMySQLDataSource(name:string)](./src/mysql/decorator/inject-mysql-datasource.decorator.ts) | decorator | 用于从IoC容器中获取指定名称的MySQL数据源示例并注入 |
+|                                                                                                   | 类型      | 说明                                                                 |
+| ------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------------------------- |
+|                                       [MYSQL_DATASOURCE_MAP_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL数据源Map IoC注入Token                                          |
+|                                   [MYSQL_DATASOURCE_OPTIONS_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL模块配置选项IoC注入Token                                        |
+|                                   [@InjectRepo()](./src/mysql/decorator/inject-repo.decorator.ts) | decorator | 用于从IoC容器种获取指定MySQL数据源中指定实体类的Repository示例并注入 |
+|                             [getMySQLDataSourceToken(name:string)](./src/mysql/mysql.constant.ts) | function  | 获取指定名称MySQL的TypeORM数据源的IoC注入Token                       |
+|                [IMySQLModuleAsyncOptions](./src/mysql/interface/mysq-module-options.interface.ts) | interface | MySQL 模块动态初始化选项                                             |
+|             [JsonValueTransformException](./src/mysql/exception/json-value-transfor.exception.ts) | class     | JSON数值转换异常                                                     |
+|            [IMySQLDataSourceOptions](./src/mysql/interface/mysql-datasource-options.interface.ts) | interface | MySQL TypeORM数据源配置选项                                          |
+|           [DatetimeValueTransformer](./src/mysql/value-transformer/datetime.value-transformer.ts) | class     | datetime类型字段值转换器                                             |
+|      [JsonStringValueTransformer](./src/mysql/value-transformer/json-string.value-transformer.ts) | class     | json字符串字段值转换器                                               |
+|   [IDateTimeValueTransformerOptions](./src/mysql/interface/datetime-value-transformer-options.ts) | interface | datetime类型字段转换器转换选项                                       |
+| [@InjectMySQLDataSource(name:string)](./src/mysql/decorator/inject-mysql-datasource.decorator.ts) | decorator | 用于从IoC容器中获取指定名称的MySQL数据源示例并注入                   |
+| [MySQLDataSourceNotFoundException](./src/mysql/exception/mysql-datasource-not-found.exception.ts) | class     | 指定名称MySQL数据源未未找到异常                                      |
 
 ### Rabbitmq
 
@@ -293,15 +317,22 @@ Rabbitmq动态模块
 ```bash
 rabbitmq
  ┣ decorator
+ ┃ ┣ inject-rabbitmq-client.decorator.test.ts
  ┃ ┗ inject-rabbitmq-client.decorator.ts
  ┣ exception
- ┃ ┗ message-deserialization.exception.ts
+ ┃ ┣ message-deserialization.exception.ts
+ ┃ ┗ rabbitmq-client-not-found.exception.ts
  ┣ interface
  ┃ ┣ rabbitmq-client-options.interface.ts
  ┃ ┗ rabbitmq-module-options.interface.ts
  ┣ message
+ ┃ ┣ base.message.test.ts
  ┃ ┗ base.message.ts
+ ┣ pipe
+ ┃ ┣ rabbitmq-message.pipe.test.ts
+ ┃ ┗ rabbitmq-message.pipe.ts
  ┣ rabbitmq.constant.ts
+ ┣ rabbitmq.module.test.ts
  ┗ rabbitmq.module.ts
 ```
 
@@ -311,12 +342,15 @@ rabbitmq
 | -------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------- |
 |                                              [BaseMessage](./src/rabbitmq/message/base.message.ts) | class     | 队列消息基类                                       |
 |                                  [RABBITMQ_CLIENTS_MAP_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | symbol    | Rabbitmq客户端Map IoC注入Token                     |
+|                                [RabbitmqMessagePipe](./src/rabbitmq/pipe/rabbitmq-message.pipe.ts) | class     | 队列消息转换管道                                   |
 |                               [RABBITMQ_CLIENT_OPTIONS_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | symbol    | Rabbitmq模块异步初始化选项IoC注入Token             |
 |                         [getRabbitmqClientToken(name:string)](./src/rabbitmq/rabbitmq.constant.ts) | function  | 获取指定名称Rabbitmq队列消息发送客户端IoC注入Token |
 |            [IRabbitmqClientOptions](./src/rabbitmq/interface/rabbitmq-client-options.interface.ts) | interface | Rabbitmq客户端配置选项                             |
 |       [IRabbitmqModuleAsyncOptions](./src/rabbitmq/interface/rabbitmq-module-options.interface.ts) | interface | Rabbitmq模块异步初始化选项                         |
 |   [MessageDeserializationException](./src/rabbitmq/exception/message-deserialization.exception.ts) | class     | 队列消息反序列化异常                               |
+|   [MessageDeserializationException](./src/rabbitmq/exception/message-deserialization.exception.ts) | class     | 队列消息反序列化异常                               |
 | [@InjectRabbitmqClient(name:string)](./src/rabbitmq/decorator/inject-rabbitmq-client.decorator.ts) | decorator | 注入指定名称的Rabbitmq消息发送客户端               |
+| [RabbitmqClientNotFoundException](./src/rabbitmq/exception/rabbitmq-client-not-found.exception.ts) | class     | 指定名称Rabbitmq消息发送端未找到异常               |
 
 ### Redis
 
@@ -327,15 +361,21 @@ Redis动态模块
 ```bash
 redis
  ┣ decorator
+ ┃ ┣ inject-redis-client.decorator.test.ts
  ┃ ┗ inject-redis-client.decorator.ts
+ ┣ exception
+ ┃ ┗ redis-client-not-found.exception.ts
  ┣ interface
  ┃ ┣ redis-client-options.interface.ts
  ┃ ┣ redis-event-emit-options.interface.ts
  ┃ ┗ redis-module-options.interface.ts
  ┣ service
+ ┃ ┣ redis-event-emitter.service.test.ts
  ┃ ┣ redis-event-emitter.service.ts
+ ┃ ┣ redis-event-listener.service.test.ts
  ┃ ┗ redis-event-listener.service.ts
  ┣ redis.constant.ts
+ ┣ redis.module.test.ts
  ┗ redis.module.ts
 ```
 
@@ -353,6 +393,7 @@ redis
 |       [IRedisModuleAsyncOptions](./src/redis/interface/redis-module-options.interface.ts) | interface | Redis模块异步初始化选项                 |
 |     [IRedisEventEmitOptions](./src/redis/interface/redis-event-emit-options.interface.ts) | interface | Redis事件发布选项                       |
 | [@InjectRedisClient(name:string)](./src/redis/decorator/inject-redis-client.decorator.ts) | decorator | 注入指定名称的Redis连接客户端           |
+| [RedisClientNotFoundException](./src/redis/exception/redis-client-not-found.exception.ts) | class     | 指定名称redis客户端未找到异常           |
 
 ### S3-Storage
 
@@ -363,11 +404,15 @@ S3对象存储模块
 ```bash
 s3-storage
  ┣ decorator
+ ┃ ┣ inject-s3-client.decorator.test.ts
  ┃ ┗ inject-s3-client.decorator.ts
+ ┣ exception
+ ┃ ┗ s3-client-not-found.exception.ts
  ┣ interface
  ┃ ┣ s3-client-options.interface.ts
  ┃ ┗ s3-storage-module-options.interface.ts
  ┣ s3-storage.constant.ts
+ ┣ s3-storage.module.test.ts
  ┗ s3-storage.module.ts
 ```
 
@@ -380,6 +425,7 @@ s3-storage
 |                          [getS3ClientToken(name:string)](./src/s3-storage/s3-storage.constant.ts) | function  | 获取指定名称S3存储的客户端IoC注入Token |
 |                     [IS3ClientOptions](./src/s3-storage/interface/s3-client-options.interface.ts) | interface | S3客户端选项                           |
 |          [@InjectS3Client(name:string)](./src/s3-storage/decorator/inject-s3-client.decorator.ts) | decorator | 注入指定名称的S3客户端                 |
+|          [S3ClientNotFoundException](./src/s3-storage/exception/s3-client-not-found.exception.ts) | class     | 指定名称S3客户端对象未找到异常         |
 | [IS3StorageModuleAsyncOptions](./src/s3-storage/interface/s3-storage-module-options.interface.ts) | interface | S3存储模块异步初始化选项               |
 
 ### Sample

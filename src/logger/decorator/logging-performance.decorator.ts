@@ -44,9 +44,7 @@ const reportLowPerformance = (logger: Logger, threshold: number, requestId: stri
       format(
         '[%s] 低性能方法执行: %o',
         requestId,
-        result instanceof Error
-          ? { threshold, duration, args, error: result.message, stack: result.stack }
-          : { threshold, duration, args, result },
+        result instanceof Error ? { threshold, duration, args, error: result.message, stack: result.stack } : { threshold, duration, args, result },
       ),
     );
   } catch {
