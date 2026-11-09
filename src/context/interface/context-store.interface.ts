@@ -7,7 +7,8 @@ import {
   CLS_HTTP_COOKIE,
   CLS_HTTP_HEADER,
 } from '../context.constant';
-import { ClsStore } from 'nestjs-cls';
+import { CLS_CTX, ClsStore } from 'nestjs-cls';
+import { ExecutionContext } from '@nestjs/common';
 
 /**
  * 上下文Store
@@ -47,4 +48,9 @@ export interface ContextStore extends ClsStore {
    * 请求Cookie参数
    */
   [CLS_HTTP_COOKIE]?: unknown;
+
+  /**
+   * 请求上下文
+   */
+  [CLS_CTX]?: ExecutionContext;
 }

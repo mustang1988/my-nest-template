@@ -28,7 +28,7 @@ import { CLS_REQUEST_ID, CLS_INSTANCE_ID, CLS_HTTP_BODY, CLS_HTTP_PARAM, CLS_HTT
        */
       middleware: {
         mount: true,
-        debug: false,
+        debug: true,
         saveReq: false, // 不存储请请求参数到上下文, 该存入的请求参数为HTTP协议底层的IncomingMessage, 非FastifyRequest或ExpressRequst其中很多请求参数无法获取
         saveRes: false, // 不存储响应结果到上下文, 绝大部分场景下用不到
         setup: (cls: ClsService<ContextStore>, req: IncomingMessage) => {
@@ -57,6 +57,7 @@ import { CLS_REQUEST_ID, CLS_INSTANCE_ID, CLS_HTTP_BODY, CLS_HTTP_PARAM, CLS_HTT
        */
       guard: {
         mount: true,
+        debug: true,
         saveCtx: true, // 上下文中记录 ExecutionContext
         setup: (cls: ClsService, context: ExecutionContext) => {
           const contextType = context.getType();

@@ -1,9 +1,9 @@
 import {
-  CLS_REQUEST_ID,
-  CLS_INSTANCE_ID,
   CLS_HTTP_BODY,
+  CLS_REQUEST_ID,
   CLS_HTTP_PARAM,
   CLS_HTTP_QUERY,
+  CLS_INSTANCE_ID,
   CLS_HTTP_COOKIE,
   CLS_HTTP_HEADER,
 } from '../context.constant';
@@ -38,7 +38,7 @@ export class ContextService {
    * @return 本次请求的唯一ID
    */
   getRequestId(): string {
-    return this.cls.get<string>(CLS_REQUEST_ID);
+    return this.cls.get(CLS_REQUEST_ID);
   }
 
   /**
@@ -46,7 +46,7 @@ export class ContextService {
    * @return 当前实例ID
    */
   getInstanceId(): number {
-    return this.cls.get<number>(CLS_INSTANCE_ID);
+    return this.cls.get(CLS_INSTANCE_ID);
   }
 
   getExecutionContext(): ExecutionContext {
