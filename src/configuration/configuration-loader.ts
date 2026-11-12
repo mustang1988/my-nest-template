@@ -83,7 +83,7 @@ export default (): IConfiguration => ({
        *
        * 单位: 毫秒
        */
-      threshold: EnvValueLoadUtil.loadOptionalInteger('PERFORMANCE_THRESHOLD', 100),
+      threshold: EnvValueLoadUtil.loadOptionalInteger('API_PERFORMANCE_THRESHOLD', 100),
     },
 
     security: {

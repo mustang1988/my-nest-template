@@ -1,24 +1,13 @@
 import { format } from 'node:util';
 import { Logger } from '@nestjs/common';
 import { ClsServiceManager } from 'nestjs-cls';
+import { WRAPPED_TAG } from '../logger.constant';
 import { CLS_REQUEST_ID } from 'src/context/context.constant';
 import { ContextStore } from 'src/context/interface/context-store.interface';
+import { EnvValueLoadUtil } from 'src/configuration/util/env-value-load.util';
 import { LoggingPerformanceOptions } from '../interface/logging-performance-options.interface';
 
-/**
- * 已包装标记
- *
- * 声明在模块级供所有装饰器实例共享, 防止同一方法被多个装饰器实例重复包装(如手动叠加多个@LoggingPerformance())
- */
-const WRAPPED_TAG: unique symbol = Symbol('LoggingPerformanceWrapped');
-
-/**
- * 默认性能阈值, 50毫秒
- *
- * 注意: 此阈值针对单个函数的执行耗时, 与HTTP接口全流程性能检测的阈值(constants.performance.threshold)粒度不同, 互不沿用
- */
-const DEFAULT_THRESHOLD = 50;
-
+// #region 输出低性能警告日志
 /**
  * 输出低性能警告日志
  *
@@ -54,9 +43,10 @@ const reportLowPerformance = (logger: Logger, threshold: number, requestId: stri
     logger.warn(format('[%s] 低性能方法执行: %o', requestId, { threshold, duration }));
   }
 };
+// #endregion
 
 /**
- * 函数执行性能日志记录装饰器
+ * @LoggingPerformance()函数执行性能日志记录装饰器
  *
  * 被装饰的函数执行耗时超过指定阈值时, 会输出WARN级别的性能日志
  *
@@ -93,7 +83,7 @@ export const LoggingPerformance = (options?: LoggingPerformanceOptions): MethodD
     const className = typeof target === 'function' ? (target as Function).name : (target.constructor?.name ?? 'Unknown');
     const methodName = typeof propertyKey === 'symbol' ? (propertyKey.description ?? '') : propertyKey;
     const logger = new Logger(`${className}.${methodName}()`);
-    const threshold = options?.threshold ?? DEFAULT_THRESHOLD;
+    const threshold = options?.threshold ?? EnvValueLoadUtil.loadOptionalInteger('FUNCTION_PERFORMANCE_THRESHOLD', 50); /* 默认性能阈值, 50毫秒 */
 
     // #region 重写被装饰函数执行逻辑
     descriptor.value = function loggingPerformance(this: unknown, ...args: unknown[]) {
