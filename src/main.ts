@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyCookie from '@fastify/cookie';
+import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import fastifyCompress from '@fastify/compress';
 import { I18nValidationPipe } from 'nestjs-i18n';
@@ -137,6 +138,11 @@ void (async () => {
   app.enableShutdownHooks();
 
   /**
+   * 设置class-validator上下文的IoC容器使用NestJS
+   */
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  /**
    * 设置RedisSocketIoAdapter作为Socket.IO适配器
    */
   const redisSocketIoAdapter = new RedisSocketIoAdapter(app);
@@ -194,4 +200,4 @@ void (async () => {
   const appPort = configService.getOrThrow<number>('app.port');
   await app.listen(appPort, '0.0.0.0');
   logger.info('服务启动完成: port = %s', appPort);
-})();
+};)();

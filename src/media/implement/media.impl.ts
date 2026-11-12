@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash';
 import { Type } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 import { MediaStream } from './media-stream.impl';
@@ -30,7 +31,11 @@ export class Media implements IMedia {
   format?: IMediaFormat | undefined;
 
   getVideoStreams(): Array<IMediaVideoStream> {
-    return this.streams.filter((s) => s.codec_type === 'video') as Array<IMediaVideoStream>;
+    return sortBy(
+      this.streams.filter((s) => s instanceof MediaVideoStream),
+      'index',
+      'asc',
+    ) as Array<IMediaVideoStream>;
   }
 
   getVideoStream(index: number): IMediaVideoStream | undefined {
@@ -38,7 +43,11 @@ export class Media implements IMedia {
   }
 
   getAudioStreams(): Array<IMediaAudioStream> {
-    return this.streams.filter((s) => s.codec_type === 'audio') as Array<IMediaAudioStream>;
+    return sortBy(
+      this.streams.filter((s) => s instanceof MediaAudioStream),
+      'index',
+      'asc',
+    ) as Array<IMediaAudioStream>;
   }
 
   getAudioStream(index: number): IMediaAudioStream | undefined {

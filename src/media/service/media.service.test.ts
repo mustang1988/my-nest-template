@@ -1,4 +1,5 @@
 import { basename } from 'node:path';
+import { faker } from '@faker-js/faker';
 import { ClsService } from 'nestjs-cls';
 import { randomUUID } from 'node:crypto';
 import { MediaModule } from '../media.module';
@@ -6,10 +7,9 @@ import { MediaService } from './media.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
-import { CLS_REQUEST_ID } from 'src/context/context.constant';
 import { MediaException } from '../exception/media.exception';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
-import { faker } from '@faker-js/faker';
+import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 
 describe(basename(__filename), () => {
   let mediaModule: TestingModule;
@@ -17,7 +17,9 @@ describe(basename(__filename), () => {
   let cls: ClsService;
 
   beforeAll(async () => {
-    mediaModule = await Test.createTestingModule({ imports: [ConfigurationModule, MediaModule, LoggerModule, ContextModule] }).compile();
+    mediaModule = await Test.createTestingModule({
+      imports: [ConfigurationModule, MediaModule, LoggerModule, ContextModule, InternationalizationModule],
+    }).compile();
     expect(mediaModule);
     cls = mediaModule.get(ClsService);
     expect(cls);
