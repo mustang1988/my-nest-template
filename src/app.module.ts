@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { RedisModule } from './redis/redis.module';
 import { MySQLModule } from './mysql/mysql.module';
 import { EventModule } from './event/event.module';
+import { MediaModule } from './media/media.module';
 import { LoggerModule } from './logger/logger.module';
 import { CommonModule } from './common/common.module';
 import { SampleModule } from './sample/sample.module';
@@ -49,6 +50,7 @@ import { BigintSupportResponseTransformer } from './common/response-transformer/
      * NestJS CQRS模块
      */
     CqrsModule.forRoot(),
+    MediaModule,
     EventModule,
     CommonModule,
     LoggerModule,
