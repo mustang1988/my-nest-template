@@ -17,5 +17,11 @@
   "MaxHeightValidator": "Height of $t(property.{property}) should be less than or equals to {constraints.0} px",
   "WidthValidator": "Width of $t(property.{property}) shoule between {constraints.0} px and {constraints.1} px",
   "MinWidthValidator": "Width of $t(property.{property}) should be greater than or equals to {constraints.0} px",
-  "MaxWidthValidator": "Width of $t(property.{property}) should be less than or equals to {constraints.0} px"
+  "MaxWidthValidator": "Width of $t(property.{property}) should be less than or equals to {constraints.0} px",
+  "AspectRatioValidator": "Aspect ratio of $t(property.{property}) should between {constraints.0} and {constraints.1}",
+  "MinAspectRatioValidator": "Aspect ratio of $t(property.{property}) should be greater than or equals to {constraints.0}",
+  "MaxAspectRatioValidator": "Aspect ratio of $t(property.{property}) should be less than or equals to {constraints.0}",
+  "FpsValidator": "FPS of $t(property.{property}) should between {constraints.0} and {constraints.1}",
+  "MinFpsValidator": "FPS of $t(property.{property}) should be greater than or equals to {constraints.0}",
+  "MaxFpsValidator": "FPS of $t(property.{property}) should be less than or equals to {constraints.0}"
 }
