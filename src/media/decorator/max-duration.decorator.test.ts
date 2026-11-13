@@ -3,6 +3,7 @@ import { MediaModule } from '../media.module';
 import { plainToInstance } from 'class-transformer';
 import { TestingModule, Test } from '@nestjs/testing';
 import { MaxDuration } from './max-duration.decorator';
+import { ECodecType } from '../media.constant';
 import { LoggerModule } from 'src/logger/logger.module';
 import { MediaService } from '../service/media.service';
 import { ContextModule } from 'src/context/context.module';
@@ -15,6 +16,15 @@ describe(basename(__filename), () => {
     @MaxDuration(10)
     @IsNotEmpty()
     video: string;
+  }
+
+  /**
+   * 指定流类型: 校验所有视频流的流级时长
+   */
+  class VideoStreamTestClass {
+    @MaxDuration(600, ECodecType.VIDEO)
+    @IsNotEmpty()
+    media: string;
   }
 
   let mediaModule: TestingModule;
@@ -64,5 +74,19 @@ describe(basename(__filename), () => {
     const dto = plainToInstance(TestClass, { video: 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3' /* duration: 11 */ });
     const result = await validate(dto);
     expect(result).not.toStrictEqual([]);
+  });
+
+  describe('指定流类型(所有视频流)', () => {
+    it('视频文件路径(视频流时长86秒)', async () => {
+      const dto = plainToInstance(VideoStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' });
+      const result = await validate(dto);
+      expect(result).toStrictEqual([]);
+    });
+
+    it('图片文件路径(单帧视频流无流级时长)', async () => {
+      const dto = plainToInstance(VideoStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
+      const result = await validate(dto);
+      expect(result).not.toStrictEqual([]);
+    });
   });
 });

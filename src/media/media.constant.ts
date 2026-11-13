@@ -39,8 +39,10 @@ export const FFPROBE_TIMEOUT_MS = ms('30s');
 
 /**
  * ffprobe执行输出缓冲区上限(字节)
+ *
+ * bytes()解析失败时返回null, 此处以兜底值收窄类型(字面量'10MB'实际不会解析失败)
  */
-export const FFPROBE_MAX_BUFFER = bytes('10MB');
+export const FFPROBE_MAX_BUFFER = bytes('10MB') ?? 10 * 1024 * 1024;
 
 /**
  * 媒体探测结果缓存容量上限(条)

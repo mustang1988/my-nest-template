@@ -1,6 +1,7 @@
 import { basename } from 'node:path';
 import { MediaModule } from '../media.module';
 import { Duration } from './duration.decorator';
+import { ECodecType } from '../media.constant';
 import { plainToInstance } from 'class-transformer';
 import { TestingModule, Test } from '@nestjs/testing';
 import { LoggerModule } from 'src/logger/logger.module';
@@ -13,6 +14,24 @@ import { InternationalizationModule } from 'src/internationalization/internation
 describe(basename(__filename), () => {
   class TestClass {
     @Duration(5, 120)
+    @IsNotEmpty()
+    media: string;
+  }
+
+  /**
+   * 指定流类型: 校验所有音频流的流级时长
+   */
+  class AudioStreamTestClass {
+    @Duration(0, 600, ECodecType.AUDIO)
+    @IsNotEmpty()
+    media: string;
+  }
+
+  /**
+   * 指定流类型与流索引: 仅校验第1条视频流的流级时长
+   */
+  class VideoStreamIndexTestClass {
+    @Duration(0, 600, ECodecType.VIDEO, 0)
     @IsNotEmpty()
     media: string;
   }
@@ -66,5 +85,39 @@ describe(basename(__filename), () => {
     const dto = plainToInstance(TestClass, { media: 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3' });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
+  });
+
+  describe('指定流类型(所有音频流)', () => {
+    it('视频文件路径(音频流时长86秒)', async () => {
+      const dto = plainToInstance(AudioStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' });
+      const result = await validate(dto);
+      expect(result).toStrictEqual([]);
+    });
+
+    it('音频文件路径(音频流时长142.5秒)', async () => {
+      const dto = plainToInstance(AudioStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus' });
+      const result = await validate(dto);
+      expect(result).toStrictEqual([]);
+    });
+
+    it('图片文件路径(无音频流)', async () => {
+      const dto = plainToInstance(AudioStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
+      const result = await validate(dto);
+      expect(result).not.toStrictEqual([]);
+    });
+  });
+
+  describe('指定流类型与流索引(第1条视频流)', () => {
+    it('视频文件路径(视频流时长86秒)', async () => {
+      const dto = plainToInstance(VideoStreamIndexTestClass, { media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' });
+      const result = await validate(dto);
+      expect(result).toStrictEqual([]);
+    });
+
+    it('图片文件路径(单帧视频流无流级时长)', async () => {
+      const dto = plainToInstance(VideoStreamIndexTestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
+      const result = await validate(dto);
+      expect(result).not.toStrictEqual([]);
+    });
   });
 });
