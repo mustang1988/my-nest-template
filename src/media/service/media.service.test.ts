@@ -28,31 +28,31 @@ describe(basename(__filename), () => {
   });
 
   describe('readMediaByFilepath()', () => {
-    it('视频文件', () => {
+    it('视频文件', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4';
-      const result = mediaService.readMediaByFilepath(filepath);
+      const result = await mediaService.readMediaByFilepath(filepath);
       expect(result);
       // console.log('视频文件: %s\n%o', filepath, result);
     });
 
-    it('音频文件', () => {
+    it('音频文件', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus';
-      const result = mediaService.readMediaByFilepath(filepath);
+      const result = await mediaService.readMediaByFilepath(filepath);
       expect(result);
       // console.log('音频文件: %s\n%o', filepath, result);
     });
 
-    it('图片文件', () => {
+    it('图片文件', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png';
-      const result = mediaService.readMediaByFilepath(filepath);
+      const result = await mediaService.readMediaByFilepath(filepath);
       expect(result);
       // console.log('图片文件: %s\n%o', filepath, result);
     });
 
-    it('文件不存在', () => {
+    it('文件不存在', async () => {
       try {
         const filepath = `C:\\${randomUUID()}`;
-        mediaService.readMediaByFilepath(filepath);
+        await mediaService.readMediaByFilepath(filepath);
       } catch (error) {
         expect(error);
         expect(error instanceof MediaException);
@@ -61,41 +61,41 @@ describe(basename(__filename), () => {
   });
 
   describe('readMediaByUrl()', () => {
-    it('视频文件', () => {
+    it('视频文件', async () => {
       const url = 'http://10.50.2.35:9001/test/1518ccdd-c83c-4f6c-a0e2-6f5e4cff06f5.mp4';
-      const result = mediaService.readMediaByUrl(url);
+      const result = await mediaService.readMediaByUrl(url);
       expect(result);
       // console.log('视频文件: %s\n%o', url, result);
     });
 
-    it('音频文件', () => {
+    it('音频文件', async () => {
       const url = 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3';
-      const result = mediaService.readMediaByUrl(url);
+      const result = await mediaService.readMediaByUrl(url);
       expect(result);
       // console.log('音频文件: %s\n%o', url, result);
     });
 
-    it('图片文件', () => {
+    it('图片文件', async () => {
       const url = 'http://10.50.2.35:9001/test/061209205678761009.png';
-      const result = mediaService.readMediaByUrl(url);
+      const result = await mediaService.readMediaByUrl(url);
       expect(result);
       // console.log('图片文件: %s\n%o', url, result);
     });
 
-    it('URL无法访问', () => {
+    it('URL无法访问', async () => {
       try {
         const url = faker.internet.url();
-        mediaService.readMediaByUrl(url);
+        await mediaService.readMediaByUrl(url);
       } catch (error) {
         expect(error);
         expect(error instanceof MediaException);
       }
     });
 
-    it('URL格式无效', () => {
+    it('URL格式无效', async () => {
       try {
         const url = randomUUID();
-        mediaService.readMediaByUrl(url);
+        await mediaService.readMediaByUrl(url);
       } catch (error) {
         expect(error);
         expect(error instanceof MediaException);

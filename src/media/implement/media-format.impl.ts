@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsString } from 'class-validator';
 import { IMediaFormat } from '../interface/media-format.interface';
+import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 
 /**
  * 媒体格式
@@ -61,8 +61,7 @@ export class MediaFormat implements IMediaFormat {
   @IsOptional()
   probe_score: number;
 
-  @Type(() => Map<string, unknown>)
-  @IsString()
+  @IsObject()
   @IsOptional()
   tags: Record<string, unknown>;
 }

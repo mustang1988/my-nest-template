@@ -7,14 +7,14 @@ import { isPositive, ValidationArguments, ValidatorConstraint, ValidatorConstrai
  * 画面高度范围校验器
  */
 @Injectable()
-@ValidatorConstraint({ async: false, name: 'HeightValidator' })
+@ValidatorConstraint({ async: true, name: 'HeightValidator' })
 export class HeightValidator implements ValidatorConstraintInterface {
   constructor(
     private readonly i18n: I18nService,
     private readonly mediaService: MediaService,
   ) {}
 
-  validate(value: string, validationArguments: ValidationArguments): Promise<boolean> | boolean {
+  async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
     const minHeight = validationArguments.constraints[0];
     const maxHeight = validationArguments.constraints[1];
 
@@ -23,7 +23,7 @@ export class HeightValidator implements ValidatorConstraintInterface {
     }
 
     try {
-      const media = this.mediaService.readMedia(value);
+      const media = await this.mediaService.readMedia(value);
       if (media.isAudioMedia()) {
         return false;
       }

@@ -75,4 +75,24 @@ export class Media implements IMedia {
   hasAudioStream(): boolean {
     return this.getAudioStreams().length > 0;
   }
+
+  getDuration(): number | undefined {
+    if (this.isImageMedia()) {
+      return undefined;
+    }
+    let duration: number | undefined = undefined;
+    if (this.isVideoMedia()) {
+      duration = this.getVideoStream(0)?.duration;
+    }
+    if (this.isAudioMedia()) {
+      duration = this.getAudioStream(0)?.duration;
+    }
+    /**
+     * 流级时长缺失或不可用时回退取容器级时长
+     */
+    if (duration === undefined || Number.isNaN(duration)) {
+      duration = this.format?.duration;
+    }
+    return duration !== undefined && !Number.isNaN(duration) ? duration : undefined;
+  }
 }

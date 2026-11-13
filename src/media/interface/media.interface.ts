@@ -62,4 +62,14 @@ export interface IMedia {
    * 媒体中是否包含音频流
    */
   hasAudioStream(): boolean;
+
+  /**
+   * 获取媒体时长
+   *
+   * 图片媒体或时长未知时返回undefined; 优先取主流(视频取第1条视频流, 音频取第1条音频流)的流级时长,
+   * 流级时长缺失时(ffprobe对流级时长输出"N/A", 数值转换后为NaN)回退取容器级时长(format.duration)
+   *
+   * @return 媒体时长(单位: 秒)
+   */
+  getDuration(): number | undefined;
 }

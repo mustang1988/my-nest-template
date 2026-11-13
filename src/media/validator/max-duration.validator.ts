@@ -7,26 +7,21 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
  * 媒体时长最大值校验器
  */
 @Injectable()
-@ValidatorConstraint({ async: false, name: 'MaxDurationValidator' })
+@ValidatorConstraint({ async: true, name: 'MaxDurationValidator' })
 export class MaxDurationValidator implements ValidatorConstraintInterface {
   constructor(
     private readonly i18n: I18nService,
     private readonly mediaService: MediaService,
   ) {}
 
-  validate(value: string, validationArguments: ValidationArguments): Promise<boolean> | boolean {
+  async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
     const maxDuration: number = validationArguments.constraints[0];
     try {
-      const media = this.mediaService.readMedia(value);
-      if (media.isImageMedia()) {
+      const media = await this.mediaService.readMedia(value);
+      const duration = media.getDuration();
+      if (duration === undefined) {
+        // 图片媒体或时长未知
         return false;
-      }
-      let duration: number = 0;
-      if (media.isVideoMedia()) {
-        duration = media.getVideoStream(0)?.duration as number;
-      }
-      if (media.isAudioMedia()) {
-        duration = media.getAudioStream(0)?.duration as number;
       }
       return duration <= maxDuration;
     } catch {

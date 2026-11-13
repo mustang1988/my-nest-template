@@ -7,14 +7,14 @@ import { isPositive, ValidationArguments, ValidatorConstraint, ValidatorConstrai
  * 画面高度最小值校验器
  */
 @Injectable()
-@ValidatorConstraint({ async: false, name: 'MinHeightValidator' })
+@ValidatorConstraint({ async: true, name: 'MinHeightValidator' })
 export class MinHeightValidator implements ValidatorConstraintInterface {
   constructor(
     private readonly i18n: I18nService,
     private readonly mediaService: MediaService,
   ) {}
 
-  validate(value: string, validationArguments: ValidationArguments): Promise<boolean> | boolean {
+  async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
     const minHeight = validationArguments.constraints[0];
 
     if (!isPositive(minHeight)) {
@@ -22,7 +22,7 @@ export class MinHeightValidator implements ValidatorConstraintInterface {
     }
 
     try {
-      const media = this.mediaService.readMedia(value);
+      const media = await this.mediaService.readMedia(value);
       if (media.isAudioMedia()) {
         return false;
       }

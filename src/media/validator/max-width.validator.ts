@@ -7,14 +7,14 @@ import { isPositive, ValidationArguments, ValidatorConstraint, ValidatorConstrai
  * 画面宽度最大值校验器
  */
 @Injectable()
-@ValidatorConstraint({ async: false, name: 'MaxWidthValidator' })
+@ValidatorConstraint({ async: true, name: 'MaxWidthValidator' })
 export class MaxWidthValidator implements ValidatorConstraintInterface {
   constructor(
     private readonly i18n: I18nService,
     private readonly mediaService: MediaService,
   ) {}
 
-  validate(value: string, validationArguments: ValidationArguments): Promise<boolean> | boolean {
+  async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
     const maxWidth = validationArguments.constraints[0];
 
     if (!isPositive(maxWidth)) {
@@ -22,7 +22,7 @@ export class MaxWidthValidator implements ValidatorConstraintInterface {
     }
 
     try {
-      const media = this.mediaService.readMedia(value);
+      const media = await this.mediaService.readMedia(value);
       if (media.isAudioMedia()) {
         return false;
       }

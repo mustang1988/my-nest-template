@@ -7,30 +7,23 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
  * 媒体时长范围校验器
  */
 @Injectable()
-@ValidatorConstraint({ async: false, name: 'DurationValidator' })
+@ValidatorConstraint({ async: true, name: 'DurationValidator' })
 export class DurationValidator implements ValidatorConstraintInterface {
   constructor(
     private readonly i18n: I18nService,
     private readonly mediaService: MediaService,
   ) {}
 
-  validate(value: any, validationArguments: ValidationArguments): Promise<boolean> | boolean {
+  async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
     const [minDuration, maxDuration] = validationArguments.constraints as Array<number>;
     try {
-      const media = this.mediaService.readMedia(value);
-      if (media.isImageMedia()) {
+      const media = await this.mediaService.readMedia(value);
+      const duration = media.getDuration();
+      if (duration === undefined) {
+        // 图片媒体或时长未知
         return false;
       }
-      let duration: number = media.format?.duration ?? 0;
-      if (media.isVideoMedia()) {
-        const videoDuration = media.getVideoStream(0)?.duration as number;
-        duration = !isNaN(videoDuration) ? (media.getVideoStream(0)?.duration as number) : duration;
-      }
-      if (media.isAudioMedia()) {
-        const audioDuration = media.getAudioStream(0)?.duration as number;
-        duration = !isNaN(audioDuration) ? (media.getAudioStream(0)?.duration as number) : duration;
-      }
-      return !isNaN(duration) && minDuration <= duration && duration <= maxDuration;
+      return minDuration <= duration && duration <= maxDuration;
     } catch {
       return false;
     }

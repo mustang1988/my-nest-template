@@ -7,16 +7,16 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
  * 属性值对应媒体是否为音频媒体校验器
  */
 @Injectable()
-@ValidatorConstraint({ async: false, name: 'IsAudioValidator' })
+@ValidatorConstraint({ async: true, name: 'IsAudioValidator' })
 export class IsAudioValidator implements ValidatorConstraintInterface {
   constructor(
     private readonly i18n: I18nService,
     private readonly mediaService: MediaService,
   ) {}
 
-  validate(value: string): Promise<boolean> | boolean {
+  async validate(value: string): Promise<boolean> {
     try {
-      const media = this.mediaService.readMedia(value);
+      const media = await this.mediaService.readMedia(value);
       return media.isAudioMedia();
     } catch {
       return false;

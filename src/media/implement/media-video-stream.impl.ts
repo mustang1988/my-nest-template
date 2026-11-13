@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { MediaStream } from './media-stream.impl';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsObject } from 'class-validator';
 import { IMediaVideoStream } from '../interface/media-video-stream.interface';
 
 /**
@@ -187,11 +187,11 @@ export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   @IsOptional()
   extradata_size: number;
 
-  @IsString()
+  @IsObject()
   @IsOptional()
   disposition: Record<string, unknown>;
 
-  @IsString()
+  @IsObject()
   @IsOptional()
   tags: Record<string, unknown>;
 }

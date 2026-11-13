@@ -7,20 +7,20 @@ import { MediaAudioStream } from '../implement/media-audio-stream.impl';
 import { MediaVideoStream } from '../implement/media-video-stream.impl';
 import { IMediaAudioStream } from '../interface/media-audio-stream.interface';
 import { IMediaVideoStream } from '../interface/media-video-stream.interface';
-import { min, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
 /**
  * 媒体编码器类型校验器
  */
 @Injectable()
-@ValidatorConstraint({ async: false, name: 'IsCodecValidator' })
+@ValidatorConstraint({ async: true, name: 'IsCodecValidator' })
 export class IsCodecValidator implements ValidatorConstraintInterface {
   constructor(
     private readonly i18n: I18nService,
     private readonly mediaService: MediaService,
   ) {}
 
-  validate(value: string, validationArguments: ValidationArguments): Promise<boolean> | boolean {
+  async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
     try {
       /**
        * 期望的编码器名称或全名
@@ -35,23 +35,29 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
       /**
        * 期望校验的流索引
        */
-      const expectStreamIndex = validationArguments.constraints[2] as number;
-      if (expectStreamIndex && expectStreamIndex < 0) {
+      const expectStreamIndex = validationArguments.constraints[2] as number | undefined;
+      if (expectStreamIndex !== undefined && expectStreamIndex < 0) {
         // 期望的流索引不可以小于0, 否则直接返回校验失败
         return false;
       }
 
-      const media = this.mediaService.readMedia(value);
+      const media = await this.mediaService.readMedia(value);
       /**
        * 待检查的流列表
        */
       let expectStreams: Array<IMediaAudioStream | IMediaVideoStream> = [];
       switch (expectCodecType) {
         case ECodecType.AUDIO.toString():
-          expectStreams = expectStreamIndex ? [media.getAudioStream(expectStreamIndex) as MediaAudioStream] : media.getAudioStreams();
+          expectStreams =
+            expectStreamIndex !== undefined
+              ? [media.getAudioStream(expectStreamIndex) as MediaAudioStream]
+              : media.getAudioStreams();
           break;
         case ECodecType.VIDEO.toString():
-          expectStreams = expectStreamIndex ? [media.getVideoStream(expectStreamIndex) as MediaVideoStream] : media.getVideoStreams();
+          expectStreams =
+            expectStreamIndex !== undefined
+              ? [media.getVideoStream(expectStreamIndex) as MediaVideoStream]
+              : media.getVideoStreams();
           break;
         default:
           return false;

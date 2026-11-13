@@ -25,25 +25,25 @@ describe(basename(__filename), () => {
   });
 
   describe('getVideoStreams()', () => {
-    it('视频', () => {
+    it('视频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const videoStreams = media.getVideoStreams();
       expect(videoStreams).not.toStrictEqual([]);
     });
 
-    it('图片', () => {
+    it('图片', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const videoStreams = media.getVideoStreams();
       expect(videoStreams).not.toStrictEqual([]);
     });
 
-    it('音频', () => {
+    it('音频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const videoStreams = media.getVideoStreams();
       expect(videoStreams).toStrictEqual([]);
@@ -51,25 +51,25 @@ describe(basename(__filename), () => {
   });
 
   describe('getVideoStream(index)', () => {
-    it('视频', () => {
+    it('视频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const videoStream = media.getVideoStream(0);
       expect(videoStream).not.toStrictEqual(undefined);
     });
 
-    it('图片', () => {
+    it('图片', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const videoStream = media.getVideoStream(0);
       expect(videoStream).not.toStrictEqual(undefined);
     });
 
-    it('音频', () => {
+    it('音频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const videoStream = media.getVideoStream(0);
       expect(videoStream).toStrictEqual(undefined);
@@ -77,25 +77,25 @@ describe(basename(__filename), () => {
   });
 
   describe('getAudioStreams()', () => {
-    it('视频', () => {
+    it('视频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const audioStreams = media.getAudioStreams();
       expect(audioStreams).not.toStrictEqual([]);
     });
 
-    it('图片', () => {
+    it('图片', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const audioStreams = media.getAudioStreams();
       expect(audioStreams).toStrictEqual([]);
     });
 
-    it('音频', () => {
+    it('音频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const audioStreams = media.getAudioStreams();
       expect(audioStreams).not.toStrictEqual([]);
@@ -103,25 +103,25 @@ describe(basename(__filename), () => {
   });
 
   describe('getAudioStream(index)', () => {
-    it('视频', () => {
+    it('视频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const audioStream = media.getAudioStream(0);
       expect(audioStream).not.toStrictEqual(undefined);
     });
 
-    it('图片', () => {
+    it('图片', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const audioStream = media.getAudioStream(0);
       expect(audioStream).toStrictEqual(undefined);
     });
 
-    it('音频', () => {
+    it('音频', async () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus';
-      const media = mediaService.readMediaByFilepath(filepath);
+      const media = await mediaService.readMediaByFilepath(filepath);
       expect(media);
       const audioStream = media.getAudioStream(0);
       expect(audioStream).not.toStrictEqual(undefined);
