@@ -23,5 +23,8 @@
   "MaxAspectRatioValidator": "$t(property.{property})的画面宽高比应小于等于{constraints.0}",
   "FpsValidator": "$t(property.{property})的视频帧率应在[{constraints.0}, {constraints.1}]范围内",
   "MinFpsValidator": "$t(property.{property})的视频帧率应大于等于{constraints.0}",
-  "MaxFpsValidator": "$t(property.{property})的视频帧率应小于等于{constraints.0}"
+  "MaxFpsValidator": "$t(property.{property})的视频帧率应小于等于{constraints.0}",
+  "MediaSizeValidator": "$t(property.{property})的媒体文件大小应在[{constraints.0}, {constraints.1}]范围内",
+  "MinMediaSizeValidator": "$t(property.{property})的媒体文件大小应大于等于{constraints.0}",
+  "MaxMediaSizeValidator": "$t(property.{property})的媒体文件大小应小于等于{constraints.0}"
 }

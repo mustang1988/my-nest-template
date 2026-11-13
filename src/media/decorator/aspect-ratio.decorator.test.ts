@@ -1,10 +1,10 @@
 import { basename } from 'node:path';
 import { MediaModule } from '../media.module';
-import { AspectRatio } from './aspect-ratio.decorator';
 import { plainToInstance } from 'class-transformer';
 import { TestingModule, Test } from '@nestjs/testing';
-import { LoggerModule } from 'src/logger/logger.module';
+import { AspectRatio } from './aspect-ratio.decorator';
 import { MediaService } from '../service/media.service';
+import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
 import { IsNotEmpty, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';

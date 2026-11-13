@@ -23,5 +23,8 @@
   "MaxAspectRatioValidator": "Aspect ratio of $t(property.{property}) should be less than or equals to {constraints.0}",
   "FpsValidator": "FPS of $t(property.{property}) should between {constraints.0} and {constraints.1}",
   "MinFpsValidator": "FPS of $t(property.{property}) should be greater than or equals to {constraints.0}",
-  "MaxFpsValidator": "FPS of $t(property.{property}) should be less than or equals to {constraints.0}"
+  "MaxFpsValidator": "FPS of $t(property.{property}) should be less than or equals to {constraints.0}",
+  "MediaSizeValidator": "Size of $t(property.{property}) should between {constraints.0} and {constraints.1}",
+  "MinMediaSizeValidator": "Size of $t(property.{property}) should be greater than or equals to {constraints.0}",
+  "MaxMediaSizeValidator": "Size of $t(property.{property}) should be less than or equals to {constraints.0}"
 }

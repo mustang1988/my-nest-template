@@ -1,12 +1,12 @@
 import { sortBy } from 'lodash';
 import { Type } from 'class-transformer';
 import { IsOptional } from 'class-validator';
-import { MediaStream } from './media-stream.impl';
 import { MediaFormat } from './media-format.impl';
+import { MediaStream } from './media-stream.impl';
 import { IMAGE_DEMUXER } from '../media.constant';
 import { IMedia } from '../interface/media.interface';
-import { MediaVideoStream } from './media-video-stream.impl';
 import { MediaAudioStream } from './media-audio-stream.impl';
+import { MediaVideoStream } from './media-video-stream.impl';
 import { IMediaFormat } from '../interface/media-format.interface';
 import { IMediaAudioStream } from '../interface/media-audio-stream.interface';
 import { IMediaVideoStream } from '../interface/media-video-stream.interface';

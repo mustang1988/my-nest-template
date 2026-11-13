@@ -1,6 +1,6 @@
 import {
-  OnGatewayInit,
   type WsResponse,
+  OnGatewayInit,
   ConnectedSocket,
   WebSocketServer,
   SubscribeMessage,

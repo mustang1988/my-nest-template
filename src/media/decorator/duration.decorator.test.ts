@@ -1,11 +1,11 @@
 import { basename } from 'node:path';
 import { MediaModule } from '../media.module';
-import { Duration } from './duration.decorator';
 import { ECodecType } from '../media.constant';
+import { Duration } from './duration.decorator';
 import { plainToInstance } from 'class-transformer';
 import { TestingModule, Test } from '@nestjs/testing';
-import { LoggerModule } from 'src/logger/logger.module';
 import { MediaService } from '../service/media.service';
+import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
 import { IsNotEmpty, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
@@ -109,7 +109,9 @@ describe(basename(__filename), () => {
 
   describe('指定流类型与流索引(第1条视频流)', () => {
     it('视频文件路径(视频流时长86秒)', async () => {
-      const dto = plainToInstance(VideoStreamIndexTestClass, { media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' });
+      const dto = plainToInstance(VideoStreamIndexTestClass, {
+        media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
+      });
       const result = await validate(dto);
       expect(result).toStrictEqual([]);
     });

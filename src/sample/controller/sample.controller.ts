@@ -1,6 +1,6 @@
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { SampleQuery } from '../query/sample.query';
 import { SampleGuard } from '../guard/sample.guard';
+import { SampleQuery } from '../query/sample.query';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SampleCommand } from '../command/sample.command';
 import { SampleService } from '../service/sample.service';
 import { SampleEntity } from '../entity/sample.default.entity';

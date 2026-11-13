@@ -48,16 +48,10 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
       let expectStreams: Array<IMediaAudioStream | IMediaVideoStream> = [];
       switch (expectCodecType) {
         case ECodecType.AUDIO.toString():
-          expectStreams =
-            expectStreamIndex !== undefined
-              ? [media.getAudioStream(expectStreamIndex) as MediaAudioStream]
-              : media.getAudioStreams();
+          expectStreams = expectStreamIndex !== undefined ? [media.getAudioStream(expectStreamIndex) as MediaAudioStream] : media.getAudioStreams();
           break;
         case ECodecType.VIDEO.toString():
-          expectStreams =
-            expectStreamIndex !== undefined
-              ? [media.getVideoStream(expectStreamIndex) as MediaVideoStream]
-              : media.getVideoStreams();
+          expectStreams = expectStreamIndex !== undefined ? [media.getVideoStream(expectStreamIndex) as MediaVideoStream] : media.getVideoStreams();
           break;
         default:
           return false;

@@ -2,8 +2,8 @@ import { basename } from 'node:path';
 import { faker } from '@faker-js/faker';
 import { randomBytes } from 'node:crypto';
 import {
-  InvalidUrlEnvException,
   InvalidHexEnvException,
+  InvalidUrlEnvException,
   InvalidNumberEnvException,
   InvalidBooleanEnvException,
   InvalidIntegerEnvException,

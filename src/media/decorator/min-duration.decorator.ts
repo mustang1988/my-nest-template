@@ -10,8 +10,7 @@ import { MinDurationValidator } from '../validator/min-duration.validator';
  * @param options 校验选项
  */
 export const MinDuration =
-  (minDurationInSecond: number, codecType?: ECodecType, streamIndex?: number, options?: ValidationOptions) =>
-  (dto: object, propertyName: string) =>
+  (minDurationInSecond: number, codecType?: ECodecType, streamIndex?: number, options?: ValidationOptions) => (dto: object, propertyName: string) =>
     registerDecorator({
       target: dto.constructor,
       propertyName,

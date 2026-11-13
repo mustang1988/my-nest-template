@@ -10,8 +10,7 @@ import { MaxDurationValidator } from '../validator/max-duration.validator';
  * @param options 校验选项
  */
 export const MaxDuration =
-  (maxDurationInSecond: number, codecType?: ECodecType, streamIndex?: number, options?: ValidationOptions) =>
-  (dto: object, propertyName: string) =>
+  (maxDurationInSecond: number, codecType?: ECodecType, streamIndex?: number, options?: ValidationOptions) => (dto: object, propertyName: string) =>
     registerDecorator({
       target: dto.constructor,
       propertyName,
