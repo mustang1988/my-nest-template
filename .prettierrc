@@ -1,5 +1,6 @@
 {
   "singleQuote": true,
   "trailingComma": "all",
-  "printWidth": 150
+  "printWidth": 150,
+  "plugins": ["./scripts/prettier-plugin-sort-imports-by-length/index.mjs"]
 }
