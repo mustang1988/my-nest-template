@@ -2,36 +2,13 @@ import { Logger } from 'winston';
 import { existsSync } from 'node:fs';
 import { isURL } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
 import { Media } from '../implement/media.impl';
 import { plainToInstance } from 'class-transformer';
 import { IMedia } from '../interface/media.interface';
 import { MediaException } from '../exception/media.exception';
 import { ContextService } from 'src/context/service/context.service';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
-
-const execFileAsync = promisify(execFile);
-
-/**
- * ffprobe单次执行的超时时长(毫秒)
- *
- * 超时后子进程被终止并抛出异常, 避免不可达的URL输入等场景长时间占用请求
- */
-const FFPROBE_TIMEOUT_MS = 30_000;
-
-/**
- * ffprobe执行输出缓冲区上限(字节)
- */
-const FFPROBE_MAX_BUFFER = 10 * 1024 * 1024;
-
-/**
- * 媒体探测结果缓存容量上限(条)
- *
- * 同一输入的重复探测直接复用缓存结果(如同一DTO属性挂多个媒体校验器时), 避免重复执行ffprobe;
- * URL输入时尤为昂贵, 每次探测都会重新下载媒体文件
- */
-const MEDIA_CACHE_MAX_SIZE = 100;
+import { execFileAsync, FFPROBE_MAX_BUFFER, FFPROBE_TIMEOUT_MS, MEDIA_CACHE_MAX_SIZE } from '../media.constant';
 
 /**
  * 媒体服务
