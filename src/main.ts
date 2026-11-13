@@ -200,4 +200,4 @@ void (async () => {
   const appPort = configService.getOrThrow<number>('app.port');
   await app.listen(appPort, '0.0.0.0');
   logger.info('服务启动完成: port = %s', appPort);
-};)();
+})();

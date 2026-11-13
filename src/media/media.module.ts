@@ -1,6 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { MediaService } from './service/media.service';
-import { IsVideoFileValidator } from './validator/is-video-file.validator';
+import { IsAudioValidator } from './validator/is-audio.validator';
+import { IsImageValidator } from './validator/is-image.validator';
+import { IsVideoValidator } from './validator/is-video.validator';
+import { DurationValidator } from './validator/duration.validator';
+import { MinDurationValidator } from './validator/min-duration.validator';
+import { MaxDurationValidator } from './validator/max-duration.validator';
 
 /**
  * 媒体模块
@@ -9,6 +14,7 @@ import { IsVideoFileValidator } from './validator/is-video-file.validator';
  */
 @Global()
 @Module({
-  providers: [MediaService, IsVideoFileValidator],
+  providers: [MediaService, IsAudioValidator, IsImageValidator, IsVideoValidator, DurationValidator, MinDurationValidator, MaxDurationValidator],
+  exports: [MediaService, IsAudioValidator, IsImageValidator, IsVideoValidator, DurationValidator, MinDurationValidator, MaxDurationValidator],
 })
 export class MediaModule {}

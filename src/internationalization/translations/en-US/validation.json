@@ -5,5 +5,8 @@
   "Length": "$t(property.{property}) length shoule between {constraints.0} and {constraints.1}",
   "IsString": "$t(property.{property}) should be a string",
   "IsNotEmpty": "$t(property.{property}) is required",
-  "IsVideoFileValidator": "$t(property.{property}) is not a video file"
+  "IsAudioValidator": "$t(property.{property}) is not audio",
+  "IsImageValidator": "$t(property.{property}) is not image",
+  "IsVideoValidator": "$t(property.{property}) is not video",
+  "MinDurationValidator": "$t(property.{property}) duration should be greater than or equals to {constraints.0} seconds"
 }

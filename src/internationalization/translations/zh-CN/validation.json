@@ -5,5 +5,8 @@
   "Length": "$t(property.{property})长度应在[{constraints.0},{constraints.1}]范围内",
   "IsString": "$t(property.{property})应为字符串",
   "IsNotEmpty": "$t(property.{property})非空必填",
-  "IsVideoFileValidator": "$t(property.{property})不是视频文件"
+  "IsAudioValidator": "$t(property.{property})不是音频",
+  "IsImageValidator": "$t(property.{property})不是图片",
+  "IsVideoValidator": "$t(property.{property})不是视频",
+  "MinDurationValidator": "$t(property.{property})时长应大于等于{constraints.0}秒"
 }

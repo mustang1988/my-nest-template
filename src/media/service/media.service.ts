@@ -25,6 +25,19 @@ export class MediaService {
     this.logger = this.logger.child({ context: this.constructor.name });
   }
 
+  readMedia(filepathOrUrl: string): IMedia {
+    if (isURL(filepathOrUrl)) {
+      return this.readMediaByUrl(filepathOrUrl);
+    }
+    return this.readMediaByFilepath(filepathOrUrl);
+  }
+
+  /**
+   * 读取指定路径下的媒体文件信息
+   * @param filepath 文件路径
+   * @return 媒体信息
+   * @throws MediaException
+   */
   readMediaByFilepath(filepath: string): IMedia {
     const requestId = this.ctx.getRequestId();
     if (!existsSync(filepath)) {
@@ -34,7 +47,7 @@ export class MediaService {
 
     const command = this.readMediaCommand.replace(':input', basename(filepath));
     const cwd = dirname(filepath);
-    this.logger.info('[%s] 读取媒体文件信息: command = %s, cwd = %s', requestId, command, cwd);
+    this.logger.debug('[%s] 读取媒体文件信息: command = %s, cwd = %s', requestId, command, cwd);
     try {
       const stdout = execSync(command, { cwd });
       const media = plainToInstance(Media, JSON.parse(stdout.toString()));
@@ -46,23 +59,29 @@ export class MediaService {
     }
   }
 
+  /**
+   * 读取指定url的媒体信息
+   * @param url 文件url
+   * @return 媒体信息
+   * @throws MediaException
+   */
   readMediaByUrl(url: string): IMedia {
     const requestId = this.ctx.getRequestId();
     if (!isURL(url)) {
-      this.logger.error('[%s] 读取媒体文件信息, 指定URL格式无效: url = %s', requestId, url);
-      throw new MediaException('未找到指定文件', { cause: { url } });
+      this.logger.error('[%s] 读取媒体URL信息, 指定URL格式无效: url = %s', requestId, url);
+      throw new MediaException('指定URL格式无效', { cause: { url } });
     }
 
     const command = this.readMediaCommand.replace(':input', url);
-    this.logger.info('[%s] 读取媒体文件信息: command = %s', requestId, command);
+    this.logger.debug('[%s] 读取媒体URL信息: command = %s', requestId, command);
 
     try {
       const stdout = execSync(command);
       const media = plainToInstance(Media, JSON.parse(stdout.toString()));
-      this.logger.debug('[%s] 读取媒体文件信息: media = %j', requestId, media);
+      this.logger.debug('[%s] 读取媒体URL信息: media = %j', requestId, media);
       return media;
     } catch (error) {
-      this.logger.error('[%s] 读取媒体文件信息, 异常: error = %o', requestId, error);
+      this.logger.error('[%s] 读取媒体URL信息, 异常: error = %o', requestId, error);
       throw new MediaException((error as Error).message, { cause: error });
     }
   }

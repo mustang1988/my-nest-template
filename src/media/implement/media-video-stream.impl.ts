@@ -30,11 +30,6 @@ export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  codec_type: string;
-
-  @Type(() => String)
-  @IsString()
-  @IsOptional()
   codec_tag_string: string;
 
   @Type(() => String)

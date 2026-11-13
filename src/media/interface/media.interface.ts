@@ -35,4 +35,29 @@ export interface IMedia {
    * 获取指定索引的媒体音频流信息
    */
   getAudioStream(index: number): IMediaAudioStream | undefined;
+
+  /**
+   * 是否为视频媒体
+   */
+  isVideoMedia(): boolean;
+
+  /**
+   * 是否为图片媒体
+   */
+  isImageMedia(): boolean;
+
+  /**
+   * 是否为音频媒体
+   */
+  isAudioMedia(): boolean;
+
+  /**
+   * 媒体中是否包含视频流
+   */
+  hasVideoStream(): boolean;
+
+  /**
+   * 媒体中是否包含音频流
+   */
+  hasAudioStream(): boolean;
 }

@@ -32,21 +32,21 @@ describe(basename(__filename), () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4';
       const result = mediaService.readMediaByFilepath(filepath);
       expect(result);
-      console.log('视频文件: %s\n%o', filepath, result);
+      // console.log('视频文件: %s\n%o', filepath, result);
     });
 
     it('音频文件', () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus';
       const result = mediaService.readMediaByFilepath(filepath);
       expect(result);
-      console.log('音频文件: %s\n%o', filepath, result);
+      // console.log('音频文件: %s\n%o', filepath, result);
     });
 
     it('图片文件', () => {
       const filepath = 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png';
       const result = mediaService.readMediaByFilepath(filepath);
       expect(result);
-      console.log('图片文件: %s\n%o', filepath, result);
+      // console.log('图片文件: %s\n%o', filepath, result);
     });
 
     it('文件不存在', () => {
@@ -65,21 +65,21 @@ describe(basename(__filename), () => {
       const url = 'http://10.50.2.35:9001/test/1518ccdd-c83c-4f6c-a0e2-6f5e4cff06f5.mp4';
       const result = mediaService.readMediaByUrl(url);
       expect(result);
-      console.log('视频文件: %s\n%o', url, result);
+      // console.log('视频文件: %s\n%o', url, result);
     });
 
     it('音频文件', () => {
       const url = 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3';
       const result = mediaService.readMediaByUrl(url);
       expect(result);
-      console.log('音频文件: %s\n%o', url, result);
+      // console.log('音频文件: %s\n%o', url, result);
     });
 
     it('图片文件', () => {
       const url = 'http://10.50.2.35:9001/test/061209205678761009.png';
       const result = mediaService.readMediaByUrl(url);
       expect(result);
-      console.log('图片文件: %s\n%o', url, result);
+      // console.log('图片文件: %s\n%o', url, result);
     });
 
     it('URL无法访问', () => {
