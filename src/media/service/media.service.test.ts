@@ -95,7 +95,7 @@ describe(basename(__filename), () => {
     it('URL格式无效', () => {
       try {
         const url = randomUUID();
-        mediaService.readMediaByFilepath(url);
+        mediaService.readMediaByUrl(url);
       } catch (error) {
         expect(error);
         expect(error instanceof MediaException);

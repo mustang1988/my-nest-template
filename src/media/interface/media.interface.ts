@@ -23,6 +23,7 @@ export interface IMedia {
 
   /**
    * 获取指定索引的媒体视频流信息
+   * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有视频流中的第N个
    */
   getVideoStream(index: number): IMediaVideoStream | undefined;
 
@@ -33,6 +34,7 @@ export interface IMedia {
 
   /**
    * 获取指定索引的媒体音频流信息
+   * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有音频流中的第N个
    */
   getAudioStream(index: number): IMediaAudioStream | undefined;
 

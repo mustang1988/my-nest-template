@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { MediaStream } from './media-stream.impl';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumber } from 'class-validator';
 import { IMediaAudioStream } from '../interface/media-audio-stream.interface';
 
 /**
@@ -8,7 +8,7 @@ import { IMediaAudioStream } from '../interface/media-audio-stream.interface';
  */
 export class MediaAudioStream extends MediaStream implements IMediaAudioStream {
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   index: number;
 
@@ -43,12 +43,12 @@ export class MediaAudioStream extends MediaStream implements IMediaAudioStream {
   sample_fmt: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   sample_rate: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   channels: number;
 
@@ -58,12 +58,12 @@ export class MediaAudioStream extends MediaStream implements IMediaAudioStream {
   channel_layout: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   bits_per_sample: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   initial_padding: number;
 
@@ -88,46 +88,44 @@ export class MediaAudioStream extends MediaStream implements IMediaAudioStream {
   time_base: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   start_pts: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   start_time: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   duration_ts: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   duration: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   bit_rate: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   nb_frames: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   extradata_size: number;
 
-  @Type(() => Map<string, unknown>)
   @IsString()
   @IsOptional()
   disposition: Record<string, unknown>;
 
-  @Type(() => Map<string, unknown>)
   @IsString()
   @IsOptional()
   tags: Record<string, unknown>;

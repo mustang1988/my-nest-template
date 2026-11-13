@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { MediaStream } from './media-stream.impl';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumber } from 'class-validator';
 import { IMediaVideoStream } from '../interface/media-video-stream.interface';
 
 /**
@@ -8,7 +8,7 @@ import { IMediaVideoStream } from '../interface/media-video-stream.interface';
  */
 export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   index: number;
 
@@ -38,37 +38,37 @@ export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   codec_tag: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   width: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   height: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   coded_width: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   coded_height: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   closed_captions: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   film_grain: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   has_b_frames: number;
 
@@ -88,7 +88,7 @@ export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   pix_fmt: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   level: number;
 
@@ -118,7 +118,7 @@ export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   chroma_location: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   refs: number;
 
@@ -153,46 +153,44 @@ export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   time_base: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   start_pts: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   start_time: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   duration_ts: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   duration: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   bit_rate: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   nb_frames: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   extradata_size: number;
 
-  @Type(() => Map<string, unknown>)
   @IsString()
   @IsOptional()
   disposition: Record<string, unknown>;
 
-  @Type(() => Map<string, unknown>)
   @IsString()
   @IsOptional()
   tags: Record<string, unknown>;

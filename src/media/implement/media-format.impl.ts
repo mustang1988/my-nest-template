@@ -12,17 +12,17 @@ export class MediaFormat implements IMediaFormat {
   filename: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   nb_streams: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   nb_programs: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   nb_stream_groups: number;
 
@@ -37,27 +37,27 @@ export class MediaFormat implements IMediaFormat {
   format_long_name: string;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   start_time: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   duration: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   size: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   bit_rate: number;
 
   @Type(() => Number)
-  @IsString()
+  @IsNumber()
   @IsOptional()
   probe_score: number;
 

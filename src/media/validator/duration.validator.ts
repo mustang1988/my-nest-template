@@ -21,14 +21,16 @@ export class DurationValidator implements ValidatorConstraintInterface {
       if (media.isImageMedia()) {
         return false;
       }
-      let duration: number = 0;
+      let duration: number = media.format?.duration ?? 0;
       if (media.isVideoMedia()) {
-        duration = media.getVideoStream(0)?.duration as number;
+        const videoDuration = media.getVideoStream(0)?.duration as number;
+        duration = !isNaN(videoDuration) ? (media.getVideoStream(0)?.duration as number) : duration;
       }
       if (media.isAudioMedia()) {
-        duration = media.getAudioStream(0)?.duration as number;
+        const audioDuration = media.getAudioStream(0)?.duration as number;
+        duration = !isNaN(audioDuration) ? (media.getAudioStream(0)?.duration as number) : duration;
       }
-      return minDuration <= duration && duration <= maxDuration;
+      return !isNaN(duration) && minDuration <= duration && duration <= maxDuration;
     } catch {
       return false;
     }
