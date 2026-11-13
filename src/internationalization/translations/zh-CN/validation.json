@@ -2,11 +2,20 @@
   "IsIn": "$t(property.{property})应为为以下值之一: {constraints.0}",
   "IsInt": "$t(property.{property})应为整数",
   "IsEnum": "$t(property.{property})应为为以下值之一: {constraints.0}",
-  "Length": "$t(property.{property})长度应在[{constraints.0},{constraints.1}]范围内",
+  "Length": "$t(property.{property})长度应在[{constraints.0}, {constraints.1}]范围内",
   "IsString": "$t(property.{property})应为字符串",
   "IsNotEmpty": "$t(property.{property})非空必填",
   "IsAudioValidator": "$t(property.{property})不是音频",
   "IsImageValidator": "$t(property.{property})不是图片",
   "IsVideoValidator": "$t(property.{property})不是视频",
-  "MinDurationValidator": "$t(property.{property})时长应大于等于{constraints.0}秒"
+  "DurationValidator": "$t(property.{property})的时长应在[{constraints.0} 秒, {constraints.1} 秒]范围内",
+  "MinDurationValidator": "$t(property.{property})时长应大于等于{constraints.0}秒",
+  "MaxDurationValidator": "$t(property.{property})时长应小于等于{constraints.0}秒",
+  "IsCodecValidator": "$t(property.{property})的$t(enum.ECodecType.{constraints.0})编码器应为{constraints.0}",
+  "HeightValidator": "$t(property.{property})的画面高度应在[{constraints.0} px, {constraints.1} px]范围内",
+  "MinHeightValidator": "$t(property.{property})的画面高度应大于等于{constraints.0} px",
+  "MaxHeightValidator": "$t(property.{property})的画面高度应小于等于{constraints.0} px",
+  "WidthValidator": "$t(property.{property})的画面宽度应在[{constraints.0} px, {constraints.1} px]范围内",
+  "MinWidthValidator": "$t(property.{property})的画面宽度应大于等于{constraints.0} px",
+  "MaxWidthValidator": "$t(property.{property})的画面宽度应小于等于{constraints.0} px"
 }

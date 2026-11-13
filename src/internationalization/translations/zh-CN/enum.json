@@ -1,0 +1,6 @@
+{
+  "ECodecType": {
+    "video": "视频流",
+    "audio": "音频流"
+  }
+}
