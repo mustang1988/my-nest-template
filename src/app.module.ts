@@ -4,11 +4,12 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RedisModule } from './redis/redis.module';
-import { MySQLModule } from './mysql/mysql.module';
 import { EventModule } from './event/event.module';
-import { LoggerModule } from './logger/logger.module';
+import { MediaModule } from './media/media.module';
+import { MySQLModule } from './mysql/mysql.module';
+import { RedisModule } from './redis/redis.module';
 import { CommonModule } from './common/common.module';
+import { LoggerModule } from './logger/logger.module';
 import { SampleModule } from './sample/sample.module';
 import { ContextModule } from './context/context.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -17,8 +18,8 @@ import { WebSocketModule } from './websocket/websocket.module';
 import { S3StorageModule } from './s3-storage/s3-storage.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { IS3StorageConfiguration } from './configuration/interface/s3-storage.interface';
-import { IRedisConfiguration } from './configuration/interface/redis-configuration.interface';
 import { IMySQLConfiguration } from './configuration/interface/mysql-configuration.interface';
+import { IRedisConfiguration } from './configuration/interface/redis-configuration.interface';
 import { InternationalizationModule } from './internationalization/internationalization.module';
 import { IRabbitmqConfiguration } from './configuration/interface/rabbitmq-configuration.interface';
 import { BigintSupportResponseTransformer } from './common/response-transformer/bigint-support.response-transformer';
@@ -49,6 +50,7 @@ import { BigintSupportResponseTransformer } from './common/response-transformer/
      * NestJS CQRS模块
      */
     CqrsModule.forRoot(),
+    MediaModule,
     EventModule,
     CommonModule,
     LoggerModule,

@@ -3,8 +3,9 @@ import { Logger } from 'winston';
 import { basename } from 'node:path';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
-import fastifyHelmet from '@fastify/helmet';
 import fastifyCookie from '@fastify/cookie';
+import fastifyHelmet from '@fastify/helmet';
+import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import fastifyCompress from '@fastify/compress';
 import { I18nValidationPipe } from 'nestjs-i18n';
@@ -135,6 +136,11 @@ void (async () => {
    * (Redis订阅退订, Rabbitmq连接关闭, MySQL数据源销毁等), 避免在途请求和队列消息丢失
    */
   app.enableShutdownHooks();
+
+  /**
+   * 设置class-validator上下文的IoC容器使用NestJS
+   */
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   /**
    * 设置RedisSocketIoAdapter作为Socket.IO适配器

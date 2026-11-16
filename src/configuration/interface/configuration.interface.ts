@@ -1,8 +1,8 @@
 import { IS3StorageConfiguration } from './s3-storage.interface';
 import { IAppConfiguration } from './app-configuration.interface';
 import { Ii18nConfiguration } from './i18n-configuration.interface';
-import { IRedisConfiguration } from './redis-configuration.interface';
 import { IMySQLConfiguration } from './mysql-configuration.interface';
+import { IRedisConfiguration } from './redis-configuration.interface';
 import { ILoggerConfiguration } from './logger-configuration.interface';
 import { IRabbitmqConfiguration } from './rabbitmq-configuration.interface';
 

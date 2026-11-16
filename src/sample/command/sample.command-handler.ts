@@ -1,10 +1,10 @@
 import { Logger } from 'winston';
-import { SampleCommand } from './sample.command';
 import { Repository } from 'typeorm';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { SampleCommand } from './sample.command';
 import { SampleEntity } from '../entity/sample.default.entity';
-import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepo } from '../../mysql/decorator/inject-repo.decorator';
+import { InjectLogger } from '../../logger/decorator/inject-logger.decorator';
 
 /**
  * 示例Command处理器
