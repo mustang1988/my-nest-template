@@ -26,5 +26,8 @@
   "MaxFpsValidator": "FPS of $t(property.{property}) should be less than or equals to {constraints.0}",
   "MediaSizeValidator": "Size of $t(property.{property}) should between {constraints.0} and {constraints.1}",
   "MinMediaSizeValidator": "Size of $t(property.{property}) should be greater than or equals to {constraints.0}",
-  "MaxMediaSizeValidator": "Size of $t(property.{property}) should be less than or equals to {constraints.0}"
+  "MaxMediaSizeValidator": "Size of $t(property.{property}) should be less than or equals to {constraints.0}",
+  "PixelsValidator": "Total pixels of $t(property.{property}) should between {constraints.0} and {constraints.1}",
+  "MinPixelsValidator": "Total pixels of $t(property.{property}) should be greater than or equals to {constraints.0}",
+  "MaxPixelsValidator": "Total pixels of $t(property.{property}) should be less than or equals to {constraints.0}"
 }

@@ -3,6 +3,7 @@ import { FpsValidator } from './validator/fps.validator';
 import { Global, Module, Provider } from '@nestjs/common';
 import { WidthValidator } from './validator/width.validator';
 import { HeightValidator } from './validator/height.validator';
+import { PixelsValidator } from './validator/pixels.validator';
 import { MaxFpsValidator } from './validator/max-fps.validator';
 import { MinFpsValidator } from './validator/min-fps.validator';
 import { IsAudioValidator } from './validator/is-audio.validator';
@@ -13,8 +14,10 @@ import { DurationValidator } from './validator/duration.validator';
 import { MaxWidthValidator } from './validator/max-width.validator';
 import { MinWidthValidator } from './validator/min-width.validator';
 import { MaxHeightValidator } from './validator/max-height.validator';
+import { MaxPixelsValidator } from './validator/max-pixels.validator';
 import { MediaSizeValidator } from './validator/media-size.validator';
 import { MinHeightValidator } from './validator/min-height.validator';
+import { MinPixelsValidator } from './validator/min-pixels.validator';
 import { AspectRatioValidator } from './validator/aspect-ratio.validator';
 import { MaxDurationValidator } from './validator/max-duration.validator';
 import { MinDurationValidator } from './validator/min-duration.validator';
@@ -23,6 +26,11 @@ import { MinMediaSizeValidator } from './validator/min-media-size.validator';
 import { MaxAspectRatioValidator } from './validator/max-aspect-ratio.validator';
 import { MinAspectRatioValidator } from './validator/min-aspect-ratio.validator';
 
+/**
+ * 媒体模块服务列表
+ *
+ * 同时用于模块的providers和exports
+ */
 const mediaModuleProviders: Array<Provider> = [
   MediaService,
   // #region 自定义class-validator校验器
@@ -45,6 +53,12 @@ const mediaModuleProviders: Array<Provider> = [
   AspectRatioValidator,
   MinAspectRatioValidator,
   MaxAspectRatioValidator,
+  //   #endregion
+
+  //   #region 画面总像素数校验器
+  PixelsValidator,
+  MinPixelsValidator,
+  MaxPixelsValidator,
   //   #endregion
 
   //   #region 视频帧率校验器
