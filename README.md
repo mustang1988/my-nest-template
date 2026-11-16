@@ -23,6 +23,8 @@
       - [模块内容](#模块内容-8)
     - [S3-Storage](#s3-storage)
       - [模块内容](#模块内容-9)
+    - [Media](#media)
+      - [模块内容](#模块内容-10)
     - [Sample](#sample)
 
 ## 项目配置
@@ -427,6 +429,182 @@ s3-storage
 |          [@InjectS3Client(name:string)](./src/s3-storage/decorator/inject-s3-client.decorator.ts) | decorator | 注入指定名称的S3客户端                 |
 |          [S3ClientNotFoundException](./src/s3-storage/exception/s3-client-not-found.exception.ts) | class     | 指定名称S3客户端对象未找到异常         |
 | [IS3StorageModuleAsyncOptions](./src/s3-storage/interface/s3-storage-module-options.interface.ts) | interface | S3存储模块异步初始化选项               |
+
+### Media
+
+媒体模块
+
+模块目录结构
+
+```bash
+media
+ ┣ decorator
+ ┃ ┣ aspect-ratio.decorator.test.ts
+ ┃ ┣ aspect-ratio.decorator.ts
+ ┃ ┣ duration.decorator.test.ts
+ ┃ ┣ duration.decorator.ts
+ ┃ ┣ fps.decorator.test.ts
+ ┃ ┣ fps.decorator.ts
+ ┃ ┣ height.decorator.test.ts
+ ┃ ┣ height.decorator.ts
+ ┃ ┣ is-audio.decorator.test.ts
+ ┃ ┣ is-audio.decorator.ts
+ ┃ ┣ is-codec.decorator.test.ts
+ ┃ ┣ is-codec.decorator.ts
+ ┃ ┣ is-image.decorator.test.ts
+ ┃ ┣ is-image.decorator.ts
+ ┃ ┣ is-video.decorator.test.ts
+ ┃ ┣ is-video.decorator.ts
+ ┃ ┣ max-aspect-ratio.decorator.test.ts
+ ┃ ┣ max-aspect-ratio.decorator.ts
+ ┃ ┣ max-duration.decorator.test.ts
+ ┃ ┣ max-duration.decorator.ts
+ ┃ ┣ max-fps.decorator.test.ts
+ ┃ ┣ max-fps.decorator.ts
+ ┃ ┣ max-height.decorator.test.ts
+ ┃ ┣ max-height.decorator.ts
+ ┃ ┣ max-media-size.decorator.test.ts
+ ┃ ┣ max-media-size.decorator.ts
+ ┃ ┣ max-pixels.decorator.test.ts
+ ┃ ┣ max-pixels.decorator.ts
+ ┃ ┣ max-width.decorator.test.ts
+ ┃ ┣ max-width.decorator.ts
+ ┃ ┣ media-size.decorator.test.ts
+ ┃ ┣ media-size.decorator.ts
+ ┃ ┣ min-aspect-ratio.decorator.test.ts
+ ┃ ┣ min-aspect-ratio.decorator.ts
+ ┃ ┣ min-duration.decorator.test.ts
+ ┃ ┣ min-duration.decorator.ts
+ ┃ ┣ min-fps.decorator.test.ts
+ ┃ ┣ min-fps.decorator.ts
+ ┃ ┣ min-height.decorator.test.ts
+ ┃ ┣ min-height.decorator.ts
+ ┃ ┣ min-media-size.decorator.test.ts
+ ┃ ┣ min-media-size.decorator.ts
+ ┃ ┣ min-pixels.decorator.test.ts
+ ┃ ┣ min-pixels.decorator.ts
+ ┃ ┣ min-width.decorator.test.ts
+ ┃ ┣ min-width.decorator.ts
+ ┃ ┣ pixels.decorator.test.ts
+ ┃ ┣ pixels.decorator.ts
+ ┃ ┣ width.decorator.test.ts
+ ┃ ┗ width.decorator.ts
+ ┣ exception
+ ┃ ┗ media.exception.ts
+ ┣ implement
+ ┃ ┣ media-audio-stream.impl.ts
+ ┃ ┣ media-format.impl.ts
+ ┃ ┣ media-stream.impl.ts
+ ┃ ┣ media-video-stream.impl.ts
+ ┃ ┣ media.impl.test.ts
+ ┃ ┗ media.impl.ts
+ ┣ interface
+ ┃ ┣ media-audio-stream.interface.ts
+ ┃ ┣ media-format.interface.ts
+ ┃ ┣ media-video-stream.interface.ts
+ ┃ ┗ media.interface.ts
+ ┣ service
+ ┃ ┣ media.service.test.ts
+ ┃ ┗ media.service.ts
+ ┣ validator
+ ┃ ┣ util
+ ┃ ┃ ┣ validate-aspect-ratio.util.ts
+ ┃ ┃ ┣ validate-duration.util.ts
+ ┃ ┃ ┣ validate-fps.util.ts
+ ┃ ┃ ┣ validate-media-size.util.ts
+ ┃ ┃ ┗ validate-pixels.util.ts
+ ┃ ┣ aspect-ratio.validator.ts
+ ┃ ┣ duration.validator.ts
+ ┃ ┣ fps.validator.ts
+ ┃ ┣ height.validator.ts
+ ┃ ┣ is-audio.validator.ts
+ ┃ ┣ is-codec.validator.ts
+ ┃ ┣ is-image.validator.ts
+ ┃ ┣ is-video.validator.ts
+ ┃ ┣ max-aspect-ratio.validator.ts
+ ┃ ┣ max-duration.validator.ts
+ ┃ ┣ max-fps.validator.ts
+ ┃ ┣ max-height.validator.ts
+ ┃ ┣ max-media-size.validator.ts
+ ┃ ┣ max-pixels.validator.ts
+ ┃ ┣ max-width.validator.ts
+ ┃ ┣ media-size.validator.ts
+ ┃ ┣ min-aspect-ratio.validator.ts
+ ┃ ┣ min-duration.validator.ts
+ ┃ ┣ min-fps.validator.ts
+ ┃ ┣ min-height.validator.ts
+ ┃ ┣ min-media-size.validator.ts
+ ┃ ┣ min-pixels.validator.ts
+ ┃ ┣ min-width.validator.ts
+ ┃ ┣ pixels.validator.ts
+ ┃ ┗ width.validator.ts
+ ┣ media.constant.ts
+ ┗ media.module.ts
+```
+
+#### 模块内容
+
+|                                                                                | 类型          | 说明                                                                             |
+| -----------------------------------------------------------------------------: | :------------ | :------------------------------------------------------------------------------- |
+|                      [@IsCodec()](./src/media/decorator/is-codec.decorator.ts) | decorator     | 媒体编码器校验装饰器                                                             |
+|                      [@IsAudio()](./src/media/decorator/is-audio.decorator.ts) | decorator     | 媒体类型是否为`音频`媒体校验装饰器                                               |
+|                      [@IsImage()](./src/media/decorator/is-image.decorator.ts) | decorator     | 媒体类型是否为`图片`媒体校验装饰器                                               |
+|                      [@IsVideo()](./src/media/decorator/is-video.decorator.ts) | decorator     | 媒体类型是否为`视频`媒体校验装饰器                                               |
+|              [@AspectRatio()](./src/media/decorator/aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比范围`校验装饰器                                             |
+|       [@MaxAspectRatio()](./src/media/decorator/max-aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比上限`校验装饰器                                             |
+|       [@MinAspectRatio()](./src/media/decorator/min-aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比下限`校验装饰器                                             |
+|                     [@Duration()](./src/media/decorator/duration.decorator.ts) | decorator     | 视频或音频媒体`时长范围`校验装饰器                                               |
+|              [@MaxDuration()](./src/media/decorator/max-duration.decorator.ts) | decorator     | 视频或音频媒体`时长上限`校验装饰器                                               |
+|              [@MinDuration()](./src/media/decorator/min-duration.decorator.ts) | decorator     | 视频或音频媒体`时长下限`校验装饰器                                               |
+|                               [@Fps()](./src/media/decorator/fps.decorator.ts) | decorator     | 视频媒体`帧率范围`校验装饰器                                                     |
+|                        [@MaxFps()](./src/media/decorator/max-fps.decorator.ts) | decorator     | 视频媒体`帧率上限`校验装饰器                                                     |
+|                        [@MinFps()](./src/media/decorator/min-fps.decorator.ts) | decorator     | 视频媒体`帧率下限`校验装饰器                                                     |
+|                           [@Width()](./src/media/decorator/width.decorator.ts) | decorator     | 视频或图片媒体`画面宽度范围`校验装饰器                                           |
+|                    [@MaxWidth()](./src/media/decorator/max-width.decorator.ts) | decorator     | 视频或图片媒体`画面宽度上限`校验装饰器                                           |
+|                    [@MinWidth()](./src/media/decorator/min-width.decorator.ts) | decorator     | 视频或图片媒体`画面宽度下限`校验装饰器                                           |
+|                         [@Height()](./src/media/decorator/height.decorator.ts) | decorator     | 视频或图片媒体`画面高度范围`校验装饰器                                           |
+|                  [@MaxHeight()](./src/media/decorator/max-height.decorator.ts) | decorator     | 视频或图片媒体`画面高度上限`校验装饰器                                           |
+|                  [@MinHeight()](./src/media/decorator/min-height.decorator.ts) | decorator     | 视频或图片媒体`画面高度下限`校验装饰器                                           |
+|                         [@Pixels()](./src/media/decorator/pixels.decorator.ts) | decorator     | 视频或图片媒体`画面像素数范围`校验装饰器                                         |
+|                  [@MaxPixels()](./src/media/decorator/max-pixels.decorator.ts) | decorator     | 视频或图片媒体`画面像素数上限`校验装饰器                                         |
+|                  [@MinPixels()](./src/media/decorator/min-pixels.decorator.ts) | decorator     | 视频或图片媒体`画面像素数下限`校验装饰器                                         |
+|                  [@MediaSize()](./src/media/decorator/media-size.decorator.ts) | decorator     | 媒体`文件大小范围`校验装饰器                                                     |
+|           [@MaxMediaSize()](./src/media/decorator/max-media-size.decorator.ts) | decorator     | 媒体`文件大小上限`校验装饰器                                                     |
+|           [@MinMediaSize()](./src/media/decorator/min-media-size.decorator.ts) | decorator     | 媒体`文件大小下限`校验装饰器                                                     |
+|                     [MediaException](./src/media/exception/media.exception.ts) | class         | 媒体异常类, 用于媒体信息读取过程中发生的异常                                     |
+|                             [IMedia](./src/media/interface/media.interface.ts) | interface     | 媒体信息接口                                                                     |
+|                [IMediaFormat](./src/media/interface/media-format.interface.ts) | interface     | 媒体格式信息接口                                                                 |
+|     [IMediaAudioStream](./src/media/interface/media-audio-stream.interface.ts) | interface     | 媒体音频流信息接口                                                               |
+|     [IMediaVideoStream](./src/media/interface/media-video-stream.interface.ts) | interface     | 媒体视频流信息接口                                                               |
+|                                   [Media](./src/media/implement/media.impl.ts) | class         | [IMedia](./src/media/interface/media.interface.ts)实现类                         |
+|                      [MediaFormat](./src/media/implement/media-format.impl.ts) | class         | [IMediaFormat](./src/media/interface/media-format.interface.ts)实现类            |
+|                      [MediaStream](./src/media/implement/media-stream.impl.ts) | class         | 媒体流信息基类                                                                   |
+|           [MediaAudioStream](./src/media/implement/media-audio-stream.impl.ts) | class         | [IMediaAudioStream](./src/media/interface/media-audio-stream.interface.ts)实现类 |
+|           [MediaVideoStream](./src/media/implement/media-video-stream.impl.ts) | class         | [IMediaVideoStream](./src/media/interface/media-video-stream.interface.ts)实现类 |
+|                           [MediaService](./src/media/service/media.service.ts) | class         | 媒体信息服务类                                                                   |
+|        [AspectRatioValidator](./src/media/validator/aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比范围`校验器                                                 |
+| [MaxAspectRatioValidator](./src/media/validator/max-aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比上限`校验器                                                 |
+| [MinAspectRatioValidator](./src/media/validator/min-aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比下限`校验器                                                 |
+|               [DurationValidator](./src/media/validator/duration.validator.ts) | class         | 视频或音频媒体`时长范围`校验器                                                   |
+|        [MaxDurationValidator](./src/media/validator/max-duration.validator.ts) | class         | 视频或音频媒体`时长上限`校验器                                                   |
+|        [MinDurationValidator](./src/media/validator/min-duration.validator.ts) | class         | 视频或音频媒体`时长下限`校验器                                                   |
+|                         [FpsValidator](./src/media/validator/fps.validator.ts) | class         | 视频媒体`帧率范围`校验器                                                         |
+|                  [MaxFpsValidator](./src/media/validator/max-fps.validator.ts) | class         | 视频媒体`帧率上限`校验器                                                         |
+|                  [MinFpsValidator](./src/media/validator/min-fps.validator.ts) | class         | 视频媒体`帧率下限`校验器                                                         |
+|                     [WidthValidator](./src/media/validator/width.validator.ts) | class         | 视频或图片媒体`画面宽度范围`校验器                                               |
+|              [MaxWidthValidator](./src/media/validator/max-width.validator.ts) | class         | 视频或图片媒体`画面宽度上限`校验器                                               |
+|              [MinWidthValidator](./src/media/validator/min-width.validator.ts) | class         | 视频或图片媒体`画面宽度下限`校验器                                               |
+|                   [HeightValidator](./src/media/validator/height.validator.ts) | class         | 视频或图片媒体`画面高度范围`校验器                                               |
+|            [MaxHeightValidator](./src/media/validator/max-height.validator.ts) | class         | 视频或图片媒体`画面高度上限`校验器                                               |
+|            [MinHeightValidator](./src/media/validator/min-height.validator.ts) | class         | 视频或图片媒体`画面高度下限`校验器                                               |
+|                   [PixelsValidator](./src/media/validator/pixels.validator.ts) | class         | 视频或图片媒体`画面像素数范围`校验器                                             |
+|            [MaxPixelsValidator](./src/media/validator/max-pixels.validator.ts) | class         | 视频或图片媒体`画面像素数上限`校验器                                             |
+|            [MinPixelsValidator](./src/media/validator/min-pixels.validator.ts) | class         | 视频或图片媒体`画面像素数下限`校验器                                             |
+|            [MediaSizeValidator](./src/media/validator/media-size.validator.ts) | class         | 媒体`文件大小范围`校验器                                                         |
+|     [MaxMediaSizeValidator](./src/media/validator/max-media-size.validator.ts) | class         | 媒体`文件大小上限`校验器                                                         |
+|     [MinMediaSizeValidator](./src/media/validator/min-media-size.validator.ts) | class         | 媒体`文件大小下限`校验器                                                         |
+|                                 [IMAGE_DEMUXER](./src/media/media.constant.ts) | Array<string> | 图片媒体封装格式分流器列表常量                                                   |
+|                                    [ECodecType](./src/media/media.constant.ts) | enum          | 媒体编码类型枚举                                                                 |
 
 ### Sample
 
