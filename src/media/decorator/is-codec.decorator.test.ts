@@ -23,6 +23,27 @@ describe(basename(__filename), () => {
     audioInAac?: string;
   }
 
+  /**
+   * 编码器名称数组形式
+   */
+  class ArrayCodecTestClass {
+    @IsCodec(['h264', 'hevc'], ECodecType.VIDEO) // 视频流编码器为h264或hevc之一
+    @IsOptional()
+    videoInArray?: string;
+
+    @IsCodec(['h264', 'vp9'], ECodecType.VIDEO) // 视频流编码器不在数组中
+    @IsOptional()
+    videoNotInArray?: string;
+
+    @IsCodec(['H.265 / HEVC (High Efficiency Video Coding)'], ECodecType.VIDEO) // 编码器全名命中数组
+    @IsOptional()
+    videoByLongName?: string;
+
+    @IsCodec(['aac', 'opus'], ECodecType.AUDIO) // 音频流编码器为aac或opus之一
+    @IsOptional()
+    audioInArray?: string;
+  }
+
   let mediaModule: TestingModule;
   let mediaService: MediaService;
 
@@ -73,5 +94,39 @@ describe(basename(__filename), () => {
     const dto = plainToInstance(TestClass, { audioInAac: 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3' });
     const result = await validate(dto);
     expect(result).not.toStrictEqual([]);
+  });
+
+  describe('编码器名称数组', () => {
+    it('视频文件路径(hevc在数组中)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, {
+        videoInArray: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
+      });
+      const result = await validate(dto);
+      expect(result).toStrictEqual([]);
+    });
+
+    it('视频文件路径(hevc不在数组中)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, {
+        videoNotInArray: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
+      });
+      const result = await validate(dto);
+      expect(result).not.toStrictEqual([]);
+    });
+
+    it('视频文件路径(编码器全名命中数组)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, {
+        videoByLongName: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
+      });
+      const result = await validate(dto);
+      expect(result).toStrictEqual([]);
+    });
+
+    it('音频文件路径(opus在数组中)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, {
+        audioInArray: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus',
+      });
+      const result = await validate(dto);
+      expect(result).toStrictEqual([]);
+    });
   });
 });

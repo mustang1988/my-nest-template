@@ -23,9 +23,13 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
   async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
     try {
       /**
-       * 期望的编码器名称或全名
+       * 期望的编码器名称或全名(单个或多个)
        */
-      const expectCodecName = validationArguments.constraints[0] as string;
+      const expectCodecName = validationArguments.constraints[0] as string | Array<string>;
+      /**
+       * 归一化为编码器名称数组; 空数组不会匹配任何编码器, 校验必然失败
+       */
+      const expectCodecNames = Array.isArray(expectCodecName) ? expectCodecName : [expectCodecName];
 
       /**
        * 需要校验的流类型
@@ -59,7 +63,7 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
       expectStreams = compact(expectStreams); // 剔除待检查的流列表中可能存在的undefined
       return (
         !isEmpty(expectStreams) &&
-        expectStreams.every((stream) => stream.codec_name === expectCodecName || stream.codec_long_name === expectCodecName)
+        expectStreams.every((stream) => expectCodecNames.includes(stream.codec_name) || expectCodecNames.includes(stream.codec_long_name))
       );
     } catch {
       return false;
