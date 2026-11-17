@@ -13,7 +13,6 @@ import { MinAspectRatioValidator } from '../validator/min-aspect-ratio.validator
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MinAspectRatio(1.5, 0) // media对应媒体的第一个视频流的宽高比应不小于1.5
  *   @MinAspectRatio(1.0) //    media对应媒体所有视频流的宽高比应不小于1.0

@@ -14,7 +14,6 @@ import { MaxDuration } from './max-duration.decorator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MaxAudioDuration(2, 0) // media对应媒体的第一个音频流时长应不大于2秒, 等价于 @MaxDuration(2, ECodecType.AUDIO, 0)
  *   @MaxAudioDuration(1.5) //  media对应所有音频流时长应不大于1.5秒, 等价于 @MaxDuration(1.5, ECodecType.AUDIO)

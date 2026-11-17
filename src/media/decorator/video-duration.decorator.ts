@@ -14,7 +14,6 @@ import { ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @VideoDuration(2, 5, 0) // media对应媒体的第一个时频流时长应在[2,5]秒范围内, 等价于 @Duration(2, 5, ECodecType.VIDEO, 0)
  *   @VideoDuration(1.5, 6) //  media对应所有视频流时长应在[1.5, 6]秒范围内, 等价于 @Duration(1.5, 6, ECodecType.VIDEO)

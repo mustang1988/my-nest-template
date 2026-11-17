@@ -14,7 +14,6 @@ import { MinDuration } from './min-duration.decorator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MinAudioDuration(1.7, 1) // media对应媒体的第二个音频流时长应不大于1.7秒, 等价于 @MinDuration(1.7, ECodecType.AUDIO, 1)
  *   @MinAudioDuration(1.6) //    media对应媒体的所有音频流时长应不大于1.6秒, 等价于 @MinDuration(1.6, ECodecType.AUDIO)

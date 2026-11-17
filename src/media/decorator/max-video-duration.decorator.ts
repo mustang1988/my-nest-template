@@ -13,7 +13,6 @@ import { MaxDuration } from './max-duration.decorator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MinVideoDuration(8, 0) // media对应媒体的第一个时频流时长应不大于8秒, 等价于 @MaxDuration(8, ECodecType.VIDEO, 0)
  *   @MinVideoDuration(10) //  media对应所有视频流时长应不大于10秒, 等价于 @MaxDuration(10, ECodecType.VIDEO)

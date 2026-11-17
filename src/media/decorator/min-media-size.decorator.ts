@@ -8,7 +8,6 @@ import { MinMediaSizeValidator } from '../validator/min-media-size.validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MinMediaSize(ms('10MB')) // media对应媒体大小应不小于10MB
  *   @IsString()

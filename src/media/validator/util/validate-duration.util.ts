@@ -40,6 +40,7 @@ export class ValidateDurationUtil {
       case ECodecType.VIDEO:
         streams = streamIndex !== undefined ? [media.getVideoStream(streamIndex) as IMediaVideoStream] : media.getVideoStreams();
         break;
+      case ECodecType.SUBTITLE: // 字幕流不读取时长, 只有视频内嵌编码的字幕流可能可以读取到时长信息; 绝大部分场景下是读取不到字幕流时长信息的
       default:
         return undefined;
     }

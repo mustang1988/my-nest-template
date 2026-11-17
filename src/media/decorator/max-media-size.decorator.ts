@@ -8,7 +8,6 @@ import { MaxMediaSizeValidator } from '../validator/max-media-size.validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MaxMediaSize(ms('10MB')) // media对应媒体大小应不大于10MB
  *   @IsString()

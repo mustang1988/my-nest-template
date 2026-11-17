@@ -9,7 +9,6 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MediaSize(ms('10MB'),'1GB') // media对应媒体大小应在[10MB, 1GB]范围内
  *   @IsString()

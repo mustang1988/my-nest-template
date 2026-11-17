@@ -16,13 +16,12 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
- *   @Duration(1.7, 4.9, ECodecType.AUDIO, 1) // media对应媒体的第二个音频流时长需在[1.7, 4.9]秒之间
- *   @Duration(1.6, 5, ECodecType.AUDIO) //      media对应媒体的所有音频流时长需在[1.6, 5]秒之间
- *   @Duration(1.7, 4.9, ECodecType.VIDEO, 0) // media对应媒体的第一个视频流时长需在[1.7, 4.9]秒之间
- *   @Duration(1.6, 5, ECodecType.VIDEO) //      media对应媒体的所有视频流时长需在[1.6, 5]秒之间
- *   @Duration(1.5, 5.5) //                      media对应媒体的所有流时长需在[1.5, 5.5]秒之间
+ *   @Duration(1.7, 4.9, ECodecType.AUDIO, 1) // media对应媒体的第二个音频流时长应在[1.7, 4.9]秒之间
+ *   @Duration(1.6, 5, ECodecType.AUDIO) //      media对应媒体的所有音频流时长应在[1.6, 5]秒之间
+ *   @Duration(1.7, 4.9, ECodecType.VIDEO, 0) // media对应媒体的第一个视频流时长应在[1.7, 4.9]秒之间
+ *   @Duration(1.6, 5, ECodecType.VIDEO) //      media对应媒体的所有视频流时长应在[1.6, 5]秒之间
+ *   @Duration(1.5, 5.5) //                      media对应媒体的所有流时长应在[1.5, 5.5]秒之间
  *   @IsString()
  *   @IsNotEmpty()
  *   media: string;

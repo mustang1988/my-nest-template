@@ -12,7 +12,6 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MaxFps(50, 0) // media对应视频的第一个视频流帧率应不大于50
  *   @MaxFps(60) //    media对应视频的所有视频流帧率应不大于60

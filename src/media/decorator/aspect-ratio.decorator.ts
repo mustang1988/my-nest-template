@@ -14,10 +14,9 @@ import { AspectRatioValidator } from '../validator/aspect-ratio.validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
- *   @AspectRatio(1.25, 2.75, 0) // media对应媒体的第一个视频流的宽高比需在[1.25, 2.75]之间
- *   @AspectRatio(1, 2.5) //        media对应媒体所有视频流的宽高比需在[1, 2.5]之间
+ *   @AspectRatio(1.25, 2.75, 0) // media对应媒体的第一个视频流的宽高比应在[1.25, 2.75]之间
+ *   @AspectRatio(1, 2.5) //        media对应媒体所有视频流的宽高比应在[1, 2.5]之间
  *   @IsString()
  *   @IsNotEmpty()
  *   media: string;

@@ -13,7 +13,6 @@ import { MinDuration } from './min-duration.decorator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MinVideoDuration(2, 0) // media对应媒体的第一个时频流时长应不小于2秒, 等价于 @MinDuration(2, ECodecType.VIDEO, 0)
  *   @MinVideoDuration(1.5) //  media对应所有视频流时长应不小于1.5秒, 等价于 @MinDuration(1.5, ECodecType.VIDEO)

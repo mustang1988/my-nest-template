@@ -13,7 +13,6 @@ import { MaxAspectRatioValidator } from '../validator/max-aspect-ratio.validator
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MaxAspectRatio(1.75, 0) // media对应媒体的第一个视频流的宽高比应不大于1.75
  *   @MaxAspectRatio(2.0) //     media对应媒体所有视频流的宽高比应不大于2.0

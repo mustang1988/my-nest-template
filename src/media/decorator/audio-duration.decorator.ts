@@ -15,10 +15,9 @@ import { ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
- *   @AudioDuration(1.7, 4.9, 1) // media对应媒体的第二个音频流时长需在[1.7, 4.9]秒之间, 等价于 @Duration(1.7, 4.9, ECodecType.AUDIO, 1)
- *   @AudioDuration(1.6, 5) //      media对应媒体的所有音频流时长需在[1.6, 5]秒之间, 等价于 @Duration(1.6, 5, ECodecType.AUDIO)
+ *   @AudioDuration(1.7, 4.9, 1) // media对应媒体的第二个音频流时长应在[1.7, 4.9]秒之间, 等价于 @Duration(1.7, 4.9, ECodecType.AUDIO, 1)
+ *   @AudioDuration(1.6, 5) //      media对应媒体的所有音频流时长应在[1.6, 5]秒之间, 等价于 @Duration(1.6, 5, ECodecType.AUDIO)
  *   @IsString()
  *   @IsNotEmpty()
  *   media: string;

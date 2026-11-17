@@ -14,10 +14,9 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
- *   @Height(600, 1000, 0) // media对应媒体的第一个视频流的高度需在[600, 1000]px之间
- *   @Height(500, 1080) //    media对应所有视频流的高度需在[500, 1080]px之间
+ *   @Height(600, 1000, 0) // media对应媒体的第一个视频流的高度应在[600, 1000]px之间
+ *   @Height(500, 1080) //    media对应所有视频流的高度应在[500, 1080]px之间
  *   @IsString()
  *   @IsNotEmpty()
  *   media: string;

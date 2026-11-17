@@ -13,7 +13,6 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
  *   @MinWidth(1000, 0) // media对应媒体的第一个视频流的宽度应不小于1000px
  *   @MinWidth(1080) //    media对应所有视频流的宽度应不小于1080px

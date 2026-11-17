@@ -13,10 +13,9 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
  * @param options 校验选项
  * @example
  * ```typescript
- *
  * class TestDto {
- *   @Fps(30, 50, 0) // media对应视频的第一个视频流帧率需在[30, 50]之间
- *   @Fps(24, 60) //    media对应视频的所有视频流帧率需在[24, 60]之间
+ *   @Fps(30, 50, 0) // media对应视频的第一个视频流帧率应在[30, 50]之间
+ *   @Fps(24, 60) //    media对应视频的所有视频流帧率应在[24, 60]之间
  *   @IsVideo()
  *   @IsString()
  *   @IsNotEmpty()
