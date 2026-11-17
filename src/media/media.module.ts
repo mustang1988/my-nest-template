@@ -1,8 +1,10 @@
 import QuickLRU from 'quick-lru';
+import { Logger } from 'winston';
 import { ConfigService } from '@nestjs/config';
 import { IMedia } from './interface/media.interface';
 import { MEDIA_CACHE_TOKEN } from './media.constant';
 import { MediaService } from './service/media.service';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { FpsValidator } from './validator/fps.validator';
 import { Global, Module, Provider } from '@nestjs/common';
 import { WidthValidator } from './validator/width.validator';
@@ -101,10 +103,16 @@ const mediaModuleProviders: Array<Provider> = [
     // #region LRU缓存
     {
       provide: MEDIA_CACHE_TOKEN,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService): QuickLRU<string, Promise<IMedia>> => {
+      inject: [ConfigService, WINSTON_MODULE_PROVIDER],
+      useFactory: (configService: ConfigService, logger: Logger): QuickLRU<string, Promise<IMedia>> => {
+        logger = logger.child({ context: QuickLRU.name });
         const mediaCacheSize = configService.get<number>('constants.media.mediaCacheSize') ?? 100;
-        return new QuickLRU<string, Promise<IMedia>>({ maxSize: mediaCacheSize });
+        return new QuickLRU<string, Promise<IMedia>>({
+          maxSize: mediaCacheSize,
+          onEviction: (key: string, value: Promise<IMedia>) => {
+            logger.debug('媒体缓存清理: key = %s, value = %j', key, value);
+          },
+        });
       },
     },
     // #endregion
