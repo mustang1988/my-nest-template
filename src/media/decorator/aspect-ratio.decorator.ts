@@ -4,7 +4,7 @@ import { AspectRatioValidator } from '../validator/aspect-ratio.validator';
 /**
  * 媒体画面宽高比校验器装饰器
  *
- * 适用于以下媒体
+ * 适用于以下类型的媒体
  * - 图片
  * - 视频
  *

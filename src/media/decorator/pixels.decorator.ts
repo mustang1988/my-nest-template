@@ -4,7 +4,9 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 /**
  * 媒体画面总像素数校验器装饰器
  *
- * 总像素数 = 画面宽度 * 画面高度; 校验对象为视频与图片媒体视频流的画面宽高
+ * 适用于以下类型的媒体
+ * - 图片
+ * - 视频
  *
  * @param minPixels 最小总像素数
  * @param maxPixels 最大总像素数

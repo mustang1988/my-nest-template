@@ -4,7 +4,7 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 /**
  * 媒体视频帧率最大值校验器装饰器
  *
- * 适用于以下类型媒体
+ * 适用于以下类型的媒体
  * - 视频
  *
  * @param maxFps 最大帧率, 单位: 帧/秒

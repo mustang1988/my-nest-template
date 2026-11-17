@@ -4,11 +4,9 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 /**
  * 画面宽度范围校验器装饰器
  *
- * 适用范围
- * - 视频文件路径
- * - 视频URL
- * - 图片文件路径
- * - 图片URL
+ * 适用于以下类型的媒体
+ * - 视频
+ * - 图片
  *
  * @param minWidthInPixel 最小宽度, 单位: px
  * @param maxWidthInPixel 最大宽度, 单位: px

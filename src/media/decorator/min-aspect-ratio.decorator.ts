@@ -4,7 +4,7 @@ import { MinAspectRatioValidator } from '../validator/min-aspect-ratio.validator
 /**
  * 媒体画面宽高比最小值校验器装饰器
  *
- * 适用于以下媒体
+ * 适用于以下类型的媒体
  * - 图片
  * - 视频
  *

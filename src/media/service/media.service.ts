@@ -1,10 +1,10 @@
 import { Logger } from 'winston';
 import { existsSync } from 'node:fs';
 import { isURL } from 'class-validator';
-import { Injectable } from '@nestjs/common';
 import { Media } from '../implement/media.impl';
 import { plainToInstance } from 'class-transformer';
 import { IMedia } from '../interface/media.interface';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { MediaException } from '../exception/media.exception';
 import { ContextService } from 'src/context/service/context.service';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
@@ -14,7 +14,7 @@ import { execFileAsync, FFPROBE_MAX_BUFFER, FFPROBE_TIMEOUT_MS, MEDIA_CACHE_MAX_
  * 媒体服务
  */
 @Injectable()
-export class MediaService {
+export class MediaService implements OnModuleInit {
   /**
    * 媒体探测结果缓存(LRU)
    *
@@ -27,6 +27,22 @@ export class MediaService {
     @InjectLogger() private readonly logger: Logger,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
+  }
+
+  async onModuleInit() {
+    // 检测当前运行环境中是否已正确安装有ffprobe
+    const ffprobeArgs = ['-version'];
+    try {
+      const { stdout } = await execFileAsync('ffprobe', ffprobeArgs, {
+        timeout: FFPROBE_TIMEOUT_MS,
+        maxBuffer: FFPROBE_MAX_BUFFER,
+        windowsHide: true,
+      });
+      this.logger.debug('ffprobe安装信息:\n%s', stdout);
+    } catch (error) {
+      this.logger.error('ffprobe未正确安装: error = %o', error);
+      throw new MediaException((error as Error).message, { cause: error });
+    }
   }
 
   /**

@@ -47,7 +47,7 @@ export interface ILoggerConfiguration {
    *
    * - 可选
    * - 字符串
-   * - 默认值: '/tmp'
+   * - 默认值: 'tmpdir()'系统默认tmp目录
    * - 注意: 容器化部署环境下为容器内路基, 需要设置volume映射
    */
   dirname?: string;

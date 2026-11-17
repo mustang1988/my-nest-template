@@ -7,6 +7,10 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
 
 /**
  * 媒体时长最大值校验器
+ *
+ * 适用于以下类型的媒体
+ * - 视频
+ * - 音频
  */
 @Injectable()
 @ValidatorConstraint({ async: true, name: 'MaxDurationValidator' })

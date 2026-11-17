@@ -26,6 +26,7 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
        * 期望的编码器名称或全名(单个或多个)
        */
       const expectCodecName = validationArguments.constraints[0] as string | Array<string>;
+
       /**
        * 归一化为编码器名称数组; 空数组不会匹配任何编码器, 校验必然失败
        */

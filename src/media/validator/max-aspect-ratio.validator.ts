@@ -6,6 +6,10 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
 
 /**
  * 媒体画面宽高比最大值校验器
+ *
+ * 适用于以下类型的媒体
+ * - 图片
+ * - 视频
  */
 @Injectable()
 @ValidatorConstraint({ async: true, name: 'MaxAspectRatioValidator' })

@@ -4,7 +4,7 @@ import { MaxAspectRatioValidator } from '../validator/max-aspect-ratio.validator
 /**
  * 媒体画面宽高比最大值校验器装饰器
  *
- * 适用于以下媒体
+ * 适用于以下类型的媒体
  * - 图片
  * - 视频
  *

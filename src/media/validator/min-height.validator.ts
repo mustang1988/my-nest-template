@@ -5,6 +5,10 @@ import { isPositive, ValidationArguments, ValidatorConstraint, ValidatorConstrai
 
 /**
  * 画面高度最小值校验器
+ *
+ * 适用于以下类型的媒体
+ * - 视频
+ * - 图片
  */
 @Injectable()
 @ValidatorConstraint({ async: true, name: 'MinHeightValidator' })

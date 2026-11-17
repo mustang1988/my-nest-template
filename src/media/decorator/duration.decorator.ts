@@ -4,6 +4,11 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 
 /**
  * 媒体时长校验器装饰器
+ *
+ * 适用于以下类型的媒体
+ * - 视频
+ * - 音频
+ *
  * @param minDuration 最小时长, 单位: 秒
  * @param maxDuration 最大时长, 单位: 秒
  * @param codecType 指定校验的流类型; 指定时按对应流的流级时长校验, 未指定时按媒体整体时长校验

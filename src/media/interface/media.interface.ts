@@ -18,55 +18,55 @@ export interface IMedia {
   format?: IMediaFormat;
 
   /**
-   * 获取所有媒体视频流信息
+   * 获取媒体中所有视频流信息
    */
   getVideoStreams(): Array<IMediaVideoStream>;
 
   /**
-   * 获取指定索引的媒体视频流信息
+   * 获取媒体中指定索引的视频流信息
    * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有视频流中的第N个
    */
   getVideoStream(index: number): IMediaVideoStream | undefined;
 
   /**
-   * 获取所有媒体音频流信息
+   * 获取媒体中所有音频流信息
    */
   getAudioStreams(): Array<IMediaAudioStream>;
 
   /**
-   * 获取指定索引的媒体音频流信息
+   * 获取媒体中指定索引的音频流信息
    * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有音频流中的第N个
    */
   getAudioStream(index: number): IMediaAudioStream | undefined;
 
   /**
-   * 获取所有媒体字幕流
+   * 获取媒体中所有字幕流信息
    */
   getSubtitleStreams(): Array<IMediaSubtitleStream>;
 
   /**
-   * 获取指定索引的媒体字幕流信息
+   * 获取媒体中指定索引的字幕流信息
    * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有音频流中的第N个
    */
   getSubtitleStream(index: number): IMediaSubtitleStream | undefined;
 
   /**
-   * 是否为视频媒体
+   * 媒体是否为视频
    */
   isVideoMedia(): boolean;
 
   /**
-   * 是否为图片媒体
+   * 媒体是否为图片
    */
   isImageMedia(): boolean;
 
   /**
-   * 是否为音频媒体
+   * 媒体是否为音频
    */
   isAudioMedia(): boolean;
 
   /**
-   * 是否为字幕媒体
+   * 媒体是否为字幕
    */
   isSubtitleMedia(): boolean;
 
@@ -86,12 +86,15 @@ export interface IMedia {
   hasSubtitleStream(): boolean;
 
   /**
-   * 获取媒体时长
+   * 获取媒体时长, 单位: 秒
    *
-   * 图片媒体或时长未知时返回undefined; 优先取主流(视频取第1条视频流, 音频取第1条音频流)的流级时长,
+   * 图片媒体或时长未知时返回undefined;
+   *
+   * 优先取主流(视频取第1条视频流, 音频取第1条音频流)的流级时长
+   *
    * 流级时长缺失时(ffprobe对流级时长输出"N/A", 数值转换后为NaN)回退取容器级时长(format.duration)
    *
-   * @return 媒体时长(单位: 秒)
+   * @return 媒体时长
    */
   getDuration(): number | undefined;
 }

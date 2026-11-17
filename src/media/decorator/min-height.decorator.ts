@@ -4,11 +4,9 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 /**
  * 画面高度最小值校验器装饰器
  *
- * 适用范围
- * - 视频文件路径
- * - 视频URL
- * - 图片文件路径
- * - 图片URL
+ * 适用于以下类型的媒体
+ * - 视频
+ * - 图片
  *
  * @param minHeightInPixel 最小高度, 单位: px
  * @param options 校验选项

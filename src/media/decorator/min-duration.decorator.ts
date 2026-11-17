@@ -4,6 +4,11 @@ import { MinDurationValidator } from '../validator/min-duration.validator';
 
 /**
  * 媒体时长最小值校验器装饰器
+ *
+ * 适用于以下类型的媒体
+ * - 视频
+ * - 音频
+ *
  * @param minDurationInSecond 最小时长, 单位: 秒
  * @param codecType 指定校验的流类型; 指定时按对应流的流级时长校验, 未指定时按媒体整体时长校验
  * @param streamIndex 指定校验的流索引(非ffprobe的全局流索引, 为该类型流中的第N个); 指定时仅校验对应流的时长, 未指定时校验该类型所有流的时长

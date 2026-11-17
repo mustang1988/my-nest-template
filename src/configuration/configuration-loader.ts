@@ -1,4 +1,5 @@
 import ms from 'ms';
+import { tmpdir } from 'node:os';
 import { EnvValueLoadUtil } from './util/env-value-load.util';
 import { IConfiguration } from './interface/configuration.interface';
 
@@ -16,7 +17,7 @@ export default (): IConfiguration => ({
     maxFile: EnvValueLoadUtil.loadOptionalString('LOGGER_MAX_FILE', '30d'),
     maxSize: EnvValueLoadUtil.loadOptionalString('LOGGER_MAX_SIZE', '2g'),
     enableConsole: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_CONSOLE', false),
-    dirname: EnvValueLoadUtil.loadOptionalString('LOGGER_DIR', '/tmp'),
+    dirname: EnvValueLoadUtil.loadOptionalString('LOGGER_DIR', tmpdir()),
     jsonLogger: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_JSON', false),
     zippedArchive: EnvValueLoadUtil.loadOptionalBoolean('LOGGER_ZIP', true),
   },
