@@ -7,6 +7,15 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
  * @param minSize 最小文件大小; 数值按字节, 字符串按bytes库格式(如'10MB', '1.5GB')
  * @param maxSize 最大文件大小; 格式同minSize
  * @param options 校验选项
+ * @example
+ * ```typescript
+ *
+ * class TestDto {
+ *   @MediaSize(ms('10MB'),'1GB') // media对应媒体大小应在[10MB, 1GB]范围内
+ *   @IsString()
+ *   @IsNotEmpty()
+ *   media: string;
+ * }
  */
 export const MediaSize = (minSize: string | number, maxSize: string | number, options?: ValidationOptions) => (dto: object, propertyName: string) =>
   registerDecorator({

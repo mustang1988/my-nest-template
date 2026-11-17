@@ -35,7 +35,8 @@ import { MinAspectRatioValidator } from './validator/min-aspect-ratio.validator'
 const mediaModuleProviders: Array<Provider> = [
   MediaService,
   // #region 自定义class-validator校验器
-  //   #region 媒体类型校验器
+  //   #region 媒体类型/编码类型校验器
+  IsCodecValidator,
   IsAudioValidator,
   IsImageValidator,
   IsVideoValidator,
@@ -69,7 +70,7 @@ const mediaModuleProviders: Array<Provider> = [
   MaxFpsValidator,
   //   #endregion
 
-  //   #region 媒体文件大小校验器
+  //   #region 文件大小校验器
   MediaSizeValidator,
   MinMediaSizeValidator,
   MaxMediaSizeValidator,
@@ -81,7 +82,6 @@ const mediaModuleProviders: Array<Provider> = [
   MaxDurationValidator,
   //   #endregion
 
-  IsCodecValidator,
   // #endregion
 ];
 

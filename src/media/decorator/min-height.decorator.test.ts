@@ -19,6 +19,15 @@ describe(basename(__filename), () => {
     media: string;
   }
 
+  /**
+   * 指定流索引: 仅校验第1条视频流的画面尺寸
+   */
+  class StreamIndexTestClass {
+    @MinHeight(1100, 0)
+    @IsNotEmpty()
+    media: string;
+  }
+
   let mediaModule: TestingModule;
   let mediaService: MediaService;
   /**
@@ -66,6 +75,11 @@ describe(basename(__filename), () => {
 
   it('本地视频文件(高度2160px)', async () => {
     const dto = plainToInstance(TestClass, { media: localVideoFilepath });
+    const result = await validate(dto);
+    expect(result).toStrictEqual([]);
+  });
+  it('指定流索引(jpg高度1200px)', async () => {
+    const dto = plainToInstance(StreamIndexTestClass, { media: TEST_IMAGES[0] /* 896x1200 */ });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });

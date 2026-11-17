@@ -1,6 +1,7 @@
 import { I18nService } from 'nestjs-i18n';
 import { Injectable } from '@nestjs/common';
 import { MediaService } from '../service/media.service';
+import { ValidateDimensionUtil } from './util/validate-dimension.util';
 import { isPositive, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
 /**
@@ -19,8 +20,7 @@ export class WidthValidator implements ValidatorConstraintInterface {
   ) {}
 
   async validate(value: string, validationArguments: ValidationArguments): Promise<boolean> {
-    const minWidth = validationArguments.constraints[0];
-    const maxWidth = validationArguments.constraints[1];
+    const [minWidth, maxWidth, streamIndex] = validationArguments.constraints as [number, number, number | undefined];
 
     if (!isPositive(minWidth) || !isPositive(maxWidth)) {
       return false;
@@ -28,10 +28,12 @@ export class WidthValidator implements ValidatorConstraintInterface {
 
     try {
       const media = await this.mediaService.readMedia(value);
-      if (media.isAudioMedia()) {
+      const dimensions = ValidateDimensionUtil.getDimensions(media, streamIndex);
+      if (dimensions === undefined) {
+        // 待校验的流不存在或画面宽高未知
         return false;
       }
-      return media.getVideoStreams().every((videoStream) => minWidth <= videoStream.width && videoStream.width <= maxWidth);
+      return dimensions.every((dimension) => minWidth <= dimension.width && dimension.width <= maxWidth);
     } catch {
       return false;
     }

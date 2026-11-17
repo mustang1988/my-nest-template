@@ -6,6 +6,16 @@ import { MaxMediaSizeValidator } from '../validator/max-media-size.validator';
  *
  * @param maxSize 最大文件大小; 数值按字节, 字符串按bytes库格式(如'10MB', '1.5GB')
  * @param options 校验选项
+ * @example
+ * ```typescript
+ *
+ * class TestDto {
+ *   @MaxMediaSize(ms('10MB')) // media对应媒体大小应不大于10MB
+ *   @IsString()
+ *   @IsNotEmpty()
+ *   media: string;
+ * }
+ * ```
  */
 export const MaxMediaSize = (maxSize: string | number, options?: ValidationOptions) => (dto: object, propertyName: string) =>
   registerDecorator({
