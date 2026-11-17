@@ -547,9 +547,10 @@ media
 |                                                                                | 类型          | 说明                                                                             |
 | -----------------------------------------------------------------------------: | :------------ | :------------------------------------------------------------------------------- |
 |                      [@IsCodec()](./src/media/decorator/is-codec.decorator.ts) | decorator     | 媒体编码器校验装饰器                                                             |
-|                      [@IsAudio()](./src/media/decorator/is-audio.decorator.ts) | decorator     | 媒体类型是否为`音频`媒体校验装饰器                                               |
 |                      [@IsImage()](./src/media/decorator/is-image.decorator.ts) | decorator     | 媒体类型是否为`图片`媒体校验装饰器                                               |
+|                      [@IsAudio()](./src/media/decorator/is-audio.decorator.ts) | decorator     | 媒体类型是否为`音频`媒体校验装饰器                                               |
 |                      [@IsVideo()](./src/media/decorator/is-video.decorator.ts) | decorator     | 媒体类型是否为`视频`媒体校验装饰器                                               |
+|                [@IsSubtitle()](./src/media/decorator/is-subtitle.decorator.ts) | decorator     | 媒体类型是否为`字幕`媒体校验装饰器                                               |
 |              [@AspectRatio()](./src/media/decorator/aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比范围`校验装饰器                                             |
 |       [@MaxAspectRatio()](./src/media/decorator/max-aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比上限`校验装饰器                                             |
 |       [@MinAspectRatio()](./src/media/decorator/min-aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比下限`校验装饰器                                             |
@@ -582,6 +583,11 @@ media
 |           [MediaAudioStream](./src/media/implement/media-audio-stream.impl.ts) | class         | [IMediaAudioStream](./src/media/interface/media-audio-stream.interface.ts)实现类 |
 |           [MediaVideoStream](./src/media/implement/media-video-stream.impl.ts) | class         | [IMediaVideoStream](./src/media/interface/media-video-stream.interface.ts)实现类 |
 |                           [MediaService](./src/media/service/media.service.ts) | class         | 媒体信息服务类                                                                   |
+|                [IsCodecValidator](./src/media/validator/is-codec.validator.ts) | class         | 媒体编码器校验器                                                                 |
+|                [IsImageValidator](./src/media/validator/is-image.validator.ts) | class         | 媒体类型是否为`图片`媒体校验器                                                   |
+|                [IsAudioValidator](./src/media/validator/is-audio.validator.ts) | class         | 媒体类型是否为`音频`媒体校验器                                                   |
+|                [IsVideoValidator](./src/media/validator/is-video.validator.ts) | class         | 媒体类型是否为`视频`媒体校验器                                                   |
+|          [IsSubtitleValidator](./src/media/validator/is-subtitle.validator.ts) | class         | 媒体类型是否为`字幕`媒体校验器                                                   |
 |        [AspectRatioValidator](./src/media/validator/aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比范围`校验器                                                 |
 | [MaxAspectRatioValidator](./src/media/validator/max-aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比上限`校验器                                                 |
 | [MinAspectRatioValidator](./src/media/validator/min-aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比下限`校验器                                                 |
