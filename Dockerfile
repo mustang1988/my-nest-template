@@ -14,7 +14,7 @@ LABEL COMMIT_MESSAGE=$COMMIT_MESSAGE
 RUN npm install pm2 -g --registry=https://registry.npmmirror.com && \
   sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.aliyun.com/alpine#g' /etc/apk/repositories && \
   apk update && \
-  apk add tzdata
+  apk add tzdata ffmpeg
 ENV TZ=Asia/Shanghai
 WORKDIR /app
 COPY --from=TSBuilder /build/dist .
