@@ -6,6 +6,7 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { MediaService } from '../service/media.service';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { IsNotEmpty, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
 import { MediaTestUtil, TEST_IMAGES, TEST_VIDEOS } from '../media.module.test';
@@ -33,6 +34,13 @@ describe(basename(__filename), () => {
     mediaService = mediaModule.get(MediaService);
     expect(mediaService);
     useContainer(mediaModule, { fallbackOnErrors: true });
+    /**
+     * 将Nest Logger委托到winston
+     *
+     * TestingModule编译时会把全局Logger覆盖为TestingLogger(测试通过时静默丢弃所有日志),
+     * @LoggingPerformance等直接使用Nest Logger输出的日志会因此不可见, 委托到winston后恢复正常输出
+     */
+    mediaModule.useLogger(mediaModule.get(WINSTON_MODULE_NEST_PROVIDER));
     localImageFilepath = await MediaTestUtil.downloadTestAsset(TEST_IMAGES[1]);
   });
 

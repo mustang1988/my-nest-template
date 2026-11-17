@@ -6,6 +6,7 @@ import { rm, writeFile } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
 import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
 import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 
@@ -827,5 +828,12 @@ describe(basename(__filename), () => {
       imports: [ConfigurationModule, MediaModule, LoggerModule, ContextModule, InternationalizationModule],
     }).compile();
     expect(mediaModule);
+    /**
+     * 将Nest Logger委托到winston
+     *
+     * TestingModule编译时会把全局Logger覆盖为TestingLogger(测试通过时静默丢弃所有日志),
+     * @LoggingPerformance等直接使用Nest Logger输出的日志会因此不可见, 委托到winston后恢复正常输出
+     */
+    mediaModule.useLogger(mediaModule.get(WINSTON_MODULE_NEST_PROVIDER));
   });
 });

@@ -8,6 +8,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { MediaException } from '../exception/media.exception';
 import { ContextService } from 'src/context/service/context.service';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
+import { LoggingPerformance } from 'src/logger/decorator/logging-performance.decorator';
 import { execFileAsync, FFPROBE_MAX_BUFFER, FFPROBE_TIMEOUT_MS, MEDIA_CACHE_MAX_SIZE } from '../media.constant';
 
 /**
@@ -55,6 +56,7 @@ export class MediaService implements OnModuleInit {
    * @return 媒体信息
    * @throws MediaException
    */
+  @LoggingPerformance()
   async readMedia(filepathOrUrl: string): Promise<IMedia> {
     if (isURL(filepathOrUrl)) {
       return this.readMediaByUrl(filepathOrUrl);
