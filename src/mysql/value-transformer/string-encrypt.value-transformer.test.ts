@@ -21,7 +21,7 @@ describe(basename(__filename), () => {
     const result = testInstance.to(inputStr);
     expect(result).not.toStrictEqual(null);
     expect(isString(result));
-    console.log('to()\ninputStr: %s\nresult: %s', inputStr, result);
+    // console.log('to()\ninputStr: %s\nresult: %s', inputStr, result);
     encrypted = result as string;
   });
 
@@ -33,6 +33,6 @@ describe(basename(__filename), () => {
   it('from()', () => {
     const result = testInstance.from(encrypted);
     expect(result).toStrictEqual(inputStr);
-    console.log('from()\nresult: %s\ninputStr: %s', result, inputStr);
+    // console.log('from()\nresult: %s\ninputStr: %s', result, inputStr);
   });
 });
