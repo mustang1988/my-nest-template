@@ -29,5 +29,10 @@ export interface IMediaSubtitleStream {
   r_frame_rate: string;
   avg_frame_rate: string;
   time_base: string;
+  start_pts: number;
+  start_time: number;
+  duration_ts: number;
+  duration: number;
   disposition: Record<string, unknown>;
+  tags: Record<string, unknown>;
 }

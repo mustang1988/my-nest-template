@@ -4,6 +4,24 @@ import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 
 /**
  * 媒体格式
+ * 示例:
+ * {
+ *     "filename": "Shadow.And.Bone.S01E01.2160p.NF.WEB-DL.DDPA5.1.HDR.DV.HEVC-ABBIE.mkv",
+ *     "nb_streams": 35,
+ *     "nb_programs": 0,
+ *     "nb_stream_groups": 0,
+ *     "format_name": "matroska,webm",
+ *     "format_long_name": "Matroska / WebM",
+ *     "start_time": "0.000000",
+ *     "duration": "3147.840000",
+ *     "size": "5631261091",
+ *     "bit_rate": "14311429",
+ *     "probe_score": 100,
+ *     "tags": {
+ *         "encoder": "libebml v1.4.2 + libmatroska v1.6.4",
+ *         "creation_time": "2021-10-20T23:33:48.000000Z"
+ *     }
+ * }
  */
 export class MediaFormat implements IMediaFormat {
   @Type(() => String)

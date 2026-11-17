@@ -5,6 +5,85 @@ import { IMediaVideoStream } from '../interface/media-video-stream.interface';
 
 /**
  * 媒体视频流
+ * 示例:
+ * {
+ *     "index": 0,
+ *     "codec_name": "hevc",
+ *     "codec_long_name": "H.265 / HEVC (High Efficiency Video Coding)",
+ *     "profile": "Main 10",
+ *     "codec_type": "video",
+ *     "codec_tag_string": "[0][0][0][0]",
+ *     "codec_tag": "0x0000",
+ *     "width": 3840,
+ *     "height": 2160,
+ *     "coded_width": 3840,
+ *     "coded_height": 2160,
+ *     "closed_captions": 0,
+ *     "film_grain": 0,
+ *     "has_b_frames": 2,
+ *     "sample_aspect_ratio": "1:1",
+ *     "display_aspect_ratio": "16:9",
+ *     "pix_fmt": "yuv420p10le",
+ *     "level": 150,
+ *     "color_range": "tv",
+ *     "color_space": "bt2020nc",
+ *     "color_transfer": "smpte2084",
+ *     "color_primaries": "bt2020",
+ *     "chroma_location": "topleft",
+ *     "refs": 1,
+ *     "view_ids_available": "",
+ *     "view_pos_available": "",
+ *     "r_frame_rate": "24000/1001",
+ *     "avg_frame_rate": "24000/1001",
+ *     "time_base": "1/1000",
+ *     "start_pts": 0,
+ *     "start_time": "0.000000",
+ *     "extradata_size": 137,
+ *     "disposition": {
+ *         "default": 1,
+ *         "dub": 0,
+ *         "original": 0,
+ *         "comment": 0,
+ *         "lyrics": 0,
+ *         "karaoke": 0,
+ *         "forced": 0,
+ *         "hearing_impaired": 0,
+ *         "visual_impaired": 0,
+ *         "clean_effects": 0,
+ *         "attached_pic": 0,
+ *         "timed_thumbnails": 0,
+ *         "non_diegetic": 0,
+ *         "captions": 0,
+ *         "descriptions": 0,
+ *         "metadata": 0,
+ *         "dependent": 0,
+ *         "still_image": 0,
+ *         "multilayer": 0
+ *     },
+ *     "tags": {
+ *         "BPS": "13996798",
+ *         "DURATION": "00:50:44.583000000",
+ *         "NUMBER_OF_FRAMES": "72997",
+ *         "NUMBER_OF_BYTES": "5326801877",
+ *         "_STATISTICS_WRITING_APP": "mkvmerge v61.0.0.39 ('So') 64-bit",
+ *         "_STATISTICS_WRITING_DATE_UTC": "2021-10-20 23:33:48",
+ *         "_STATISTICS_TAGS": "BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES"
+ *     },
+ *     "side_data_list": [
+ *         {
+ *             "side_data_type": "DOVI configuration record",
+ *             "dv_version_major": 1,
+ *             "dv_version_minor": 0,
+ *             "dv_profile": 8,
+ *             "dv_level": 6,
+ *             "rpu_present_flag": 1,
+ *             "el_present_flag": 0,
+ *             "bl_present_flag": 1,
+ *             "dv_bl_signal_compatibility_id": 1,
+ *             "dv_md_compression": "none"
+ *         }
+ *     ]
+ * }
  */
 export class MediaVideoStream extends MediaStream implements IMediaVideoStream {
   @Type(() => Number)

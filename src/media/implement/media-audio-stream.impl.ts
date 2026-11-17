@@ -5,6 +5,59 @@ import { IMediaAudioStream } from '../interface/media-audio-stream.interface';
 
 /**
  * 媒体音频流
+ * 示例:
+ * {
+ *     "index": 1,
+ *     "codec_name": "eac3",
+ *     "codec_long_name": "ATSC A/52B (AC-3, E-AC-3)",
+ *     "profile": "Dolby Digital Plus + Dolby Atmos",
+ *     "codec_type": "audio",
+ *     "codec_tag_string": "[0][0][0][0]",
+ *     "codec_tag": "0x0000",
+ *     "sample_fmt": "fltp",
+ *     "sample_rate": "48000",
+ *     "channels": 6,
+ *     "channel_layout": "5.1(side)",
+ *     "bits_per_sample": 0,
+ *     "initial_padding": 0,
+ *     "r_frame_rate": "0/0",
+ *     "avg_frame_rate": "0/0",
+ *     "time_base": "1/1000",
+ *     "start_pts": 0,
+ *     "start_time": "0.000000",
+ *     "bit_rate": "768000",
+ *     "disposition": {
+ *         "default": 1,
+ *         "dub": 0,
+ *         "original": 0,
+ *         "comment": 0,
+ *         "lyrics": 0,
+ *         "karaoke": 0,
+ *         "forced": 0,
+ *         "hearing_impaired": 0,
+ *         "visual_impaired": 0,
+ *         "clean_effects": 0,
+ *         "attached_pic": 0,
+ *         "timed_thumbnails": 0,
+ *         "non_diegetic": 0,
+ *         "captions": 0,
+ *         "descriptions": 0,
+ *         "metadata": 0,
+ *         "dependent": 0,
+ *         "still_image": 0,
+ *         "multilayer": 0
+ *     },
+ *     "tags": {
+ *         "language": "eng",
+ *         "BPS": "768000",
+ *         "DURATION": "00:52:27.840000000",
+ *         "NUMBER_OF_FRAMES": "98370",
+ *         "NUMBER_OF_BYTES": "302192640",
+ *         "_STATISTICS_WRITING_APP": "mkvmerge v61.0.0.39 ('So') 64-bit",
+ *         "_STATISTICS_WRITING_DATE_UTC": "2021-10-20 23:33:48",
+ *         "_STATISTICS_TAGS": "BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES"
+ *     }
+ * }
  */
 export class MediaAudioStream extends MediaStream implements IMediaAudioStream {
   @Type(() => Number)

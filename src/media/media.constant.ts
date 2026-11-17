@@ -21,6 +21,11 @@ export enum ECodecType {
    * 视频流
    */
   VIDEO = 'video',
+
+  /**
+   * 字幕流
+   */
+  SUBTITLE = 'subtitle',
 }
 
 /**
