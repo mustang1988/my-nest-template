@@ -8,8 +8,10 @@ import { IMedia } from '../interface/media.interface';
 import { MediaAudioStream } from './media-audio-stream.impl';
 import { MediaVideoStream } from './media-video-stream.impl';
 import { IMediaFormat } from '../interface/media-format.interface';
+import { MediaSubtitleStream } from './media-subtitle-stream.impl';
 import { IMediaAudioStream } from '../interface/media-audio-stream.interface';
 import { IMediaVideoStream } from '../interface/media-video-stream.interface';
+import { IMediaSubtitleStream } from '../interface/media-subtitle-stream.interface';
 
 /**
  * 媒体
@@ -19,8 +21,9 @@ export class Media implements IMedia {
     discriminator: {
       property: 'codec_type',
       subTypes: [
-        { name: 'video', value: MediaVideoStream }, // codec_type属性值为'video'时转换为MediaVideoStream实例
-        { name: 'audio', value: MediaAudioStream }, // codec_type属性值为'audio'时转换为MediaAudioStream实例
+        { name: 'video', value: MediaVideoStream }, // 视频流
+        { name: 'audio', value: MediaAudioStream }, // 音频流
+        { name: 'subtitle', value: MediaSubtitleStream }, // 字幕流
       ],
     },
     keepDiscriminatorProperty: true,
@@ -56,6 +59,18 @@ export class Media implements IMedia {
     return this.getAudioStreams()[index];
   }
 
+  getSubtitleStreams(): Array<IMediaSubtitleStream> {
+    return sortBy(
+      this.streams.filter((s) => s instanceof MediaSubtitleStream),
+      'index',
+      'asc',
+    ) as Array<IMediaSubtitleStream>;
+  }
+
+  getSubtitleStream(index: number): IMediaSubtitleStream | undefined {
+    return this.getSubtitleStreams()[index];
+  }
+
   isVideoMedia(): boolean {
     return this.hasVideoStream() && !this.isImageMedia();
   }
@@ -68,12 +83,20 @@ export class Media implements IMedia {
     return this.hasAudioStream() && !this.isVideoMedia() && !this.isImageMedia();
   }
 
+  isSubtitleMedia(): boolean {
+    return !this.isAudioMedia() && !this.isImageMedia() && !this.isVideoMedia() && this.hasSubtitleStream();
+  }
+
   hasVideoStream(): boolean {
     return this.getVideoStreams().length > 0;
   }
 
   hasAudioStream(): boolean {
     return this.getAudioStreams().length > 0;
+  }
+
+  hasSubtitleStream(): boolean {
+    return this.getSubtitleStreams().length > 0;
   }
 
   getDuration(): number | undefined {

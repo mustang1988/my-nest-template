@@ -8,6 +8,7 @@
   "IsAudioValidator": "$t(property.{property})不是音频",
   "IsImageValidator": "$t(property.{property})不是图片",
   "IsVideoValidator": "$t(property.{property})不是视频",
+  "IsSubtitleValidator": "$t(property.{property})不是字幕",
   "DurationValidator": "$t(property.{property})的时长应在[{constraints.0} 秒, {constraints.1} 秒]范围内",
   "MinDurationValidator": "$t(property.{property})时长应大于等于{constraints.0}秒",
   "MaxDurationValidator": "$t(property.{property})时长应小于等于{constraints.0}秒",

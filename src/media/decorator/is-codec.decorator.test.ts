@@ -9,6 +9,7 @@ import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
 import { IsOptional, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
+import { MediaTestUtil, TEST_AUDIOS, TEST_IMAGES, TEST_VIDEOS } from '../media.module.test';
 import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 
 describe(basename(__filename), () => {
@@ -16,11 +17,15 @@ describe(basename(__filename), () => {
     @IsCodec('hevc', ECodecType.VIDEO) // 所有视频流均为hevc编码
     @IsCodec('aac', ECodecType.AUDIO) // 所有音频流均为aac编码
     @IsOptional()
-    videoInHevc?: string;
+    videoInHevcAndAac?: string;
 
-    @IsCodec('aac', ECodecType.AUDIO, 0) // 第一个音频流为aac编码
+    @IsCodec('eac3', ECodecType.AUDIO, 0) // 第一个音频流为eac3编码
     @IsOptional()
-    audioInAac?: string;
+    audioInEac3?: string;
+
+    @IsCodec('mp3', ECodecType.AUDIO) // 所有音频流均为mp3编码
+    @IsOptional()
+    audioInMp3?: string;
   }
 
   /**
@@ -46,6 +51,10 @@ describe(basename(__filename), () => {
 
   let mediaModule: TestingModule;
   let mediaService: MediaService;
+  /**
+   * 本地下载的测试资产文件路径
+   */
+  let localVideoFilepath: string;
 
   beforeAll(async () => {
     mediaModule = await Test.createTestingModule({
@@ -55,76 +64,74 @@ describe(basename(__filename), () => {
     mediaService = mediaModule.get(MediaService);
     expect(mediaService);
     useContainer(mediaModule, { fallbackOnErrors: true });
+    localVideoFilepath = await MediaTestUtil.downloadTestAsset(TEST_VIDEOS[0]);
   });
 
-  it('视频文件路径', async () => {
-    const dto = plainToInstance(TestClass, {
-      videoInHevc: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' /* duration: 86 */,
-      audioInAac: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
-    });
+  afterAll(async () => {
+    /**
+     * 清理本地下载的测试资产文件
+     */
+    await MediaTestUtil.removeLocalTestFiles(localVideoFilepath);
+    await mediaModule.close();
+  });
+
+  it('视频URL(hevc视频流+aac音频流)', async () => {
+    const dto = plainToInstance(TestClass, { videoInHevcAndAac: TEST_VIDEOS[1] /* hevc+aac */ });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  it('图片文件路径', async () => {
-    const dto = plainToInstance(TestClass, { videoInHevc: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
+  it('视频URL(指定流索引eac3音频流)', async () => {
+    const dto = plainToInstance(TestClass, { audioInEac3: TEST_VIDEOS[0] /* eac3音频流 */ });
     const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
+    expect(result).toStrictEqual([]);
   });
 
-  it('音频文件路径', async () => {
-    const dto = plainToInstance(TestClass, { videoInHevc: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus' /* duration: 142.5 */ });
+  it('本地视频文件(hevc视频流)', async () => {
+    const dto = plainToInstance(TestClass, { videoInHevcAndAac: localVideoFilepath });
     const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
+    expect(result).not.toStrictEqual([]); // video_1音频流为eac3非aac
   });
 
-  it('视频URL', async () => {
-    const dto = plainToInstance(TestClass, { videoInHevc: 'http://10.50.2.35:9001/test/1518ccdd-c83c-4f6c-a0e2-6f5e4cff06f5.mp4' /* duratuin: 5 */ });
+  it('本地视频文件(指定流索引eac3音频流)', async () => {
+    const dto = plainToInstance(TestClass, { audioInEac3: localVideoFilepath });
     const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
+    expect(result).toStrictEqual([]);
   });
 
-  it('图片URL', async () => {
-    const dto = plainToInstance(TestClass, { videoInHevc: 'http://10.50.2.35:9001/test/061209205678761009.png' });
+  it('音频URL(mp3)', async () => {
+    const dto = plainToInstance(TestClass, { audioInMp3: TEST_AUDIOS[0] });
     const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
+    expect(result).toStrictEqual([]);
   });
 
-  it('音频URL', async () => {
-    const dto = plainToInstance(TestClass, { audioInAac: 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3' });
+  it('图片URL(无音频流, 音频编码校验失败)', async () => {
+    const dto = plainToInstance(TestClass, { audioInMp3: TEST_IMAGES[0] });
     const result = await validate(dto);
     expect(result).not.toStrictEqual([]);
   });
 
   describe('编码器名称数组', () => {
-    it('视频文件路径(hevc在数组中)', async () => {
-      const dto = plainToInstance(ArrayCodecTestClass, {
-        videoInArray: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
-      });
+    it('视频URL(hevc在数组中)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, { videoInArray: TEST_VIDEOS[0] });
       const result = await validate(dto);
       expect(result).toStrictEqual([]);
     });
 
-    it('视频文件路径(hevc不在数组中)', async () => {
-      const dto = plainToInstance(ArrayCodecTestClass, {
-        videoNotInArray: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
-      });
+    it('视频URL(hevc不在数组中)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, { videoNotInArray: TEST_VIDEOS[0] });
       const result = await validate(dto);
       expect(result).not.toStrictEqual([]);
     });
 
-    it('视频文件路径(编码器全名命中数组)', async () => {
-      const dto = plainToInstance(ArrayCodecTestClass, {
-        videoByLongName: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
-      });
+    it('视频URL(编码器全名命中数组)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, { videoByLongName: TEST_VIDEOS[0] });
       const result = await validate(dto);
       expect(result).toStrictEqual([]);
     });
 
-    it('音频文件路径(opus在数组中)', async () => {
-      const dto = plainToInstance(ArrayCodecTestClass, {
-        audioInArray: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus',
-      });
+    it('音频URL(opus在数组中)', async () => {
+      const dto = plainToInstance(ArrayCodecTestClass, { audioInArray: TEST_AUDIOS[1] });
       const result = await validate(dto);
       expect(result).toStrictEqual([]);
     });

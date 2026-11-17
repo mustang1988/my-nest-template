@@ -18,6 +18,7 @@ import { MaxPixelsValidator } from './validator/max-pixels.validator';
 import { MediaSizeValidator } from './validator/media-size.validator';
 import { MinHeightValidator } from './validator/min-height.validator';
 import { MinPixelsValidator } from './validator/min-pixels.validator';
+import { IsSubtitleValidator } from './validator/is-subtitle.validator';
 import { AspectRatioValidator } from './validator/aspect-ratio.validator';
 import { MaxDurationValidator } from './validator/max-duration.validator';
 import { MinDurationValidator } from './validator/min-duration.validator';
@@ -38,6 +39,7 @@ const mediaModuleProviders: Array<Provider> = [
   IsAudioValidator,
   IsImageValidator,
   IsVideoValidator,
+  IsSubtitleValidator,
   //   #endregion
 
   //   #region 画面尺寸校验器

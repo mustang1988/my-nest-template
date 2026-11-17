@@ -8,17 +8,22 @@ import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
 import { IsNotEmpty, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
+import { MediaTestUtil, TEST_IMAGES, TEST_VIDEOS } from '../media.module.test';
 import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 
 describe(basename(__filename), () => {
   class TestClass {
-    @MaxHeight(1280) // 画面高度 >= 1280
+    @MaxHeight(1000)
     @IsNotEmpty()
     media: string;
   }
 
   let mediaModule: TestingModule;
   let mediaService: MediaService;
+  /**
+   * 本地下载的测试资产文件路径
+   */
+  let localImageFilepath = '';
 
   beforeAll(async () => {
     mediaModule = await Test.createTestingModule({
@@ -28,43 +33,38 @@ describe(basename(__filename), () => {
     mediaService = mediaModule.get(MediaService);
     expect(mediaService);
     useContainer(mediaModule, { fallbackOnErrors: true });
+    localImageFilepath = await MediaTestUtil.downloadTestAsset(TEST_IMAGES[1]);
   });
 
-  it('视频文件路径', async () => {
-    const dto = plainToInstance(TestClass, {
-      media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' /* duration: 86 */,
-    });
-    const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
+  afterAll(async () => {
+    /**
+     * 清理本地下载的测试资产文件
+     */
+    await MediaTestUtil.removeLocalTestFiles(localImageFilepath);
+    await mediaModule.close();
   });
 
-  it('图片文件路径', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
-    const result = await validate(dto);
-    expect(result).toStrictEqual([]);
-  });
-
-  it('音频文件路径', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus' /* duration: 142.5 */ });
-    const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
-  });
-
-  it('视频URL', async () => {
-    const dto = plainToInstance(TestClass, { media: 'http://10.50.2.35:9001/test/1518ccdd-c83c-4f6c-a0e2-6f5e4cff06f5.mp4' /* duratuin: 5 */ });
-    const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
-  });
-
-  it('图片URL', async () => {
-    const dto = plainToInstance(TestClass, { media: 'http://10.50.2.35:9001/test/061209205678761009.png' });
+  it('图片URL(高度816px)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_IMAGES[1] });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  it('音频URL', async () => {
-    const dto = plainToInstance(TestClass, { media: 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3' });
+  it('图片URL(高度1200px超出上限)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_IMAGES[0] });
     const result = await validate(dto);
     expect(result).not.toStrictEqual([]);
+  });
+
+  it('视频URL(高度2160px超出上限)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_VIDEOS[0] });
+    const result = await validate(dto);
+    expect(result).not.toStrictEqual([]);
+  });
+
+  it('本地图片文件(高度816px)', async () => {
+    const dto = plainToInstance(TestClass, { media: localImageFilepath });
+    const result = await validate(dto);
+    expect(result).toStrictEqual([]);
   });
 });

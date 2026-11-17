@@ -3,7 +3,7 @@
  */
 export interface IMediaAudioStream {
   /**
-   * 流索引
+   * 全局流索引
    */
   index: number;
 
@@ -23,7 +23,9 @@ export interface IMediaAudioStream {
   profile: string;
 
   /**
-   * 编码器类型
+   * 编码类型
+   *
+   * 视频流的编码类型固定为: 'audio'
    */
   codec_type: string;
   codec_tag_string: string;
@@ -36,6 +38,8 @@ export interface IMediaAudioStream {
 
   /**
    * 采样率
+   *
+   * 单位: Hz
    */
   sample_rate: number;
 
@@ -54,21 +58,37 @@ export interface IMediaAudioStream {
   r_frame_rate: string;
   avg_frame_rate: string;
   time_base: string;
+
+  /**
+   * 起始时间戳
+   */
   start_pts: number;
+
+  /**
+   * 开始时间
+   */
   start_time: number;
   duration_ts: number;
 
   /**
-   * 时长, 单位: 秒
+   * 时长
+   *
+   * 单位: 秒
    */
   duration: number;
 
   /**
-   * 码率, 单位: bps
+   * 比特率
+   *
+   * 单位: bps
    */
   bit_rate: number;
   nb_frames: number;
   extradata_size: number;
   disposition: Record<string, unknown>;
+
+  /**
+   * 音频流标签
+   */
   tags: Record<string, unknown>;
 }

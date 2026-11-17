@@ -8,6 +8,7 @@ import { MaxMediaSize } from './max-media-size.decorator';
 import { ContextModule } from 'src/context/context.module';
 import { IsNotEmpty, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
+import { MediaTestUtil, TEST_IMAGES, TEST_VIDEOS } from '../media.module.test';
 import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 
 describe(basename(__filename), () => {
@@ -19,6 +20,10 @@ describe(basename(__filename), () => {
 
   let mediaModule: TestingModule;
   let mediaService: MediaService;
+  /**
+   * 本地下载的测试资产文件路径
+   */
+  let localImageFilepath = '';
 
   beforeAll(async () => {
     mediaModule = await Test.createTestingModule({
@@ -28,23 +33,38 @@ describe(basename(__filename), () => {
     mediaService = mediaModule.get(MediaService);
     expect(mediaService);
     useContainer(mediaModule, { fallbackOnErrors: true });
+    localImageFilepath = await MediaTestUtil.downloadTestAsset(TEST_IMAGES[0]);
   });
 
-  it('图片文件路径(约1.75MB)', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
+  afterAll(async () => {
+    /**
+     * 清理本地下载的测试资产文件
+     */
+    await MediaTestUtil.removeLocalTestFiles(localImageFilepath);
+    await mediaModule.close();
+  });
+
+  it('图片URL(约720KB)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_IMAGES[0] /* size: 737913字节 */ });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  it('音频文件路径(约1.59MB)', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus' });
+  it('视频URL(约8.63MB)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_VIDEOS[0] /* size: 9044599字节 */ });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  it('视频文件路径(约734.57MB超出上限)', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' });
+  it('视频URL(约38.87MB超出上限)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_VIDEOS[1] /* size: 40765831字节 */ });
     const result = await validate(dto);
     expect(result).not.toStrictEqual([]);
+  });
+
+  it('本地图片文件(约720KB)', async () => {
+    const dto = plainToInstance(TestClass, { media: localImageFilepath });
+    const result = await validate(dto);
+    expect(result).toStrictEqual([]);
   });
 });

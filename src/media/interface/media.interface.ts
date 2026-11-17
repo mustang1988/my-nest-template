@@ -1,6 +1,7 @@
 import { IMediaFormat } from './media-format.interface';
 import { IMediaAudioStream } from './media-audio-stream.interface';
 import { IMediaVideoStream } from './media-video-stream.interface';
+import { IMediaSubtitleStream } from './media-subtitle-stream.interface';
 
 /**
  * 媒体
@@ -39,6 +40,17 @@ export interface IMedia {
   getAudioStream(index: number): IMediaAudioStream | undefined;
 
   /**
+   * 获取所有媒体字幕流
+   */
+  getSubtitleStreams(): Array<IMediaSubtitleStream>;
+
+  /**
+   * 获取指定索引的媒体字幕流信息
+   * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有音频流中的第N个
+   */
+  getSubtitleStream(index: number): IMediaSubtitleStream | undefined;
+
+  /**
    * 是否为视频媒体
    */
   isVideoMedia(): boolean;
@@ -54,6 +66,11 @@ export interface IMedia {
   isAudioMedia(): boolean;
 
   /**
+   * 是否为字幕媒体
+   */
+  isSubtitleMedia(): boolean;
+
+  /**
    * 媒体中是否包含视频流
    */
   hasVideoStream(): boolean;
@@ -62,6 +79,11 @@ export interface IMedia {
    * 媒体中是否包含音频流
    */
   hasAudioStream(): boolean;
+
+  /**
+   * 媒体中是否包含字幕流
+   */
+  hasSubtitleStream(): boolean;
 
   /**
    * 获取媒体时长

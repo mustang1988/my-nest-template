@@ -8,6 +8,7 @@ import { LoggerModule } from 'src/logger/logger.module';
 import { ContextModule } from 'src/context/context.module';
 import { IsNotEmpty, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
+import { MediaTestUtil, TEST_AUDIOS, TEST_IMAGES, TEST_VIDEOS } from '../media.module.test';
 import { InternationalizationModule } from 'src/internationalization/internationalization.module';
 
 describe(basename(__filename), () => {
@@ -19,6 +20,10 @@ describe(basename(__filename), () => {
 
   let mediaModule: TestingModule;
   let mediaService: MediaService;
+  /**
+   * 本地下载的测试资产文件路径
+   */
+  let localVideoFilepath = '';
 
   beforeAll(async () => {
     mediaModule = await Test.createTestingModule({
@@ -28,23 +33,38 @@ describe(basename(__filename), () => {
     mediaService = mediaModule.get(MediaService);
     expect(mediaService);
     useContainer(mediaModule, { fallbackOnErrors: true });
+    localVideoFilepath = await MediaTestUtil.downloadTestAsset(TEST_VIDEOS[0]);
   });
 
-  it('视频文件路径(3840x2160共8294400像素)', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' });
+  afterAll(async () => {
+    /**
+     * 清理本地下载的测试资产文件
+     */
+    await MediaTestUtil.removeLocalTestFiles(localVideoFilepath);
+    await mediaModule.close();
+  });
+
+  it('视频URL(3840x2160共8294400像素)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_VIDEOS[0] });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  it('图片文件路径(896x1200共1075200像素, 低于下限)', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
+  it('图片URL(1456x816共1188096像素低于下限)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_IMAGES[1] });
     const result = await validate(dto);
     expect(result).not.toStrictEqual([]);
   });
 
-  it('音频文件路径(无视频流)', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus' });
+  it('音频URL(无视频流)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_AUDIOS[0] });
     const result = await validate(dto);
     expect(result).not.toStrictEqual([]);
+  });
+
+  it('本地视频文件(3840x2160共8294400像素)', async () => {
+    const dto = plainToInstance(TestClass, { media: localVideoFilepath });
+    const result = await validate(dto);
+    expect(result).toStrictEqual([]);
   });
 });

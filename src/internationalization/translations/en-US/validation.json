@@ -8,6 +8,7 @@
   "IsAudioValidator": "$t(property.{property}) is not audio",
   "IsImageValidator": "$t(property.{property}) is not image",
   "IsVideoValidator": "$t(property.{property}) is not video",
+  "IsSubtitleValidator": "$t(property.{property}) is not subtitle",
   "DurationValidator": "Duration of $t(property.{property}) should between {constraints.0} seconds and {constraints.1} seconds",
   "MinDurationValidator": "Duration of $t(property.{property}) should be greater than or equals to {constraints.0} seconds",
   "MaxDurationValidator": "Duration of $t(property.{property}) should be less than or equals to {constraints.0} seconds",

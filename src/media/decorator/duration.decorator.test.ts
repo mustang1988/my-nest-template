@@ -10,6 +10,7 @@ import { ContextModule } from 'src/context/context.module';
 import { IsNotEmpty, useContainer, validate } from 'class-validator';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
 import { InternationalizationModule } from 'src/internationalization/internationalization.module';
+import { MediaTestUtil, TEST_AUDIOS, TEST_IMAGES, TEST_SUBTITLES, TEST_VIDEOS } from '../media.module.test';
 
 describe(basename(__filename), () => {
   class TestClass {
@@ -38,6 +39,10 @@ describe(basename(__filename), () => {
 
   let mediaModule: TestingModule;
   let mediaService: MediaService;
+  /**
+   * 本地下载的测试资产文件路径
+   */
+  let localVideoFilepath = '';
 
   beforeAll(async () => {
     mediaModule = await Test.createTestingModule({
@@ -47,79 +52,74 @@ describe(basename(__filename), () => {
     mediaService = mediaModule.get(MediaService);
     expect(mediaService);
     useContainer(mediaModule, { fallbackOnErrors: true });
+    localVideoFilepath = await MediaTestUtil.downloadTestAsset(TEST_VIDEOS[0]);
   });
 
-  it('视频文件路径', async () => {
-    const dto = plainToInstance(TestClass, {
-      media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' /* duration: 86 */,
-    });
+  afterAll(async () => {
+    /**
+     * 清理本地下载的测试资产文件
+     */
+    await MediaTestUtil.removeLocalTestFiles(localVideoFilepath);
+    await mediaModule.close();
+  });
+
+  it('视频URL(时长6.334秒)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_VIDEOS[0] /* duration: 6.334 */ });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  it('图片文件路径', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
-    const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
-  });
-
-  it('音频文件路径', async () => {
-    const dto = plainToInstance(TestClass, { media: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus' /* duration: 142.5 */ });
-    const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
-  });
-
-  it('视频URL', async () => {
-    const dto = plainToInstance(TestClass, { media: 'http://10.50.2.35:9001/test/1518ccdd-c83c-4f6c-a0e2-6f5e4cff06f5.mp4' /* duratuin: 5 */ });
+  it('视频URL(时长5.02秒)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_VIDEOS[1] /* duration: 5.021683 */ });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  it('图片URL', async () => {
-    const dto = plainToInstance(TestClass, { media: 'http://10.50.2.35:9001/test/061209205678761009.png' });
-    const result = await validate(dto);
-    expect(result).not.toStrictEqual([]);
-  });
-
-  it('音频URL', async () => {
-    const dto = plainToInstance(TestClass, { media: 'http://10.50.2.35:9001/test/r2v_tea_audio1.mp3' });
+  it('音频URL(时长10.584秒)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_AUDIOS[0] /* duration: 10.584 */ });
     const result = await validate(dto);
     expect(result).toStrictEqual([]);
   });
 
-  describe('指定流类型(所有音频流)', () => {
-    it('视频文件路径(音频流时长86秒)', async () => {
-      const dto = plainToInstance(AudioStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4' });
-      const result = await validate(dto);
-      expect(result).toStrictEqual([]);
-    });
-
-    it('音频文件路径(音频流时长142.5秒)', async () => {
-      const dto = plainToInstance(AudioStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\音频文件\\音乐\\明日への鼓動.opus' });
-      const result = await validate(dto);
-      expect(result).toStrictEqual([]);
-    });
-
-    it('图片文件路径(无音频流)', async () => {
-      const dto = plainToInstance(AudioStreamTestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
-      const result = await validate(dto);
-      expect(result).not.toStrictEqual([]);
-    });
+  it('音频URL(时长142.56秒超出上限)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_AUDIOS[1] /* duration: 142.556708 */ });
+    const result = await validate(dto);
+    expect(result).not.toStrictEqual([]);
   });
 
-  describe('指定流类型与流索引(第1条视频流)', () => {
-    it('视频文件路径(视频流时长86秒)', async () => {
-      const dto = plainToInstance(VideoStreamIndexTestClass, {
-        media: 'D:\\WorkFiles\\测试用资产\\视频文件\\HDR\\Sony Swordsmith HDR UHD 4K Demo.mp4',
-      });
-      const result = await validate(dto);
-      expect(result).toStrictEqual([]);
-    });
+  it('图片URL(图片媒体无时长)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_IMAGES[0] });
+    const result = await validate(dto);
+    expect(result).not.toStrictEqual([]);
+  });
 
-    it('图片文件路径(单帧视频流无流级时长)', async () => {
-      const dto = plainToInstance(VideoStreamIndexTestClass, { media: 'D:\\WorkFiles\\测试用资产\\图片文件\\人物\\human_1.png' });
-      const result = await validate(dto);
-      expect(result).not.toStrictEqual([]);
-    });
+  it('字幕URL(无音视频流, 时长未知)', async () => {
+    const dto = plainToInstance(TestClass, { media: TEST_SUBTITLES[0] });
+    const result = await validate(dto);
+    expect(result).not.toStrictEqual([]);
+  });
+
+  it('本地视频文件(时长6.334秒)', async () => {
+    const dto = plainToInstance(TestClass, { media: localVideoFilepath });
+    const result = await validate(dto);
+    expect(result).toStrictEqual([]);
+  });
+
+  it('指定流类型(所有音频流, 音频流时长5.013秒)', async () => {
+    const dto = plainToInstance(AudioStreamTestClass, { media: TEST_VIDEOS[1] /* 音频流duration: 5.013 */ });
+    const result = await validate(dto);
+    expect(result).toStrictEqual([]);
+  });
+
+  it('指定流类型(流级时长缺失, 无法确认校验结果)', async () => {
+    const dto = plainToInstance(AudioStreamTestClass, { media: TEST_VIDEOS[0] /* mkv流级无duration字段 */ });
+    const result = await validate(dto);
+    expect(result).not.toStrictEqual([]);
+  });
+
+  it('指定流类型与流索引(第1条视频流, 视频流时长5.022秒)', async () => {
+    const dto = plainToInstance(VideoStreamIndexTestClass, { media: TEST_VIDEOS[1] /* 视频流duration: 5.021683 */ });
+    const result = await validate(dto);
+    expect(result).toStrictEqual([]);
   });
 });
