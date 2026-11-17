@@ -53,6 +53,7 @@
     "nest-winston": "^2.0.0",
     "nestjs-cls": "^7.0.1",
     "nestjs-i18n": "^10.8.5",
+    "quick-lru": "^8.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.4",
@@ -117,7 +118,7 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "transformIgnorePatterns": [
-      "<rootDir>/node_modules/(?!@faker-js/faker)"
+      "<rootDir>/node_modules/(?!@faker-js/faker|quick-lru)"
     ]
   }
 }

@@ -1,15 +1,19 @@
+import ms from 'ms';
+import bytes from 'bytes';
+import QuickLRU from 'quick-lru';
 import { Logger } from 'winston';
 import { existsSync } from 'node:fs';
 import { isURL } from 'class-validator';
+import { ConfigService } from '@nestjs/config';
 import { Media } from '../implement/media.impl';
 import { plainToInstance } from 'class-transformer';
 import { IMedia } from '../interface/media.interface';
-import { Injectable, OnModuleInit } from '@nestjs/common';
 import { MediaException } from '../exception/media.exception';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ContextService } from 'src/context/service/context.service';
+import { execFileAsync, MEDIA_CACHE_TOKEN } from '../media.constant';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
 import { LoggingPerformance } from 'src/logger/decorator/logging-performance.decorator';
-import { execFileAsync, FFPROBE_MAX_BUFFER, FFPROBE_TIMEOUT_MS, MEDIA_CACHE_MAX_SIZE } from '../media.constant';
 
 /**
  * 媒体服务
@@ -17,17 +21,24 @@ import { execFileAsync, FFPROBE_MAX_BUFFER, FFPROBE_TIMEOUT_MS, MEDIA_CACHE_MAX_
 @Injectable()
 export class MediaService implements OnModuleInit {
   /**
-   * 媒体探测结果缓存(LRU)
-   *
-   * Key为输入(文件路径或URL), Value为探测中的Promise; 并发的相同输入合并为同一次探测
+   * ffprobe执行超时
    */
-  private readonly mediaCache: Map<string, Promise<IMedia>> = new Map();
+  private readonly mediaReadTimeout: number;
+
+  /**
+   * ffprobe执行缓冲区大小
+   */
+  private readonly mediaReadBufferSize: number;
 
   constructor(
     private readonly ctx: ContextService,
+    private readonly configService: ConfigService,
     @InjectLogger() private readonly logger: Logger,
+    @Inject(MEDIA_CACHE_TOKEN) private readonly mediaCache: QuickLRU<string, Promise<IMedia>>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
+    this.mediaReadTimeout = this.configService.get<number>('constants.media.mediaReadTimeout') ?? ms('30s');
+    this.mediaReadBufferSize = this.configService.get<number>('constants.media.mediaReadBufferSize') ?? bytes('10mb') ?? 10 * 1024 * 1024;
   }
 
   async onModuleInit() {
@@ -35,8 +46,8 @@ export class MediaService implements OnModuleInit {
     const ffprobeArgs = ['-version'];
     try {
       const { stdout } = await execFileAsync('ffprobe', ffprobeArgs, {
-        timeout: FFPROBE_TIMEOUT_MS,
-        maxBuffer: FFPROBE_MAX_BUFFER,
+        timeout: this.mediaReadTimeout,
+        maxBuffer: this.mediaReadBufferSize,
         windowsHide: true,
       });
       this.logger.debug('ffprobe安装信息:\n%s', stdout);
@@ -103,21 +114,7 @@ export class MediaService implements OnModuleInit {
   private probeMedia(input: string): Promise<IMedia> {
     const cached = this.mediaCache.get(input);
     if (cached) {
-      /**
-       * 删除后重新插入, 刷新该输入在缓存中的LRU访问顺序
-       */
-      this.mediaCache.delete(input);
-      this.mediaCache.set(input, cached);
       return cached;
-    }
-    if (this.mediaCache.size >= MEDIA_CACHE_MAX_SIZE) {
-      /**
-       * 容量达上限时淘汰最旧条目(Map迭代顺序为插入顺序, 首个键即最旧且最久未访问的输入)
-       */
-      const oldestInput = this.mediaCache.keys().next().value;
-      if (oldestInput !== undefined) {
-        this.mediaCache.delete(oldestInput);
-      }
     }
     /**
      * 探测中的Promise先行存入缓存(并发相同输入合并为一次探测); 探测失败的输入不保留缓存, 后续调用可重试
@@ -147,8 +144,8 @@ export class MediaService implements OnModuleInit {
     this.logger.debug('[%s] 读取媒体信息: ffprobeArgs = %j', requestId, ffprobeArgs);
     try {
       const { stdout } = await execFileAsync('ffprobe', ffprobeArgs, {
-        timeout: FFPROBE_TIMEOUT_MS,
-        maxBuffer: FFPROBE_MAX_BUFFER,
+        timeout: this.mediaReadTimeout,
+        maxBuffer: this.mediaReadBufferSize,
         windowsHide: true,
       });
       const media = plainToInstance(Media, JSON.parse(stdout.toString()));

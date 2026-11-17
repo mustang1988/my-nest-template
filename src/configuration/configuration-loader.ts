@@ -1,4 +1,5 @@
 import ms from 'ms';
+import bytes from 'bytes';
 import { tmpdir } from 'node:os';
 import { EnvValueLoadUtil } from './util/env-value-load.util';
 import { IConfiguration } from './interface/configuration.interface';
@@ -105,6 +106,27 @@ export default (): IConfiguration => ({
        * axios全局超时时间
        */
       timeout: EnvValueLoadUtil.loadOptionalInteger('AXIOS_TIMEOUT_MS', ms('5min')),
+    },
+
+    media: {
+      /**
+       * 媒体信息读取超时时间
+       *
+       * 单位: 毫秒
+       */
+      mediaReadTimeout: EnvValueLoadUtil.loadOptionalInteger('MEDIA_READ_TIMEOUT_MS', ms('30s')),
+
+      /**
+       * 媒体信息读取时的缓冲区上限
+       *
+       * 单位: 字节
+       */
+      mediaReadBufferSize: EnvValueLoadUtil.loadOptionalInteger('MEDIA_READ_BUFFER_SIZE', bytes('10MB') ?? 10 * 1024 * 1024),
+
+      /**
+       * 媒体信息缓存数量
+       */
+      mediaCacheSize: EnvValueLoadUtil.loadOptionalInteger('MEDIA_CACHE_SIZE', 100),
     },
   },
 });

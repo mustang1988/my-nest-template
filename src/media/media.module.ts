@@ -1,3 +1,7 @@
+import QuickLRU from 'quick-lru';
+import { ConfigService } from '@nestjs/config';
+import { IMedia } from './interface/media.interface';
+import { MEDIA_CACHE_TOKEN } from './media.constant';
 import { MediaService } from './service/media.service';
 import { FpsValidator } from './validator/fps.validator';
 import { Global, Module, Provider } from '@nestjs/common';
@@ -92,7 +96,19 @@ const mediaModuleProviders: Array<Provider> = [
  */
 @Global()
 @Module({
-  providers: mediaModuleProviders,
+  providers: [
+    ...mediaModuleProviders,
+    // #region LRU缓存
+    {
+      provide: MEDIA_CACHE_TOKEN,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): QuickLRU<string, Promise<IMedia>> => {
+        const mediaCacheSize = configService.get<number>('constants.media.mediaCacheSize') ?? 100;
+        return new QuickLRU<string, Promise<IMedia>>({ maxSize: mediaCacheSize });
+      },
+    },
+    // #endregion
+  ],
   exports: mediaModuleProviders,
 })
 export class MediaModule {}

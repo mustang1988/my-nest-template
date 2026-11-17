@@ -324,6 +324,7 @@ mysql
 |                                                         [MYSQL_DATASOURCE_OPTIONS_TOKEN](./src/mysql/mysql.constant.ts) | symbol    | MySQL模块配置选项IoC注入Token                                        |
 |                                                         [@InjectRepo()](./src/mysql/decorator/inject-repo.decorator.ts) | decorator | 用于从IoC容器种获取指定MySQL数据源中指定实体类的Repository示例并注入 |
 |                                                   [getMySQLDataSourceToken(name:string)](./src/mysql/mysql.constant.ts) | function  | 获取指定名称MySQL的TypeORM数据源的IoC注入Token                       |
+|                                        [getMySQLRepoToken(name:string, entity:Function)](./src/mysql/mysql.constant.ts) | function  | 获取指定数据源下指定实体的Repository IoC注入Token                    |
 |                                      [IMySQLModuleAsyncOptions](./src/mysql/interface/mysq-module-options.interface.ts) | interface | MySQL 模块动态初始化选项                                             |
 |                                   [JsonValueTransformException](./src/mysql/exception/json-value-transfor.exception.ts) | class     | JSON数值转换异常                                                     |
 |                                  [IMySQLDataSourceOptions](./src/mysql/interface/mysql-datasource-options.interface.ts) | interface | MySQL TypeORM数据源配置选项                                          |
@@ -332,7 +333,6 @@ mysql
 |                         [IDateTimeValueTransformerOptions](./src/mysql/interface/datetime-value-transformer-options.ts) | interface | datetime类型字段转换器转换选项                                       |
 |                       [@InjectMySQLDataSource(name:string)](./src/mysql/decorator/inject-mysql-datasource.decorator.ts) | decorator | 用于从IoC容器中获取指定名称的MySQL数据源示例并注入                   |
 |                       [MySQLDataSourceNotFoundException](./src/mysql/exception/mysql-datasource-not-found.exception.ts) | class     | 指定名称MySQL数据源未找到异常                                        |
-|                                        [getMySQLRepoToken(name:string, entity:Function)](./src/mysql/mysql.constant.ts) | function  | 获取指定数据源下指定实体的Repository IoC注入Token                    |
 |                   [StringAesEncryptValueTransformer](./src/mysql/value-transformer/string-encrypt.value-transformer.ts) | class     | 字符串AES加密转换器                                                  |
 | [IStringAesEncryptValueTransformerOptions](./src/mysql/interface/string-encrypt-value-transformer-options.interface.ts) | interface | 字符串AES加密转换器配置选项                                          |
 
@@ -366,19 +366,18 @@ rabbitmq
 
 #### 模块内容
 
-|                                                                                                  | 类型      | 说明                                               |
-| -----------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------- |
-|                                            [BaseMessage](./src/rabbitmq/message/base.message.ts) | class     | 队列消息基类                                       |
-|                                [RABBITMQ_CLIENTS_MAP_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | symbol    | Rabbitmq客户端Map IoC注入Token                     |
-|                              [RabbitmqMessagePipe](./src/rabbitmq/pipe/rabbitmq-message.pipe.ts) | class     | 队列消息转换管道                                   |
-|                             [RABBITMQ_CLIENT_OPTIONS_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | symbol    | Rabbitmq模块异步初始化选项IoC注入Token             |
-|                       [getRabbitmqClientToken(name:string)](./src/rabbitmq/rabbitmq.constant.ts) | function  | 获取指定名称Rabbitmq队列消息发送客户端IoC注入Token |
-|          [IRabbitmqClientOptions](./src/rabbitmq/interface/rabbitmq-client-options.interface.ts) | interface | Rabbitmq客户端配置选项                             |
-|     [IRabbitmqModuleAsyncOptions](./src/rabbitmq/interface/rabbitmq-module-options.interface.ts) | interface | Rabbitmq模块异步初始化选项                         |
-| [MessageDeserializationException](./src/rabbitmq/exception/message-deserialization.exception.ts) | class     | 队列消息反序列化异常                               |
-
-| [@InjectRabbitmqClient(name:string)](./src/rabbitmq/decorator/inject-rabbitmq-client.decorator.ts) | decorator | 注入指定名称的Rabbitmq消息发送客户端 |
-| [RabbitmqClientNotFoundException](./src/rabbitmq/exception/rabbitmq-client-not-found.exception.ts) | class | 指定名称Rabbitmq消息发送端未找到异常 |
+|                                                                                                    | 类型      | 说明                                               |
+| -------------------------------------------------------------------------------------------------: | :-------- | :------------------------------------------------- |
+|                                              [BaseMessage](./src/rabbitmq/message/base.message.ts) | class     | 队列消息基类                                       |
+|                                  [RABBITMQ_CLIENTS_MAP_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | symbol    | Rabbitmq客户端Map IoC注入Token                     |
+|                                [RabbitmqMessagePipe](./src/rabbitmq/pipe/rabbitmq-message.pipe.ts) | class     | 队列消息转换管道                                   |
+|                               [RABBITMQ_CLIENT_OPTIONS_TOKEN](./src/rabbitmq/rabbitmq.constant.ts) | symbol    | Rabbitmq模块异步初始化选项IoC注入Token             |
+|                         [getRabbitmqClientToken(name:string)](./src/rabbitmq/rabbitmq.constant.ts) | function  | 获取指定名称Rabbitmq队列消息发送客户端IoC注入Token |
+|            [IRabbitmqClientOptions](./src/rabbitmq/interface/rabbitmq-client-options.interface.ts) | interface | Rabbitmq客户端配置选项                             |
+|       [IRabbitmqModuleAsyncOptions](./src/rabbitmq/interface/rabbitmq-module-options.interface.ts) | interface | Rabbitmq模块异步初始化选项                         |
+|   [MessageDeserializationException](./src/rabbitmq/exception/message-deserialization.exception.ts) | class     | 队列消息反序列化异常                               |
+| [@InjectRabbitmqClient(name:string)](./src/rabbitmq/decorator/inject-rabbitmq-client.decorator.ts) | decorator | 注入指定名称的Rabbitmq消息发送客户端               |
+| [RabbitmqClientNotFoundException](./src/rabbitmq/exception/rabbitmq-client-not-found.exception.ts) | class     | 指定名称Rabbitmq消息发送端未找到异常               |
 
 ### Redis
 
@@ -589,83 +588,83 @@ media
 
 #### 模块内容
 
-|                                                                                  | 类型          | 说明                                                                                   |
-| -------------------------------------------------------------------------------: | :------------ | :------------------------------------------------------------------------------------- |
-|                        [@IsCodec()](./src/media/decorator/is-codec.decorator.ts) | decorator     | 媒体编码器校验装饰器                                                                   |
-|                        [@IsImage()](./src/media/decorator/is-image.decorator.ts) | decorator     | 媒体类型是否为`图片`媒体校验装饰器                                                     |
-|                        [@IsAudio()](./src/media/decorator/is-audio.decorator.ts) | decorator     | 媒体类型是否为`音频`媒体校验装饰器                                                     |
-|                        [@IsVideo()](./src/media/decorator/is-video.decorator.ts) | decorator     | 媒体类型是否为`视频`媒体校验装饰器                                                     |
-|                  [@IsSubtitle()](./src/media/decorator/is-subtitle.decorator.ts) | decorator     | 媒体类型是否为`字幕`媒体校验装饰器                                                     |
-|            [@AudioDuration()](./src/media/decorator/audio-duration.decorator.ts) | decorator     | `音频流`时长范围校验装饰器; Duration固定流类型的便捷形式                               |
-|     [@MaxAudioDuration()](./src/media/decorator/max-audio-duration.decorator.ts) | decorator     | `音频流`时长上限校验装饰器; MaxDuration固定流类型的便捷形式                            |
-|     [@MinAudioDuration()](./src/media/decorator/min-audio-duration.decorator.ts) | decorator     | `音频流`时长下限校验装饰器; MinDuration固定流类型的便捷形式                            |
-|            [@VideoDuration()](./src/media/decorator/video-duration.decorator.ts) | decorator     | `视频流`时长范围校验装饰器; Duration固定流类型的便捷形式                               |
-|     [@MaxVideoDuration()](./src/media/decorator/max-video-duration.decorator.ts) | decorator     | `视频流`时长上限校验装饰器; MaxDuration固定流类型的便捷形式                            |
-|     [@MinVideoDuration()](./src/media/decorator/min-video-duration.decorator.ts) | decorator     | `视频流`时长下限校验装饰器; MinDuration固定流类型的便捷形式                            |
-|                [@AspectRatio()](./src/media/decorator/aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比范围`校验装饰器                                                   |
-|         [@MaxAspectRatio()](./src/media/decorator/max-aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比上限`校验装饰器                                                   |
-|         [@MinAspectRatio()](./src/media/decorator/min-aspect-ratio.decorator.ts) | decorator     | 视频或图片媒体`宽高比下限`校验装饰器                                                   |
-|                       [@Duration()](./src/media/decorator/duration.decorator.ts) | decorator     | 视频或音频媒体`时长范围`校验装饰器                                                     |
-|                [@MaxDuration()](./src/media/decorator/max-duration.decorator.ts) | decorator     | 视频或音频媒体`时长上限`校验装饰器                                                     |
-|                [@MinDuration()](./src/media/decorator/min-duration.decorator.ts) | decorator     | 视频或音频媒体`时长下限`校验装饰器                                                     |
-|                                 [@Fps()](./src/media/decorator/fps.decorator.ts) | decorator     | 视频媒体`帧率范围`校验装饰器                                                           |
-|                          [@MaxFps()](./src/media/decorator/max-fps.decorator.ts) | decorator     | 视频媒体`帧率上限`校验装饰器                                                           |
-|                          [@MinFps()](./src/media/decorator/min-fps.decorator.ts) | decorator     | 视频媒体`帧率下限`校验装饰器                                                           |
-|                             [@Width()](./src/media/decorator/width.decorator.ts) | decorator     | 视频或图片媒体`画面宽度范围`校验装饰器                                                 |
-|                      [@MaxWidth()](./src/media/decorator/max-width.decorator.ts) | decorator     | 视频或图片媒体`画面宽度上限`校验装饰器                                                 |
-|                      [@MinWidth()](./src/media/decorator/min-width.decorator.ts) | decorator     | 视频或图片媒体`画面宽度下限`校验装饰器                                                 |
-|                           [@Height()](./src/media/decorator/height.decorator.ts) | decorator     | 视频或图片媒体`画面高度范围`校验装饰器                                                 |
-|                    [@MaxHeight()](./src/media/decorator/max-height.decorator.ts) | decorator     | 视频或图片媒体`画面高度上限`校验装饰器                                                 |
-|                    [@MinHeight()](./src/media/decorator/min-height.decorator.ts) | decorator     | 视频或图片媒体`画面高度下限`校验装饰器                                                 |
-|                           [@Pixels()](./src/media/decorator/pixels.decorator.ts) | decorator     | 视频或图片媒体`画面像素数范围`校验装饰器                                               |
-|                    [@MaxPixels()](./src/media/decorator/max-pixels.decorator.ts) | decorator     | 视频或图片媒体`画面像素数上限`校验装饰器                                               |
-|                    [@MinPixels()](./src/media/decorator/min-pixels.decorator.ts) | decorator     | 视频或图片媒体`画面像素数下限`校验装饰器                                               |
-|                    [@MediaSize()](./src/media/decorator/media-size.decorator.ts) | decorator     | 媒体`文件大小范围`校验装饰器                                                           |
-|             [@MaxMediaSize()](./src/media/decorator/max-media-size.decorator.ts) | decorator     | 媒体`文件大小上限`校验装饰器                                                           |
-|             [@MinMediaSize()](./src/media/decorator/min-media-size.decorator.ts) | decorator     | 媒体`文件大小下限`校验装饰器                                                           |
-|                       [MediaException](./src/media/exception/media.exception.ts) | class         | 媒体异常类, 用于媒体信息读取过程中发生的异常                                           |
-|                               [IMedia](./src/media/interface/media.interface.ts) | interface     | 媒体信息接口                                                                           |
-|                  [IMediaFormat](./src/media/interface/media-format.interface.ts) | interface     | 媒体格式信息接口                                                                       |
-|       [IMediaAudioStream](./src/media/interface/media-audio-stream.interface.ts) | interface     | 媒体音频流信息接口                                                                     |
-|       [IMediaVideoStream](./src/media/interface/media-video-stream.interface.ts) | interface     | 媒体视频流信息接口                                                                     |
-|                                     [Media](./src/media/implement/media.impl.ts) | class         | [IMedia](./src/media/interface/media.interface.ts)实现类                               |
-|                        [MediaFormat](./src/media/implement/media-format.impl.ts) | class         | [IMediaFormat](./src/media/interface/media-format.interface.ts)实现类                  |
-|                        [MediaStream](./src/media/implement/media-stream.impl.ts) | class         | 媒体流信息基类                                                                         |
-|             [MediaAudioStream](./src/media/implement/media-audio-stream.impl.ts) | class         | [IMediaAudioStream](./src/media/interface/media-audio-stream.interface.ts)实现类       |
-| [IMediaSubtitleStream](./src/media/interface/media-subtitle-stream.interface.ts) | interface     | 媒体字幕流信息接口                                                                     |
-|       [MediaSubtitleStream](./src/media/implement/media-subtitle-stream.impl.ts) | class         | [IMediaSubtitleStream](./src/media/interface/media-subtitle-stream.interface.ts)实现类 |
-|             [MediaVideoStream](./src/media/implement/media-video-stream.impl.ts) | class         | [IMediaVideoStream](./src/media/interface/media-video-stream.interface.ts)实现类       |
-|                             [MediaService](./src/media/service/media.service.ts) | class         | 媒体信息服务类                                                                         |
-|                  [IsCodecValidator](./src/media/validator/is-codec.validator.ts) | class         | 媒体编码器校验器                                                                       |
-|                  [IsImageValidator](./src/media/validator/is-image.validator.ts) | class         | 媒体类型是否为`图片`媒体校验器                                                         |
-|                  [IsAudioValidator](./src/media/validator/is-audio.validator.ts) | class         | 媒体类型是否为`音频`媒体校验器                                                         |
-|                  [IsVideoValidator](./src/media/validator/is-video.validator.ts) | class         | 媒体类型是否为`视频`媒体校验器                                                         |
-|            [IsSubtitleValidator](./src/media/validator/is-subtitle.validator.ts) | class         | 媒体类型是否为`字幕`媒体校验器                                                         |
-|          [AspectRatioValidator](./src/media/validator/aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比范围`校验器                                                       |
-|   [MaxAspectRatioValidator](./src/media/validator/max-aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比上限`校验器                                                       |
-|   [MinAspectRatioValidator](./src/media/validator/min-aspect-ratio.validator.ts) | class         | 视频或图片媒体`宽高比下限`校验器                                                       |
-|                 [DurationValidator](./src/media/validator/duration.validator.ts) | class         | 视频或音频媒体`时长范围`校验器                                                         |
-|          [MaxDurationValidator](./src/media/validator/max-duration.validator.ts) | class         | 视频或音频媒体`时长上限`校验器                                                         |
-|          [MinDurationValidator](./src/media/validator/min-duration.validator.ts) | class         | 视频或音频媒体`时长下限`校验器                                                         |
-|                           [FpsValidator](./src/media/validator/fps.validator.ts) | class         | 视频媒体`帧率范围`校验器                                                               |
-|                    [MaxFpsValidator](./src/media/validator/max-fps.validator.ts) | class         | 视频媒体`帧率上限`校验器                                                               |
-|                    [MinFpsValidator](./src/media/validator/min-fps.validator.ts) | class         | 视频媒体`帧率下限`校验器                                                               |
-|                       [WidthValidator](./src/media/validator/width.validator.ts) | class         | 视频或图片媒体`画面宽度范围`校验器                                                     |
-|                [MaxWidthValidator](./src/media/validator/max-width.validator.ts) | class         | 视频或图片媒体`画面宽度上限`校验器                                                     |
-|                [MinWidthValidator](./src/media/validator/min-width.validator.ts) | class         | 视频或图片媒体`画面宽度下限`校验器                                                     |
-|                     [HeightValidator](./src/media/validator/height.validator.ts) | class         | 视频或图片媒体`画面高度范围`校验器                                                     |
-|              [MaxHeightValidator](./src/media/validator/max-height.validator.ts) | class         | 视频或图片媒体`画面高度上限`校验器                                                     |
-|              [MinHeightValidator](./src/media/validator/min-height.validator.ts) | class         | 视频或图片媒体`画面高度下限`校验器                                                     |
-|                     [PixelsValidator](./src/media/validator/pixels.validator.ts) | class         | 视频或图片媒体`画面像素数范围`校验器                                                   |
-|              [MaxPixelsValidator](./src/media/validator/max-pixels.validator.ts) | class         | 视频或图片媒体`画面像素数上限`校验器                                                   |
-|              [MinPixelsValidator](./src/media/validator/min-pixels.validator.ts) | class         | 视频或图片媒体`画面像素数下限`校验器                                                   |
-|              [MediaSizeValidator](./src/media/validator/media-size.validator.ts) | class         | 媒体`文件大小范围`校验器                                                               |
-|       [MaxMediaSizeValidator](./src/media/validator/max-media-size.validator.ts) | class         | 媒体`文件大小上限`校验器                                                               |
-|       [MinMediaSizeValidator](./src/media/validator/min-media-size.validator.ts) | class         | 媒体`文件大小下限`校验器                                                               |
-|                                   [IMAGE_DEMUXER](./src/media/media.constant.ts) | Array<string> | 图片媒体封装格式分流器列表常量                                                         |
-|                                      [ECodecType](./src/media/media.constant.ts) | enum          | 媒体编码类型枚举                                                                       |
-|   [ValidateDimensionUtil](./src/media/validator/util/validate-dimension.util.ts) | class         | 画面尺寸校验流选取工具类                                                               |
-|                                [MediaTestUtil](./src/media/media.module.test.ts) | class         | 测试辅助工具类; 提供测试资产下载与清理                                                 |
+|                                                                                  | 类型      | 说明                                                                                                              |
+| -------------------------------------------------------------------------------: | :-------- | :---------------------------------------------------------------------------------------------------------------- |
+|                        [@IsCodec()](./src/media/decorator/is-codec.decorator.ts) | decorator | 媒体编码器校验装饰器                                                                                              |
+|                        [@IsImage()](./src/media/decorator/is-image.decorator.ts) | decorator | 媒体类型是否为`图片`媒体校验装饰器                                                                                |
+|                        [@IsAudio()](./src/media/decorator/is-audio.decorator.ts) | decorator | 媒体类型是否为`音频`媒体校验装饰器                                                                                |
+|                        [@IsVideo()](./src/media/decorator/is-video.decorator.ts) | decorator | 媒体类型是否为`视频`媒体校验装饰器                                                                                |
+|                  [@IsSubtitle()](./src/media/decorator/is-subtitle.decorator.ts) | decorator | 媒体类型是否为`字幕`媒体校验装饰器                                                                                |
+|            [@AudioDuration()](./src/media/decorator/audio-duration.decorator.ts) | decorator | `音频流`时长范围校验装饰器; [@Duration()](./src/media/decorator/duration.decorator.ts)固定流类型的便捷形式        |
+|     [@MaxAudioDuration()](./src/media/decorator/max-audio-duration.decorator.ts) | decorator | `音频流`时长上限校验装饰器; [@MaxDuration()](./src/media/decorator/max-duration.decorator.ts)固定流类型的便捷形式 |
+|     [@MinAudioDuration()](./src/media/decorator/min-audio-duration.decorator.ts) | decorator | `音频流`时长下限校验装饰器; [@MinDuration()](./src/media/decorator/min-duration.decorator.ts)固定流类型的便捷形式 |
+|            [@VideoDuration()](./src/media/decorator/video-duration.decorator.ts) | decorator | `视频流`时长范围校验装饰器; [@Duration()](./src/media/decorator/duration.decorator.ts)固定流类型的便捷形式        |
+|     [@MaxVideoDuration()](./src/media/decorator/max-video-duration.decorator.ts) | decorator | `视频流`时长上限校验装饰器; [@MaxDuration()](./src/media/decorator/max-duration.decorator.ts)固定流类型的便捷形式 |
+|     [@MinVideoDuration()](./src/media/decorator/min-video-duration.decorator.ts) | decorator | `视频流`时长下限校验装饰器; [@MinDuration()](./src/media/decorator/min-duration.decorator.ts)固定流类型的便捷形式 |
+|                [@AspectRatio()](./src/media/decorator/aspect-ratio.decorator.ts) | decorator | 视频或图片媒体`宽高比范围`校验装饰器                                                                              |
+|         [@MaxAspectRatio()](./src/media/decorator/max-aspect-ratio.decorator.ts) | decorator | 视频或图片媒体`宽高比上限`校验装饰器                                                                              |
+|         [@MinAspectRatio()](./src/media/decorator/min-aspect-ratio.decorator.ts) | decorator | 视频或图片媒体`宽高比下限`校验装饰器                                                                              |
+|                       [@Duration()](./src/media/decorator/duration.decorator.ts) | decorator | 视频或音频媒体`时长范围`校验装饰器                                                                                |
+|                [@MaxDuration()](./src/media/decorator/max-duration.decorator.ts) | decorator | 视频或音频媒体`时长上限`校验装饰器                                                                                |
+|                [@MinDuration()](./src/media/decorator/min-duration.decorator.ts) | decorator | 视频或音频媒体`时长下限`校验装饰器                                                                                |
+|                                 [@Fps()](./src/media/decorator/fps.decorator.ts) | decorator | 视频媒体`帧率范围`校验装饰器                                                                                      |
+|                          [@MaxFps()](./src/media/decorator/max-fps.decorator.ts) | decorator | 视频媒体`帧率上限`校验装饰器                                                                                      |
+|                          [@MinFps()](./src/media/decorator/min-fps.decorator.ts) | decorator | 视频媒体`帧率下限`校验装饰器                                                                                      |
+|                             [@Width()](./src/media/decorator/width.decorator.ts) | decorator | 视频或图片媒体`画面宽度范围`校验装饰器                                                                            |
+|                      [@MaxWidth()](./src/media/decorator/max-width.decorator.ts) | decorator | 视频或图片媒体`画面宽度上限`校验装饰器                                                                            |
+|                      [@MinWidth()](./src/media/decorator/min-width.decorator.ts) | decorator | 视频或图片媒体`画面宽度下限`校验装饰器                                                                            |
+|                           [@Height()](./src/media/decorator/height.decorator.ts) | decorator | 视频或图片媒体`画面高度范围`校验装饰器                                                                            |
+|                    [@MaxHeight()](./src/media/decorator/max-height.decorator.ts) | decorator | 视频或图片媒体`画面高度上限`校验装饰器                                                                            |
+|                    [@MinHeight()](./src/media/decorator/min-height.decorator.ts) | decorator | 视频或图片媒体`画面高度下限`校验装饰器                                                                            |
+|                           [@Pixels()](./src/media/decorator/pixels.decorator.ts) | decorator | 视频或图片媒体`画面像素数范围`校验装饰器                                                                          |
+|                    [@MaxPixels()](./src/media/decorator/max-pixels.decorator.ts) | decorator | 视频或图片媒体`画面像素数上限`校验装饰器                                                                          |
+|                    [@MinPixels()](./src/media/decorator/min-pixels.decorator.ts) | decorator | 视频或图片媒体`画面像素数下限`校验装饰器                                                                          |
+|                    [@MediaSize()](./src/media/decorator/media-size.decorator.ts) | decorator | 媒体`文件大小范围`校验装饰器                                                                                      |
+|             [@MaxMediaSize()](./src/media/decorator/max-media-size.decorator.ts) | decorator | 媒体`文件大小上限`校验装饰器                                                                                      |
+|             [@MinMediaSize()](./src/media/decorator/min-media-size.decorator.ts) | decorator | 媒体`文件大小下限`校验装饰器                                                                                      |
+|                       [MediaException](./src/media/exception/media.exception.ts) | class     | 媒体异常类, 用于媒体信息读取过程中发生的异常                                                                      |
+|                               [IMedia](./src/media/interface/media.interface.ts) | interface | 媒体信息接口                                                                                                      |
+|                  [IMediaFormat](./src/media/interface/media-format.interface.ts) | interface | 媒体格式信息接口                                                                                                  |
+|       [IMediaAudioStream](./src/media/interface/media-audio-stream.interface.ts) | interface | 媒体音频流信息接口                                                                                                |
+|       [IMediaVideoStream](./src/media/interface/media-video-stream.interface.ts) | interface | 媒体视频流信息接口                                                                                                |
+|                                     [Media](./src/media/implement/media.impl.ts) | class     | [IMedia](./src/media/interface/media.interface.ts)实现类                                                          |
+|                        [MediaFormat](./src/media/implement/media-format.impl.ts) | class     | [IMediaFormat](./src/media/interface/media-format.interface.ts)实现类                                             |
+|                        [MediaStream](./src/media/implement/media-stream.impl.ts) | class     | 媒体流信息基类                                                                                                    |
+|             [MediaAudioStream](./src/media/implement/media-audio-stream.impl.ts) | class     | [IMediaAudioStream](./src/media/interface/media-audio-stream.interface.ts)实现类                                  |
+| [IMediaSubtitleStream](./src/media/interface/media-subtitle-stream.interface.ts) | interface | 媒体字幕流信息接口                                                                                                |
+|       [MediaSubtitleStream](./src/media/implement/media-subtitle-stream.impl.ts) | class     | [IMediaSubtitleStream](./src/media/interface/media-subtitle-stream.interface.ts)实现类                            |
+|             [MediaVideoStream](./src/media/implement/media-video-stream.impl.ts) | class     | [IMediaVideoStream](./src/media/interface/media-video-stream.interface.ts)实现类                                  |
+|                             [MediaService](./src/media/service/media.service.ts) | class     | 媒体信息服务类                                                                                                    |
+|                  [IsCodecValidator](./src/media/validator/is-codec.validator.ts) | class     | 媒体编码器校验器                                                                                                  |
+|                  [IsImageValidator](./src/media/validator/is-image.validator.ts) | class     | 媒体类型是否为`图片`媒体校验器                                                                                    |
+|                  [IsAudioValidator](./src/media/validator/is-audio.validator.ts) | class     | 媒体类型是否为`音频`媒体校验器                                                                                    |
+|                  [IsVideoValidator](./src/media/validator/is-video.validator.ts) | class     | 媒体类型是否为`视频`媒体校验器                                                                                    |
+|            [IsSubtitleValidator](./src/media/validator/is-subtitle.validator.ts) | class     | 媒体类型是否为`字幕`媒体校验器                                                                                    |
+|          [AspectRatioValidator](./src/media/validator/aspect-ratio.validator.ts) | class     | 视频或图片媒体`宽高比范围`校验器                                                                                  |
+|   [MaxAspectRatioValidator](./src/media/validator/max-aspect-ratio.validator.ts) | class     | 视频或图片媒体`宽高比上限`校验器                                                                                  |
+|   [MinAspectRatioValidator](./src/media/validator/min-aspect-ratio.validator.ts) | class     | 视频或图片媒体`宽高比下限`校验器                                                                                  |
+|                 [DurationValidator](./src/media/validator/duration.validator.ts) | class     | 视频或音频媒体`时长范围`校验器                                                                                    |
+|          [MaxDurationValidator](./src/media/validator/max-duration.validator.ts) | class     | 视频或音频媒体`时长上限`校验器                                                                                    |
+|          [MinDurationValidator](./src/media/validator/min-duration.validator.ts) | class     | 视频或音频媒体`时长下限`校验器                                                                                    |
+|                           [FpsValidator](./src/media/validator/fps.validator.ts) | class     | 视频媒体`帧率范围`校验器                                                                                          |
+|                    [MaxFpsValidator](./src/media/validator/max-fps.validator.ts) | class     | 视频媒体`帧率上限`校验器                                                                                          |
+|                    [MinFpsValidator](./src/media/validator/min-fps.validator.ts) | class     | 视频媒体`帧率下限`校验器                                                                                          |
+|                       [WidthValidator](./src/media/validator/width.validator.ts) | class     | 视频或图片媒体`画面宽度范围`校验器                                                                                |
+|                [MaxWidthValidator](./src/media/validator/max-width.validator.ts) | class     | 视频或图片媒体`画面宽度上限`校验器                                                                                |
+|                [MinWidthValidator](./src/media/validator/min-width.validator.ts) | class     | 视频或图片媒体`画面宽度下限`校验器                                                                                |
+|                     [HeightValidator](./src/media/validator/height.validator.ts) | class     | 视频或图片媒体`画面高度范围`校验器                                                                                |
+|              [MaxHeightValidator](./src/media/validator/max-height.validator.ts) | class     | 视频或图片媒体`画面高度上限`校验器                                                                                |
+|              [MinHeightValidator](./src/media/validator/min-height.validator.ts) | class     | 视频或图片媒体`画面高度下限`校验器                                                                                |
+|                     [PixelsValidator](./src/media/validator/pixels.validator.ts) | class     | 视频或图片媒体`画面像素数范围`校验器                                                                              |
+|              [MaxPixelsValidator](./src/media/validator/max-pixels.validator.ts) | class     | 视频或图片媒体`画面像素数上限`校验器                                                                              |
+|              [MinPixelsValidator](./src/media/validator/min-pixels.validator.ts) | class     | 视频或图片媒体`画面像素数下限`校验器                                                                              |
+|              [MediaSizeValidator](./src/media/validator/media-size.validator.ts) | class     | 媒体`文件大小范围`校验器                                                                                          |
+|       [MaxMediaSizeValidator](./src/media/validator/max-media-size.validator.ts) | class     | 媒体`文件大小上限`校验器                                                                                          |
+|       [MinMediaSizeValidator](./src/media/validator/min-media-size.validator.ts) | class     | 媒体`文件大小下限`校验器                                                                                          |
+|                                   [IMAGE_DEMUXER](./src/media/media.constant.ts) | string[]  | 图片媒体封装格式分流器列表常量                                                                                    |
+|                                      [ECodecType](./src/media/media.constant.ts) | enum      | 媒体编码类型枚举                                                                                                  |
+|   [ValidateDimensionUtil](./src/media/validator/util/validate-dimension.util.ts) | class     | 画面尺寸校验流选取工具类                                                                                          |
+|                                [MediaTestUtil](./src/media/media.module.test.ts) | class     | 测试辅助工具类; 提供测试资产下载与清理                                                                            |
 
 ### Sample
 
