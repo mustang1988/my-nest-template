@@ -39,8 +39,6 @@ export class MaxWidthValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.MaxWidthValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.MaxWidthValidator', { args: validationArguments });
   }
 }

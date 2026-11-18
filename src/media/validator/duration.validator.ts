@@ -40,8 +40,6 @@ export class DurationValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.DurationValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.DurationValidator', { args: validationArguments });
   }
 }

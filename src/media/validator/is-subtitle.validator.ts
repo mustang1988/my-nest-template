@@ -24,8 +24,6 @@ export class IsSubtitleValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.IsSubtitleValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.IsSubtitleValidator', { args: validationArguments });
   }
 }

@@ -39,8 +39,6 @@ export class HeightValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.HeightValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.HeightValidator', { args: validationArguments });
   }
 }

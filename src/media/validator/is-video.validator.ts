@@ -24,6 +24,6 @@ export class IsVideoValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validator.IsVideoValidator', { args: { property: validationArguments.property } });
+    return this.i18n.t('validator.IsVideoValidator', { args: validationArguments });
   }
 }

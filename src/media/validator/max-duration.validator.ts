@@ -35,8 +35,6 @@ export class MaxDurationValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.MaxDurationValidator', {
-      args: { constraints: validationArguments.constraints, property: validationArguments.property },
-    });
+    return this.i18n.t('validation.MaxDurationValidator', { args: validationArguments });
   }
 }

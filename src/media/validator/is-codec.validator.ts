@@ -71,8 +71,6 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.IsCodecValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.IsCodecValidator', { args: validationArguments });
   }
 }

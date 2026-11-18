@@ -34,8 +34,6 @@ export class MaxAspectRatioValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.MaxAspectRatioValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.MaxAspectRatioValidator', { args: validationArguments });
   }
 }

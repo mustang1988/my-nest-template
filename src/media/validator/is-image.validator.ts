@@ -24,6 +24,6 @@ export class IsImageValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validator.IsImageValidator', { args: { property: validationArguments.property } });
+    return this.i18n.t('validator.IsImageValidator', { args: validationArguments });
   }
 }

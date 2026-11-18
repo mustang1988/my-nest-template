@@ -34,8 +34,6 @@ export class MaxMediaSizeValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.MaxMediaSizeValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.MaxMediaSizeValidator', { args: validationArguments });
   }
 }

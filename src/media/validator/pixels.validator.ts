@@ -34,8 +34,6 @@ export class PixelsValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.PixelsValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.PixelsValidator', { args: validationArguments });
   }
 }

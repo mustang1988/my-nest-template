@@ -24,6 +24,6 @@ export class IsAudioValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validator.IsAudioValidator', { args: { property: validationArguments.property } });
+    return this.i18n.t('validator.IsAudioValidator', { args: validationArguments });
   }
 }

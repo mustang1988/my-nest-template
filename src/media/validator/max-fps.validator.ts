@@ -33,8 +33,6 @@ export class MaxFpsValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return this.i18n.t('validation.MaxFpsValidator', {
-      args: { property: validationArguments.property, constraints: validationArguments.constraints },
-    });
+    return this.i18n.t('validation.MaxFpsValidator', { args: validationArguments });
   }
 }
