@@ -1,6 +1,6 @@
 import { IsCodec } from './is-codec.decorator';
-import { ECodecType } from '../media.constant';
 import { ValidationOptions } from 'class-validator';
+import { ECodecType } from '../enum/codec-type.enum';
 
 /**
  * 音频流编码器类型校验器装饰器

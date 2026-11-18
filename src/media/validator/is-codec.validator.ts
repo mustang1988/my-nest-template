@@ -1,7 +1,7 @@
 import { I18nService } from 'nestjs-i18n';
 import { compact, isEmpty } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { ECodecType } from '../media.constant';
+import { ECodecType } from '../enum/codec-type.enum';
 import { MediaService } from '../service/media.service';
 import { MediaAudioStream } from '../implement/media-audio-stream.impl';
 import { MediaVideoStream } from '../implement/media-video-stream.impl';
@@ -35,7 +35,7 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
       /**
        * 需要校验的流类型
        */
-      const expectCodecType = validationArguments.constraints[1] as string;
+      const expectCodecType = validationArguments.constraints[1] as string | ECodecType;
 
       /**
        * 期望校验的流索引
@@ -51,12 +51,16 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
        */
       let expectStreams: Array<IMediaAudioStream | IMediaVideoStream> = [];
       switch (expectCodecType) {
+        case ECodecType.AUDIO:
         case ECodecType.AUDIO.toString():
           expectStreams = expectStreamIndex !== undefined ? [media.getAudioStream(expectStreamIndex) as MediaAudioStream] : media.getAudioStreams();
           break;
+        case ECodecType.VIDEO:
         case ECodecType.VIDEO.toString():
           expectStreams = expectStreamIndex !== undefined ? [media.getVideoStream(expectStreamIndex) as MediaVideoStream] : media.getVideoStreams();
           break;
+        case ECodecType.SUBTITLE:
+        case ECodecType.SUBTITLE.toString():
         default:
           return false;
       }

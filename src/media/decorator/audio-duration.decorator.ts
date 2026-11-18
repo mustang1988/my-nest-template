@@ -1,6 +1,6 @@
-import { ECodecType } from '../media.constant';
 import { Duration } from './duration.decorator';
 import { ValidationOptions } from 'class-validator';
+import { ECodecType } from '../enum/codec-type.enum';
 
 /**
  * 媒体音频流时长范围校验器装饰器

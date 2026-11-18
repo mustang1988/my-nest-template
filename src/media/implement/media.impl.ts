@@ -29,18 +29,20 @@ export class Media implements IMedia {
     keepDiscriminatorProperty: true,
   })
   @IsOptional()
-  streams: Array<MediaVideoStream | MediaAudioStream>;
+  streams?: Array<MediaVideoStream | MediaAudioStream | MediaSubtitleStream> | undefined;
 
   @Type(() => MediaFormat)
   @IsOptional()
   format?: IMediaFormat | undefined;
 
   getVideoStreams(): Array<IMediaVideoStream> {
-    return sortBy(
-      this.streams.filter((s) => s instanceof MediaVideoStream),
-      'index',
-      'asc',
-    ) as Array<IMediaVideoStream>;
+    return (
+      (sortBy(
+        this.streams?.filter((s) => s instanceof MediaVideoStream),
+        'index',
+        'asc',
+      ) as Array<IMediaVideoStream>) ?? []
+    );
   }
 
   getVideoStream(index: number): IMediaVideoStream | undefined {
@@ -48,11 +50,13 @@ export class Media implements IMedia {
   }
 
   getAudioStreams(): Array<IMediaAudioStream> {
-    return sortBy(
-      this.streams.filter((s) => s instanceof MediaAudioStream),
-      'index',
-      'asc',
-    ) as Array<IMediaAudioStream>;
+    return (
+      (sortBy(
+        this.streams?.filter((s) => s instanceof MediaAudioStream),
+        'index',
+        'asc',
+      ) as Array<IMediaAudioStream>) ?? []
+    );
   }
 
   getAudioStream(index: number): IMediaAudioStream | undefined {
@@ -60,11 +64,13 @@ export class Media implements IMedia {
   }
 
   getSubtitleStreams(): Array<IMediaSubtitleStream> {
-    return sortBy(
-      this.streams.filter((s) => s instanceof MediaSubtitleStream),
-      'index',
-      'asc',
-    ) as Array<IMediaSubtitleStream>;
+    return (
+      (sortBy(
+        this.streams?.filter((s) => s instanceof MediaSubtitleStream),
+        'index',
+        'asc',
+      ) as Array<IMediaSubtitleStream>) ?? []
+    );
   }
 
   getSubtitleStream(index: number): IMediaSubtitleStream | undefined {

@@ -2,17 +2,20 @@ import ms from 'ms';
 import bytes from 'bytes';
 import QuickLRU from 'quick-lru';
 import { Logger } from 'winston';
+import { promisify } from 'util';
 import { existsSync } from 'node:fs';
 import { isURL } from 'class-validator';
+import { execFile } from 'child_process';
 import { ConfigService } from '@nestjs/config';
 import { Media } from '../implement/media.impl';
 import { plainToInstance } from 'class-transformer';
 import { IMedia } from '../interface/media.interface';
+import { MEDIA_CACHE_TOKEN } from '../media.constant';
 import { MediaException } from '../exception/media.exception';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ContextService } from 'src/context/service/context.service';
-import { execFileAsync, MEDIA_CACHE_TOKEN } from '../media.constant';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
+import type { MediaReadOptions } from '../interface/media-read-options.interface';
 import { LoggingPerformance } from 'src/logger/decorator/logging-performance.decorator';
 
 /**
@@ -30,6 +33,11 @@ export class MediaService implements OnModuleInit {
    */
   private readonly mediaReadBufferSize: number;
 
+  /**
+   * execFile()函数Promise包装
+   */
+  private readonly execFileAsync = promisify(execFile);
+
   constructor(
     private readonly ctx: ContextService,
     private readonly configService: ConfigService,
@@ -45,7 +53,10 @@ export class MediaService implements OnModuleInit {
     // 检测当前运行环境中是否已正确安装有ffprobe
     const ffprobeArgs = ['-version'];
     try {
-      const { stdout } = await execFileAsync('ffprobe', ffprobeArgs, {
+      /**
+       * 命令: ffprobe -version
+       */
+      const { stdout } = await this.execFileAsync('ffprobe', ffprobeArgs, {
         timeout: this.mediaReadTimeout,
         maxBuffer: this.mediaReadBufferSize,
         windowsHide: true,
@@ -68,11 +79,11 @@ export class MediaService implements OnModuleInit {
    * @throws MediaException
    */
   @LoggingPerformance()
-  async readMedia(filepathOrUrl: string): Promise<IMedia> {
+  async readMedia(filepathOrUrl: string, options?: MediaReadOptions): Promise<IMedia> {
     if (isURL(filepathOrUrl)) {
-      return this.readMediaByUrl(filepathOrUrl);
+      return this.readMediaByUrl(filepathOrUrl, options);
     }
-    return this.readMediaByFilepath(filepathOrUrl);
+    return this.readMediaByFilepath(filepathOrUrl, options);
   }
 
   /**
@@ -81,13 +92,13 @@ export class MediaService implements OnModuleInit {
    * @return 媒体信息
    * @throws MediaException
    */
-  async readMediaByFilepath(filepath: string): Promise<IMedia> {
+  async readMediaByFilepath(filepath: string, options?: MediaReadOptions): Promise<IMedia> {
     const requestId = this.ctx.getRequestId();
     if (!existsSync(filepath)) {
       this.logger.error('[%s] 读取媒体文件信息, 未找到指定文件: filepath = %s', requestId, filepath);
       throw new MediaException('未找到指定文件', { cause: { filepath } });
     }
-    return this.probeMedia(filepath);
+    return this.probeMedia(filepath, options);
   }
 
   /**
@@ -96,13 +107,13 @@ export class MediaService implements OnModuleInit {
    * @return 媒体信息
    * @throws MediaException
    */
-  async readMediaByUrl(url: string): Promise<IMedia> {
+  async readMediaByUrl(url: string, options?: MediaReadOptions): Promise<IMedia> {
     const requestId = this.ctx.getRequestId();
     if (!isURL(url)) {
       this.logger.error('[%s] 读取媒体URL信息, 指定URL格式无效: url = %s', requestId, url);
       throw new MediaException('指定URL格式无效', { cause: { url } });
     }
-    return this.probeMedia(url);
+    return this.probeMedia(url, options);
   }
 
   /**
@@ -111,19 +122,20 @@ export class MediaService implements OnModuleInit {
    * @param input 输入(文件路径或URL)
    * @return 媒体信息
    */
-  private probeMedia(input: string): Promise<IMedia> {
-    const cached = this.mediaCache.get(input);
+  private probeMedia(input: string, options?: MediaReadOptions): Promise<IMedia> {
+    const cacheKey = JSON.stringify({ input, options }); // 仅使用input作为缓存key时, 当连续访问同一媒体的信息但可选选项不同时, 会返回预期外的缓存结果
+    const cached = this.mediaCache.get(cacheKey);
     if (cached) {
       return cached;
     }
     /**
      * 探测中的Promise先行存入缓存(并发相同输入合并为一次探测); 探测失败的输入不保留缓存, 后续调用可重试
      */
-    const probing = this.executeFfprobe(input).catch((error: unknown) => {
-      this.mediaCache.delete(input);
+    const probing = this.executeFfprobe(input, options).catch((error: unknown) => {
+      this.mediaCache.delete(cacheKey);
       throw error;
     });
-    this.mediaCache.set(input, probing);
+    this.mediaCache.set(cacheKey, probing);
     return probing;
   }
 
@@ -134,16 +146,28 @@ export class MediaService implements OnModuleInit {
    * @return 媒体信息
    * @throws MediaException
    */
-  private async executeFfprobe(input: string): Promise<IMedia> {
+  private async executeFfprobe(input: string, options?: MediaReadOptions): Promise<IMedia> {
     const requestId = this.ctx.getRequestId();
+    const readStreams = options?.readStreams ?? true;
+    const readFormat = options?.readFormat ?? true;
     /**
      * 以参数数组方式调用ffprobe, 不经shell解释: 输入中的shell元字符仅被作为普通文件路径/URL字符处理, 避免命令注入;
      * 同时也天然支持包含空格/引号等特殊字符的文件路径, 无需对路径做拆分处理
      */
-    const ffprobeArgs = ['-v', '0', '-of', 'json', '-show_format', '-show_streams', '-i', input];
+    const ffprobeArgs = ['-v', '0', '-of', 'json'];
+    if (readStreams) {
+      ffprobeArgs.push('-show_streams');
+    }
+    if (readFormat) {
+      ffprobeArgs.push('-show_format');
+    }
+    ffprobeArgs.push('-i', input);
     this.logger.debug('[%s] 读取媒体信息: ffprobeArgs = %j', requestId, ffprobeArgs);
     try {
-      const { stdout } = await execFileAsync('ffprobe', ffprobeArgs, {
+      /**
+       * 命令: ffprobe -v 0 -of json [-show_streams] [-show_format] -i <input>
+       */
+      const { stdout } = await this.execFileAsync('ffprobe', ffprobeArgs, {
         timeout: this.mediaReadTimeout,
         maxBuffer: this.mediaReadBufferSize,
         windowsHide: true,

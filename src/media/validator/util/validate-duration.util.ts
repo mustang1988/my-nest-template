@@ -1,6 +1,6 @@
 import { compact, isEmpty } from 'lodash';
-import { ECodecType } from '../../media.constant';
 import { IMedia } from '../../interface/media.interface';
+import { ECodecType } from 'src/media/enum/codec-type.enum';
 import { IMediaAudioStream } from '../../interface/media-audio-stream.interface';
 import { IMediaVideoStream } from '../../interface/media-video-stream.interface';
 

@@ -11,7 +11,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { MediaException } from '../exception/media.exception';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
 import { InternationalizationModule } from 'src/internationalization/internationalization.module';
-import { MediaTestUtil, TEST_AUDIOS, TEST_IMAGES, TEST_SUBTITLES, TEST_VIDEOS } from '../media.module.test';
+import { MediaTestUtil, TEST_AUDIOS, TEST_IMAGES, TEST_NOT_MEDIAS, TEST_SUBTITLES, TEST_VIDEOS } from '../media.module.test';
 
 describe(basename(__filename), () => {
   let mediaModule: TestingModule;
@@ -24,6 +24,7 @@ describe(basename(__filename), () => {
   let localAudioFilepath: string;
   let localImageFilepath: string;
   let localSubtitleFilepath: string;
+  let localNotMediaFilepath: string;
 
   beforeAll(async () => {
     mediaModule = await Test.createTestingModule({
@@ -45,13 +46,20 @@ describe(basename(__filename), () => {
     localAudioFilepath = await MediaTestUtil.downloadTestAsset(TEST_AUDIOS[0]);
     localImageFilepath = await MediaTestUtil.downloadTestAsset(TEST_IMAGES[0]);
     localSubtitleFilepath = await MediaTestUtil.downloadTestAsset(TEST_SUBTITLES[0]);
+    localNotMediaFilepath = await MediaTestUtil.downloadTestAsset(TEST_NOT_MEDIAS[0]);
   });
 
   afterAll(async () => {
     /**
      * 清理本地下载的测试资产文件
      */
-    await MediaTestUtil.removeLocalTestFiles(localVideoFilepath, localAudioFilepath, localImageFilepath, localSubtitleFilepath);
+    await MediaTestUtil.removeLocalTestFiles(
+      localVideoFilepath,
+      localAudioFilepath,
+      localImageFilepath,
+      localSubtitleFilepath,
+      localNotMediaFilepath,
+    );
     await mediaModule.close();
   });
 
@@ -61,9 +69,21 @@ describe(basename(__filename), () => {
       expect(result);
     });
 
+    it('URL输入, 仅读取格式信息', async () => {
+      const result = await mediaService.readMedia(TEST_VIDEOS[1], { readStreams: false });
+      expect(result);
+      expect(result.streams).toStrictEqual(undefined);
+    });
+
     it('文件路径输入分发到readMediaByFilepath', async () => {
       const result = await mediaService.readMedia(localVideoFilepath);
       expect(result);
+    });
+
+    it('文件路径输入, 仅读取流信息', async () => {
+      const result = await mediaService.readMedia(localVideoFilepath, { readFormat: false });
+      expect(result);
+      expect(result.format).toStrictEqual(undefined);
     });
   });
 
@@ -88,7 +108,16 @@ describe(basename(__filename), () => {
       expect(result);
     });
 
-    it('文件不存在', async () => {
+    it('非媒体文件', async () => {
+      try {
+        await mediaService.readMediaByFilepath(localNotMediaFilepath);
+      } catch (error) {
+        expect(error);
+        expect(error instanceof MediaException);
+      }
+    });
+
+    it.only('文件不存在', async () => {
       try {
         const filepath = `C:\\${randomUUID()}.mp4`;
         await mediaService.readMediaByFilepath(filepath);

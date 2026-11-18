@@ -786,6 +786,16 @@ export const TEST_SUBTITLES = [
    */
   'http://10.50.2.35:9001/test/media_test_asset/subtitle_2.ass',
 ];
+
+/**
+ * 测试用非媒体文件
+ */
+export const TEST_NOT_MEDIAS = [
+  /**
+   * 纯文本文件
+   */
+  'http://10.50.2.35:9001/test/media_test_asset/not_media.txt',
+];
 // #endregion
 
 // #region 测试辅助工具

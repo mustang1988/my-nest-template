@@ -1,4 +1,4 @@
-import { ECodecType } from '../media.constant';
+import { ECodecType } from '../enum/codec-type.enum';
 import { IsCodecValidator } from '../validator/is-codec.validator';
 import { registerDecorator, ValidationOptions } from 'class-validator';
 

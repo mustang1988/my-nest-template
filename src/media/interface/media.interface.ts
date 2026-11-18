@@ -10,7 +10,7 @@ export interface IMedia {
   /**
    * 媒体流信息
    */
-  streams: Array<IMediaAudioStream | IMediaVideoStream>;
+  streams?: Array<IMediaAudioStream | IMediaVideoStream | IMediaSubtitleStream>;
 
   /**
    * 媒体格式信息
@@ -46,7 +46,7 @@ export interface IMedia {
 
   /**
    * 获取媒体中指定索引的字幕流信息
-   * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有音频流中的第N个
+   * @param index 索引号, 非ffprobe读取到的全局流索引, 单指所有字幕流中的第N个
    */
   getSubtitleStream(index: number): IMediaSubtitleStream | undefined;
 

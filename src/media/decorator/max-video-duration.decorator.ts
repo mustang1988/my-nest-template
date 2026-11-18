@@ -1,5 +1,5 @@
-import { ECodecType } from '../media.constant';
 import { ValidationOptions } from 'class-validator';
+import { ECodecType } from '../enum/codec-type.enum';
 import { MaxDuration } from './max-duration.decorator';
 
 /**

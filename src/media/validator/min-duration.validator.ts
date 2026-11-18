@@ -1,6 +1,6 @@
 import { I18nService } from 'nestjs-i18n';
 import { Injectable } from '@nestjs/common';
-import { ECodecType } from '../media.constant';
+import { ECodecType } from '../enum/codec-type.enum';
 import { MediaService } from '../service/media.service';
 import { ValidateDurationUtil } from './util/validate-duration.util';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';

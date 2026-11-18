@@ -1,8 +1,8 @@
 import { basename } from 'node:path';
 import { MediaModule } from '../media.module';
-import { ECodecType } from '../media.constant';
 import { Duration } from './duration.decorator';
 import { plainToInstance } from 'class-transformer';
+import { ECodecType } from '../enum/codec-type.enum';
 import { TestingModule, Test } from '@nestjs/testing';
 import { MediaService } from '../service/media.service';
 import { LoggerModule } from 'src/logger/logger.module';

@@ -1,4 +1,4 @@
-import { ECodecType } from '../media.constant';
+import { ECodecType } from '../enum/codec-type.enum';
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import { MinDurationValidator } from '../validator/min-duration.validator';
 
