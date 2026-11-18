@@ -117,7 +117,7 @@ describe(basename(__filename), () => {
       }
     });
 
-    it.only('文件不存在', async () => {
+    it('文件不存在', async () => {
       try {
         const filepath = `C:\\${randomUUID()}.mp4`;
         await mediaService.readMediaByFilepath(filepath);

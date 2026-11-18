@@ -94,11 +94,11 @@ describe(basename(__filename), () => {
     });
 
     it('正常', async () => {
-      const body = { name: faker.lorem.word() };
+      const body = { sample_name: faker.lorem.word() };
       const response = await request(app.getHttpServer()).post('/api/sample').send(body);
       expect(response.statusCode).toStrictEqual(200);
       expect(response.body.data.id);
-      expect(response.body.data.name).toStrictEqual(body.name);
+      expect(response.body.data.name).toStrictEqual(body.sample_name);
       createdSampleIds.push(response.body.data.id);
     });
   });
@@ -108,7 +108,7 @@ describe(basename(__filename), () => {
       /**
        * 先创建一条数据确保存在
        */
-      const createResponse = await request(app.getHttpServer()).post('/api/sample').send({ name: faker.lorem.word() });
+      const createResponse = await request(app.getHttpServer()).post('/api/sample').send({ sample_name: faker.lorem.word() });
       expect(createResponse.statusCode).toStrictEqual(200);
       const createdId = createResponse.body.data.id as number;
       createdSampleIds.push(createdId);
@@ -122,7 +122,7 @@ describe(basename(__filename), () => {
       /**
        * 创建后删除, 确保指定ID的数据不存在
        */
-      const createResponse = await request(app.getHttpServer()).post('/api/sample').send({ name: faker.lorem.word() });
+      const createResponse = await request(app.getHttpServer()).post('/api/sample').send({ sample_name: faker.lorem.word() });
       expect(createResponse.statusCode).toStrictEqual(200);
       const createdId = createResponse.body.data.id as number;
       await dataSource.getRepository(SampleEntity).delete(createdId);
