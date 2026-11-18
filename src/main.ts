@@ -108,7 +108,7 @@ void (async () => {
    *
    * 注意: 多个管道注册时需要注意注册顺序; 注册顺序影响执行顺序
    */
-  const globalPipes: Array<PipeTransform> = [new I18nValidationPipe({ stopAtFirstError: true })];
+  const globalPipes: Array<PipeTransform> = [new I18nValidationPipe({ stopAtFirstError: true, enableDebugMessages: true })];
   app.useGlobalPipes(...globalPipes);
   logger.debug(
     '全局管道注册完毕: %j',

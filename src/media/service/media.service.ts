@@ -17,6 +17,7 @@ import { ContextService } from 'src/context/service/context.service';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
 import type { MediaReadOptions } from '../interface/media-read-options.interface';
 import { LoggingPerformance } from 'src/logger/decorator/logging-performance.decorator';
+import { IMediaConfiguration } from 'src/configuration/interface/media-configuration.interface';
 
 /**
  * 媒体服务
@@ -24,14 +25,9 @@ import { LoggingPerformance } from 'src/logger/decorator/logging-performance.dec
 @Injectable()
 export class MediaService implements OnModuleInit {
   /**
-   * ffprobe执行超时
+   * 媒体模块配置
    */
-  private readonly mediaReadTimeout: number;
-
-  /**
-   * ffprobe执行缓冲区大小
-   */
-  private readonly mediaReadBufferSize: number;
+  private readonly mediaConfig: IMediaConfiguration;
 
   /**
    * execFile()函数Promise包装
@@ -45,8 +41,7 @@ export class MediaService implements OnModuleInit {
     @Inject(MEDIA_CACHE_TOKEN) private readonly mediaCache: QuickLRU<string, Promise<IMedia>>,
   ) {
     this.logger = this.logger.child({ context: this.constructor.name });
-    this.mediaReadTimeout = this.configService.get<number>('constants.media.mediaReadTimeout') ?? ms('30s');
-    this.mediaReadBufferSize = this.configService.get<number>('constants.media.mediaReadBufferSize') ?? bytes('10mb') ?? 10 * 1024 * 1024;
+    this.mediaConfig = this.configService.getOrThrow<IMediaConfiguration>('media');
   }
 
   async onModuleInit() {
@@ -57,8 +52,8 @@ export class MediaService implements OnModuleInit {
        * 命令: ffprobe -version
        */
       const { stdout } = await this.execFileAsync('ffprobe', ffprobeArgs, {
-        timeout: this.mediaReadTimeout,
-        maxBuffer: this.mediaReadBufferSize,
+        timeout: this.mediaConfig.timeout,
+        maxBuffer: this.mediaConfig.maxBuffer,
         windowsHide: true,
       });
       this.logger.debug('ffprobe安装信息:\n%s', stdout);
@@ -168,8 +163,8 @@ export class MediaService implements OnModuleInit {
        * 命令: ffprobe -v 0 -of json [-show_streams] [-show_format] -i <input>
        */
       const { stdout } = await this.execFileAsync('ffprobe', ffprobeArgs, {
-        timeout: this.mediaReadTimeout,
-        maxBuffer: this.mediaReadBufferSize,
+        timeout: this.mediaConfig.timeout,
+        maxBuffer: this.mediaConfig.maxBuffer,
         windowsHide: true,
       });
       const media = plainToInstance(Media, JSON.parse(stdout.toString()));

@@ -1,6 +1,7 @@
 import { IS3StorageConfiguration } from './s3-storage.interface';
 import { IAppConfiguration } from './app-configuration.interface';
 import { Ii18nConfiguration } from './i18n-configuration.interface';
+import { IMediaConfiguration } from './media-configuration.interface';
 import { IMySQLConfiguration } from './mysql-configuration.interface';
 import { IRedisConfiguration } from './redis-configuration.interface';
 import { ILoggerConfiguration } from './logger-configuration.interface';
@@ -50,6 +51,11 @@ export interface IConfiguration {
    * Casdoor配置
    */
   casdoor?: ICasdoorConfiguration;
+
+  /**
+   * 媒体模块配置
+   */
+  media?: IMediaConfiguration;
 
   /**
    * 常量配置

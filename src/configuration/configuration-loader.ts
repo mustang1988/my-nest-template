@@ -76,6 +76,13 @@ export default (): IConfiguration => ({
     },
   },
 
+  media: {
+    timeout: EnvValueLoadUtil.loadOptionalInteger('MEDIA_READ_TIMEOUT_MS', ms('30s')),
+    maxBuffer: EnvValueLoadUtil.loadOptionalInteger('MEDIA_READ_BUFFER_SIZE', bytes('10MB') ?? 10 * 1024 * 1024),
+    maxSize: EnvValueLoadUtil.loadOptionalInteger('MEDIA_CACHE_SIZE', 100),
+    maxAge: EnvValueLoadUtil.loadOptionalNumber('MEDIA_CACHE_MAX_AGE', ms('30s')),
+  },
+
   casdoor: {
     endpoint: EnvValueLoadUtil.loadRequiredUrl('CASDOOR_ENDPOINT'),
     appName: EnvValueLoadUtil.loadRequiredString('CASDOOR_APP_NAME'),
@@ -115,27 +122,6 @@ export default (): IConfiguration => ({
        * axios全局超时时间
        */
       timeout: EnvValueLoadUtil.loadOptionalInteger('AXIOS_TIMEOUT_MS', ms('5min')),
-    },
-
-    media: {
-      /**
-       * 媒体信息读取超时时间
-       *
-       * 单位: 毫秒
-       */
-      mediaReadTimeout: EnvValueLoadUtil.loadOptionalInteger('MEDIA_READ_TIMEOUT_MS', ms('30s')),
-
-      /**
-       * 媒体信息读取时的缓冲区上限
-       *
-       * 单位: 字节
-       */
-      mediaReadBufferSize: EnvValueLoadUtil.loadOptionalInteger('MEDIA_READ_BUFFER_SIZE', bytes('10MB') ?? 10 * 1024 * 1024),
-
-      /**
-       * 媒体信息缓存数量
-       */
-      mediaCacheSize: EnvValueLoadUtil.loadOptionalInteger('MEDIA_CACHE_SIZE', 100),
     },
   },
 });
