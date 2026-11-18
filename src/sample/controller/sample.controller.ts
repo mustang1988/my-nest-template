@@ -56,7 +56,7 @@ export class SampleController {
   @Post()
   @HttpCode(200)
   async actionCreateSample(@Body() body: SampleCreateDto): Promise<SampleEntity> {
-    const command = new SampleCommand(this.ctx.getRequestId(), body.name);
+    const command = new SampleCommand(this.ctx.getRequestId(), body.sample_name);
     return await this.commandBus.execute(command);
   }
   // #endregion

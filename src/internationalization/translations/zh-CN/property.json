@@ -1,4 +1,6 @@
 {
   "sample_foo": "示例foo",
-  "sample_bar": "示例bar"
+  "sample_bar": "示例bar",
+  "sample_name": "示例名称",
+  "sample_media": "示例媒体"
 }
