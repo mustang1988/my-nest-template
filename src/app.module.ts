@@ -11,6 +11,7 @@ import { RedisModule } from './redis/redis.module';
 import { CommonModule } from './common/common.module';
 import { LoggerModule } from './logger/logger.module';
 import { SampleModule } from './sample/sample.module';
+import { CasdoorModule } from './casdoor/casdoor.module';
 import { ContextModule } from './context/context.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
@@ -55,6 +56,7 @@ import { BigintSupportResponseTransformer } from './common/response-transformer/
     CommonModule,
     LoggerModule,
     ContextModule,
+    CasdoorModule,
     WebSocketModule,
     ConfigurationModule,
     InternationalizationModule,

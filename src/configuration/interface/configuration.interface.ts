@@ -4,6 +4,7 @@ import { Ii18nConfiguration } from './i18n-configuration.interface';
 import { IMySQLConfiguration } from './mysql-configuration.interface';
 import { IRedisConfiguration } from './redis-configuration.interface';
 import { ILoggerConfiguration } from './logger-configuration.interface';
+import { ICasdoorConfiguration } from './casdoor-configuration.interface';
 import { IRabbitmqConfiguration } from './rabbitmq-configuration.interface';
 
 /**
@@ -44,6 +45,11 @@ export interface IConfiguration {
    * S3存储配置
    */
   s3Storage?: Record<string, IS3StorageConfiguration>;
+
+  /**
+   * Casdoor配置
+   */
+  casdoor?: ICasdoorConfiguration;
 
   /**
    * 常量配置

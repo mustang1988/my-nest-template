@@ -76,6 +76,15 @@ export default (): IConfiguration => ({
     },
   },
 
+  casdoor: {
+    endpoint: EnvValueLoadUtil.loadRequiredUrl('CASDOOR_ENDPOINT'),
+    appName: EnvValueLoadUtil.loadRequiredString('CASDOOR_APP_NAME'),
+    orgName: EnvValueLoadUtil.loadRequiredString('CASDOOR_ORG_NAME'),
+    clientId: EnvValueLoadUtil.loadRequiredString('CASDOOR_CLIENT_ID'),
+    clientSecret: EnvValueLoadUtil.loadRequiredString('CASDOOR_CLIENT_SECRET'),
+    certificate: EnvValueLoadUtil.loadRequiredString('CASDOOR_CERT'),
+  },
+
   constants: {
     performance: {
       /**
