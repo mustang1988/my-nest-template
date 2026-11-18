@@ -53,6 +53,7 @@ const reportLowPerformance = (logger: Logger, threshold: number, requestId: stri
  * - 仅支持同步函数与返回Promise的异步函数; 返回RxJS Observable等非Promise类型的方法无法安全测量(测量需订阅, 会改变执行语义), 按同步函数处理, 计时仅覆盖其同步执行部分
  * - 性能日志输出过程中的任何异常(如结果序列化失败)不会影响被装饰函数的执行结果
  * - 默认阈值针对单个函数的执行耗时, 与HTTP接口全流程性能检测的阈值(constants.performance.threshold)粒度不同, 互不沿用
+ * - 单元测试中需要注意: 此装饰器使用NestJS内置Logger输入日志, 默认单元测试环境下看不到日志输出, 需要在单元测试中显示使用winston代理NestJS的日志才可以看到期望的日志输出
  *
  * @param options 可选选项
  */

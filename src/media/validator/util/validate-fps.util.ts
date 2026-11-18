@@ -22,13 +22,11 @@ export class ValidateFpsUtil {
     }
 
     if (streamIndex !== undefined && streamIndex < 0) {
-      // 流索引不可以小于0
       return undefined;
     }
 
     const videoStreams = compact(streamIndex !== undefined ? [media.getVideoStream(streamIndex) as IMediaVideoStream] : media.getVideoStreams());
     if (videoStreams.length === 0) {
-      // 无视频流(纯音频媒体无帧率)
       return undefined;
     }
     const fpsList = videoStreams.map((videoStream) => {
@@ -38,7 +36,6 @@ export class ValidateFpsUtil {
       return ValidateFpsUtil.parseFrameRate(videoStream.r_frame_rate) ?? ValidateFpsUtil.parseFrameRate(videoStream.avg_frame_rate);
     });
     if (fpsList.some((fps) => fps === undefined || Number.isNaN(fps))) {
-      // 任一待校验流的帧率未知时无法确认校验结果
       return undefined;
     }
     return fpsList as Array<number>;

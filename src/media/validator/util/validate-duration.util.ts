@@ -17,7 +17,6 @@ export class ValidateDurationUtil {
    */
   static getDurations(media: IMedia, codecType?: ECodecType, streamIndex?: number): Array<number> | undefined {
     if (streamIndex !== undefined && streamIndex < 0) {
-      // 流索引不可以小于0
       return undefined;
     }
 
@@ -46,14 +45,14 @@ export class ValidateDurationUtil {
     }
     streams = compact(streams);
     if (isEmpty(streams)) {
-      // 指定类型的流不存在
       return undefined;
     }
+
     const durations = streams.map((stream) => stream.duration);
     if (durations.some((duration) => duration === undefined || Number.isNaN(duration))) {
-      // 任一待校验流的流级时长未知时无法确认校验结果
       return undefined;
     }
-    return durations as Array<number>;
+
+    return durations;
   }
 }

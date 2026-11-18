@@ -828,12 +828,6 @@ describe(basename(__filename), () => {
       imports: [ConfigurationModule, MediaModule, LoggerModule, ContextModule, InternationalizationModule],
     }).compile();
     expect(mediaModule);
-    /**
-     * 将Nest Logger委托到winston
-     *
-     * TestingModule编译时会把全局Logger覆盖为TestingLogger(测试通过时静默丢弃所有日志),
-     * @LoggingPerformance等直接使用Nest Logger输出的日志会因此不可见, 委托到winston后恢复正常输出
-     */
     mediaModule.useLogger(mediaModule.get(WINSTON_MODULE_NEST_PROVIDER));
   });
 });

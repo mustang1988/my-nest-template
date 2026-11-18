@@ -42,7 +42,6 @@ export class IsCodecValidator implements ValidatorConstraintInterface {
        */
       const expectStreamIndex = validationArguments.constraints[2] as number | undefined;
       if (expectStreamIndex !== undefined && expectStreamIndex < 0) {
-        // 期望的流索引不可以小于0, 否则直接返回校验失败
         return false;
       }
 

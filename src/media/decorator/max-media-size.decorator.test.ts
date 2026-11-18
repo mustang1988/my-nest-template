@@ -34,12 +34,6 @@ describe(basename(__filename), () => {
     mediaService = mediaModule.get(MediaService);
     expect(mediaService);
     useContainer(mediaModule, { fallbackOnErrors: true });
-    /**
-     * 将Nest Logger委托到winston
-     *
-     * TestingModule编译时会把全局Logger覆盖为TestingLogger(测试通过时静默丢弃所有日志),
-     * @LoggingPerformance等直接使用Nest Logger输出的日志会因此不可见, 委托到winston后恢复正常输出
-     */
     mediaModule.useLogger(mediaModule.get(WINSTON_MODULE_NEST_PROVIDER));
     localImageFilepath = await MediaTestUtil.downloadTestAsset(TEST_IMAGES[0]);
   });

@@ -26,7 +26,6 @@ export class MaxDurationValidator implements ValidatorConstraintInterface {
       const media = await this.mediaService.readMedia(value);
       const durations = ValidateDurationUtil.getDurations(media, codecType, streamIndex);
       if (durations === undefined) {
-        // 待校验的流不存在或时长未知
         return false;
       }
       return durations.every((duration) => duration <= maxDuration);

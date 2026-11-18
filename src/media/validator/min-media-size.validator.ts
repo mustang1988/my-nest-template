@@ -19,14 +19,12 @@ export class MinMediaSizeValidator implements ValidatorConstraintInterface {
     const minSize = validationArguments.constraints[0] as string | number;
     const minSizeInBytes = ValidateMediaSizeUtil.parseConstraint(minSize);
     if (minSizeInBytes === undefined) {
-      // 大小约束本身无法解析, 直接返回校验失败
       return false;
     }
     try {
       const media = await this.mediaService.readMedia(value);
       const size = ValidateMediaSizeUtil.getSize(media);
       if (size === undefined) {
-        // 文件大小未知
         return false;
       }
       return size >= minSizeInBytes;

@@ -25,7 +25,6 @@ export class MinPixelsValidator implements ValidatorConstraintInterface {
       const media = await this.mediaService.readMedia(value);
       const pixels = ValidatePixelsUtil.getPixels(media, streamIndex);
       if (pixels === undefined) {
-        // 待校验的流不存在或画面宽高未知
         return false;
       }
       return pixels.every((pixel) => pixel >= minPixels);

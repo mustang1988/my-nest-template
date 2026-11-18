@@ -24,7 +24,6 @@ export class FpsValidator implements ValidatorConstraintInterface {
       const media = await this.mediaService.readMedia(value);
       const fpsList = ValidateFpsUtil.getFpsList(media, streamIndex);
       if (fpsList === undefined) {
-        // 待校验的流不存在或帧率未知
         return false;
       }
       return fpsList.every((fps) => minFps <= fps && fps <= maxFps);

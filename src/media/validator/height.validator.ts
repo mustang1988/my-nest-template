@@ -30,7 +30,6 @@ export class HeightValidator implements ValidatorConstraintInterface {
       const media = await this.mediaService.readMedia(value);
       const dimensions = ValidateDimensionUtil.getDimensions(media, streamIndex);
       if (dimensions === undefined) {
-        // 待校验的流不存在或画面宽高未知
         return false;
       }
       return dimensions.every((dimension) => minHeight <= dimension.height && dimension.height <= maxHeight);

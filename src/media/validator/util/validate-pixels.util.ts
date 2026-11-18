@@ -14,25 +14,25 @@ export class ValidatePixelsUtil {
    */
   static getPixels(media: IMedia, streamIndex?: number): Array<number> | undefined {
     if (streamIndex !== undefined && streamIndex < 0) {
-      // 流索引不可以小于0
       return undefined;
     }
 
     const videoStreams = compact(streamIndex !== undefined ? [media.getVideoStream(streamIndex) as IMediaVideoStream] : media.getVideoStreams());
     if (videoStreams.length === 0) {
-      // 无视频流(纯音频媒体无画面)
       return undefined;
     }
+
     const pixels = videoStreams.map((videoStream) => {
       if (!videoStream.width || !videoStream.height || videoStream.width <= 0 || videoStream.height <= 0) {
         return undefined;
       }
       return videoStream.width * videoStream.height;
     });
+
     if (pixels.some((pixel) => pixel === undefined || Number.isNaN(pixel))) {
-      // 任一待校验流的画面宽高未知或非法时无法确认校验结果
       return undefined;
     }
+
     return pixels as Array<number>;
   }
 }

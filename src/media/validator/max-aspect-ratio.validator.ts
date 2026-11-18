@@ -23,9 +23,8 @@ export class MaxAspectRatioValidator implements ValidatorConstraintInterface {
     const [maxAspectRatio, streamIndex] = validationArguments.constraints as [number, number | undefined];
     try {
       const media = await this.mediaService.readMedia(value);
-      const ratios = ValidateAspectRatioUtil.getRatios(media, streamIndex);
+      const ratios = ValidateAspectRatioUtil.getAspectRatios(media, streamIndex);
       if (ratios === undefined) {
-        // 待校验的流不存在或画面宽高未知
         return false;
       }
       return ratios.every((ratio) => ratio <= maxAspectRatio);
