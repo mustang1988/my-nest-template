@@ -54,7 +54,7 @@ describe(basename(__filename), () => {
       localImageFilepath,
       localSubtitleFilepath,
       localNotMediaFilepath,
-      // ...testOutputFilepaths, // 删除测试输出文件
+      ...testOutputFilepaths, // 删除测试输出文件
     );
     await mediaModule.close();
   });
@@ -258,6 +258,60 @@ describe(basename(__filename), () => {
       const outputFilepath = join(dirname(localNotMediaFilepath), basename(localNotMediaFilepath) + randomUUID() + extname(localNotMediaFilepath));
       try {
         await imageProcessingService.extend(localVideoFilepath, outputFilepath, extendPx);
+      } catch (error) {
+        expect(error);
+        expect(error instanceof MediaException);
+      }
+    });
+  });
+
+  describe('crop()', () => {
+    const top = faker.number.int({ min: 0, max: 100 });
+    const left = faker.number.int({ min: 0, max: 100 });
+    const width = faker.number.int({ min: 100, max: 300 });
+    const height = faker.number.int({ min: 100, max: 300 });
+
+    it('图片输入', async () => {
+      const outputFilepath = join(dirname(localImageFilepath), basename(localImageFilepath) + 'crop' + randomUUID() + extname(localImageFilepath));
+      const result = await imageProcessingService.crop(localImageFilepath, outputFilepath, { top, left, width, height });
+      expect(result).toStrictEqual(outputFilepath);
+      testOutputFilepaths.push(outputFilepath);
+    });
+
+    it('视频输入', async () => {
+      const outputFilepath = join(dirname(localVideoFilepath), basename(localVideoFilepath) + randomUUID() + extname(localVideoFilepath));
+      try {
+        await imageProcessingService.crop(localVideoFilepath, outputFilepath, { top, left, width, height });
+      } catch (error) {
+        expect(error);
+        expect(error instanceof MediaException);
+      }
+    });
+
+    it('音频输入', async () => {
+      const outputFilepath = join(dirname(localAudioFilepath), basename(localAudioFilepath) + randomUUID() + extname(localAudioFilepath));
+      try {
+        await imageProcessingService.crop(localVideoFilepath, outputFilepath, { top, left, width, height });
+      } catch (error) {
+        expect(error);
+        expect(error instanceof MediaException);
+      }
+    });
+
+    it('字幕输入', async () => {
+      const outputFilepath = join(dirname(localSubtitleFilepath), basename(localSubtitleFilepath) + randomUUID() + extname(localSubtitleFilepath));
+      try {
+        await imageProcessingService.crop(localVideoFilepath, outputFilepath, { top, left, width, height });
+      } catch (error) {
+        expect(error);
+        expect(error instanceof MediaException);
+      }
+    });
+
+    it('非媒体输入', async () => {
+      const outputFilepath = join(dirname(localNotMediaFilepath), basename(localNotMediaFilepath) + randomUUID() + extname(localNotMediaFilepath));
+      try {
+        await imageProcessingService.crop(localVideoFilepath, outputFilepath, { top, left, width, height });
       } catch (error) {
         expect(error);
         expect(error instanceof MediaException);
