@@ -26,6 +26,7 @@ import { IsSubtitleValidator } from './validator/is-subtitle.validator';
 import { AspectRatioValidator } from './validator/aspect-ratio.validator';
 import { MaxDurationValidator } from './validator/max-duration.validator';
 import { MinDurationValidator } from './validator/min-duration.validator';
+import { ImageProcessingService } from './service/imgae-processing.service';
 import { MaxMediaSizeValidator } from './validator/max-media-size.validator';
 import { MinMediaSizeValidator } from './validator/min-media-size.validator';
 import { MaxAspectRatioValidator } from './validator/max-aspect-ratio.validator';
@@ -39,6 +40,7 @@ import { IMediaConfiguration } from 'src/configuration/interface/media-configura
  */
 const mediaModuleProviders: Array<Provider> = [
   MediaService,
+  ImageProcessingService,
   // #region 自定义class-validator校验器
   //   #region 媒体类型/编码类型校验器
   IsCodecValidator,

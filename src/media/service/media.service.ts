@@ -1,5 +1,3 @@
-import ms from 'ms';
-import bytes from 'bytes';
 import QuickLRU from 'quick-lru';
 import { Logger } from 'winston';
 import { promisify } from 'util';
