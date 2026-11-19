@@ -1,0 +1,117 @@
+import QuickLRU from 'quick-lru';
+import { ConfigService } from '@nestjs/config';
+import { IMedia } from './interface/media.interface';
+import { MEDIA_CACHE_TOKEN } from './media.constant';
+import { MediaService } from './service/media.service';
+import { FpsValidator } from './validator/fps.validator';
+import { IMediaConfiguration } from '@pgu/configuration';
+import { Global, Module, Provider } from '@nestjs/common';
+import { WidthValidator } from './validator/width.validator';
+import { HeightValidator } from './validator/height.validator';
+import { PixelsValidator } from './validator/pixels.validator';
+import { MaxFpsValidator } from './validator/max-fps.validator';
+import { MinFpsValidator } from './validator/min-fps.validator';
+import { IsAudioValidator } from './validator/is-audio.validator';
+import { IsCodecValidator } from './validator/is-codec.validator';
+import { IsImageValidator } from './validator/is-image.validator';
+import { IsVideoValidator } from './validator/is-video.validator';
+import { DurationValidator } from './validator/duration.validator';
+import { MaxWidthValidator } from './validator/max-width.validator';
+import { MinWidthValidator } from './validator/min-width.validator';
+import { MaxHeightValidator } from './validator/max-height.validator';
+import { MaxPixelsValidator } from './validator/max-pixels.validator';
+import { MediaSizeValidator } from './validator/media-size.validator';
+import { MinHeightValidator } from './validator/min-height.validator';
+import { MinPixelsValidator } from './validator/min-pixels.validator';
+import { IsSubtitleValidator } from './validator/is-subtitle.validator';
+import { AspectRatioValidator } from './validator/aspect-ratio.validator';
+import { MaxDurationValidator } from './validator/max-duration.validator';
+import { MinDurationValidator } from './validator/min-duration.validator';
+import { ImageProcessingService } from './service/imgae-processing.service';
+import { MaxMediaSizeValidator } from './validator/max-media-size.validator';
+import { MinMediaSizeValidator } from './validator/min-media-size.validator';
+import { MaxAspectRatioValidator } from './validator/max-aspect-ratio.validator';
+import { MinAspectRatioValidator } from './validator/min-aspect-ratio.validator';
+
+/**
+ * 媒体模块服务列表
+ *
+ * 同时用于模块的providers和exports
+ */
+const mediaModuleProviders: Array<Provider> = [
+  MediaService,
+  ImageProcessingService,
+  // #region 自定义class-validator校验器
+  //   #region 媒体类型/编码类型校验器
+  IsCodecValidator,
+  IsAudioValidator,
+  IsImageValidator,
+  IsVideoValidator,
+  IsSubtitleValidator,
+  //   #endregion
+
+  //   #region 画面尺寸校验器
+  WidthValidator,
+  HeightValidator,
+  MaxWidthValidator,
+  MinWidthValidator,
+  MaxHeightValidator,
+  MinHeightValidator,
+  //   #endregion
+
+  //   #region 画面宽高比校验器
+  AspectRatioValidator,
+  MinAspectRatioValidator,
+  MaxAspectRatioValidator,
+  //   #endregion
+
+  //   #region 画面总像素数校验器
+  PixelsValidator,
+  MinPixelsValidator,
+  MaxPixelsValidator,
+  //   #endregion
+
+  //   #region 视频帧率校验器
+  FpsValidator,
+  MinFpsValidator,
+  MaxFpsValidator,
+  //   #endregion
+
+  //   #region 文件大小校验器
+  MediaSizeValidator,
+  MinMediaSizeValidator,
+  MaxMediaSizeValidator,
+  //   #endregion
+
+  //   #region 时长校验器
+  DurationValidator,
+  MinDurationValidator,
+  MaxDurationValidator,
+  //   #endregion
+
+  // #endregion
+];
+
+/**
+ * 媒体模块
+ *
+ * - 全局模块
+ */
+@Global()
+@Module({
+  providers: [
+    ...mediaModuleProviders,
+    // #region LRU缓存
+    {
+      provide: MEDIA_CACHE_TOKEN,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): QuickLRU<string, Promise<IMedia>> => {
+        const { maxAge, maxSize } = configService.getOrThrow<IMediaConfiguration>('media');
+        return new QuickLRU<string, Promise<IMedia>>({ maxAge, maxSize });
+      },
+    },
+    // #endregion
+  ],
+  exports: mediaModuleProviders,
+})
+export class MediaModule {}

@@ -20,6 +20,80 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@pgu/common": [
+        "libs/common/src"
+      ],
+      "@pgu/common/*": [
+        "libs/common/src/*"
+      ],
+      "@pgu/configuration": [
+        "libs/configuration/src"
+      ],
+      "@pgu/configuration/*": [
+        "libs/configuration/src/*"
+      ],
+      "@pgu/context": [
+        "libs/context/src"
+      ],
+      "@pgu/context/*": [
+        "libs/context/src/*"
+      ],
+      "@pgu/event": [
+        "libs/event/src"
+      ],
+      "@pgu/event/*": [
+        "libs/event/src/*"
+      ],
+      "@pgu/internationalization": [
+        "libs/internationalization/src"
+      ],
+      "@pgu/internationalization/*": [
+        "libs/internationalization/src/*"
+      ],
+      "@pgu/logger": [
+        "libs/logger/src"
+      ],
+      "@pgu/logger/*": [
+        "libs/logger/src/*"
+      ],
+      "@pgu/media": [
+        "libs/media/src"
+      ],
+      "@pgu/media/*": [
+        "libs/media/src/*"
+      ],
+      "@pgu/mysql": [
+        "libs/mysql/src"
+      ],
+      "@pgu/mysql/*": [
+        "libs/mysql/src/*"
+      ],
+      "@pgu/rabbitmq": [
+        "libs/rabbitmq/src"
+      ],
+      "@pgu/rabbitmq/*": [
+        "libs/rabbitmq/src/*"
+      ],
+      "@pgu/redis": [
+        "libs/redis/src"
+      ],
+      "@pgu/redis/*": [
+        "libs/redis/src/*"
+      ],
+      "@pgu/s3-storage": [
+        "libs/s3-storage/src"
+      ],
+      "@pgu/s3-storage/*": [
+        "libs/s3-storage/src/*"
+      ],
+      "@pgu/websocket": [
+        "libs/websocket/src"
+      ],
+      "@pgu/websocket/*": [
+        "libs/websocket/src/*"
+      ]
+    }
   }
 }
