@@ -5,6 +5,7 @@ import { MediaService } from './media.service';
 import { MediaException } from '../exception/media.exception';
 import { ContextService } from 'src/context/service/context.service';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
+import { IImageExtendOptions } from '../interface/image-extend-options.interface';
 import { IImageResizeOptions } from '../interface/image-resize-options.interface';
 
 /**
@@ -46,6 +47,36 @@ export class ImageProcessingService {
         throw error;
       }
       this.logger.error('[%s] 图片文件尺寸调整, 异常: error = %o', requestId, error);
+      throw new MediaException((error as Error).message, { cause: error });
+    }
+  }
+
+  /**
+   * 图片文件扩展
+   * @param inputFilepath 输入图片文件路径
+   * @param outputFilepath 输出图片文件路径
+   * @param options 图片扩展选项/扩展像素数
+   * @return 输出图片文件路径
+   */
+  async extend(inputFilepath: string, outputFilepath: string, options: number | IImageExtendOptions): Promise<string> {
+    const requestId = this.ctx.getRequestId();
+    this.logger.debug('[%s] 图片文件扩展, 入参: inputFilepath = %s, outputFilepath = %s', requestId, inputFilepath, outputFilepath);
+
+    try {
+      const media = await this.mediaService.readMediaByFilepath(inputFilepath);
+      if (!media.isImageMedia()) {
+        this.logger.error('[%s] 图片文件扩展, 输入文件不是图片: inputFilepath = %s', requestId, inputFilepath);
+        throw new MediaException('输入文件不是图片', { cause: inputFilepath });
+      }
+
+      const output = await sharp(inputFilepath).extend(options).toFile(outputFilepath);
+      this.logger.debug('[%s] 图片文件扩展, 输出: output = %j', requestId, output);
+      return await outputFilepath;
+    } catch (error) {
+      if (error instanceof MediaException) {
+        throw error;
+      }
+      this.logger.error('[%s] 图片文件扩展, 异常: error = %o', requestId, error);
       throw new MediaException((error as Error).message, { cause: error });
     }
   }
