@@ -59,7 +59,15 @@ export class MySQLModule {
             synchronize: mysqlOpt.enableSynchronize,
             logger: 'formatted-console',
             bigNumberStrings: false,
-            entities: [__dirname + `/../**/*.${mysqlOpt.name}.entity{.ts,.js}`], // 加载其他模块下 xxx.{连接名称}.entity文件名的实体
+            /**
+             * 实体加载: 优先取@InjectRepo()装饰器注册表中登记到当前连接名的实体类(类引用与构建产物目录结构无关);
+             * 注册表为空时回退到实体文件命名约定glob(xxx.{连接名称}.entity.ts/js, 相对本模块编译产物目录, 仅适用于与本模块同级目录下的实体,
+             * monorepo中实体分布在各应用目录下时glob无法覆盖, 应通过@InjectRepo登记实体)
+             */
+            entities:
+              (Array.from(getInjectRepoRegistry().get(mysqlOpt.name) ?? []) as Array<Function>).length > 0
+                ? Array.from(getInjectRepoRegistry().get(mysqlOpt.name) ?? [])
+                : [__dirname + `/../**/*.${mysqlOpt.name}.entity{.ts,.js}`],
             extra: {
               /**
                * mysql2连接池选项(自动重连)

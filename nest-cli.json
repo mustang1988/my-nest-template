@@ -14,7 +14,7 @@
       }
     ],
     "watchAssets": true,
-    "webpack": true,
+    "webpack": false,
     "tsConfigPath": "apps/my-nest-template/tsconfig.app.json"
   },
   "projects": {
