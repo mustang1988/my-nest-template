@@ -7,16 +7,16 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "dotenv -e .env -- nest start --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/apps/my-nest-template/main",
     "lint": "oxlint src/ test/",
     "test": "dotenv -e .env.unit-test -- jest --forceExit",
     "test:watch": "jest --watch",
     "test:cov": "dotenv -e .env.unit-test -- jest --coverage --forceExit",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/my-nest-template/test/jest-e2e.json"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1151.0",
@@ -47,6 +47,7 @@
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
     "json-bigint": "^1.0.0",
+    "lib": "^5.1.0",
     "lodash": "^4.18.1",
     "luxon": "^3.7.2",
     "ms": "^2.1.3",
@@ -103,6 +104,18 @@
       "reflect-metadata"
     ],
     "moduleNameMapper": {
+      "^@pgu/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@pgu/configuration(|/.*)$": "<rootDir>/libs/configuration/src/$1",
+      "^@pgu/context(|/.*)$": "<rootDir>/libs/context/src/$1",
+      "^@pgu/event(|/.*)$": "<rootDir>/libs/event/src/$1",
+      "^@pgu/internationalization(|/.*)$": "<rootDir>/libs/internationalization/src/$1",
+      "^@pgu/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
+      "^@pgu/media(|/.*)$": "<rootDir>/libs/media/src/$1",
+      "^@pgu/mysql(|/.*)$": "<rootDir>/libs/mysql/src/$1",
+      "^@pgu/rabbitmq(|/.*)$": "<rootDir>/libs/rabbitmq/src/$1",
+      "^@pgu/redis(|/.*)$": "<rootDir>/libs/redis/src/$1",
+      "^@pgu/s3-storage(|/.*)$": "<rootDir>/libs/s3-storage/src/$1",
+      "^@pgu/websocket(|/.*)$": "<rootDir>/libs/websocket/src/$1",
       "^src/(.*)$": "<rootDir>/src/$1"
     },
     "moduleFileExtensions": [
@@ -122,6 +135,10 @@
     "testEnvironment": "node",
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!@faker-js/faker|quick-lru)"
+    ],
+    "roots": [
+      "<rootDir>/libs/",
+      "<rootDir>/apps/"
     ]
   }
 }

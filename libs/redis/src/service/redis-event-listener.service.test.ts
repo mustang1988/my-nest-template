@@ -1,0 +1,90 @@
+import { basename } from 'node:path';
+import { faker } from '@faker-js/faker';
+import { randomUUID } from 'node:crypto';
+import { LoggerModule } from '@pgu/logger';
+import { Injectable } from '@nestjs/common';
+import { RedisModule } from '../redis.module';
+import { BaseEvent, EventModule } from '@pgu/event';
+import type { RedisClientType } from '@redis/client';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRedisClientToken } from '../redis.constant';
+import { IRedisConfiguration } from '@pgu/configuration';
+import { ConfigService, ConfigModule } from '@nestjs/config';
+import { RedisEventEmitterService } from './redis-event-emitter.service';
+import configurationLoader from '@pgu/configuration/configuration-loader';
+import { RedisEventListenerService } from './redis-event-listener.service';
+import { InjectRedisClient } from '../decorator/inject-redis-client.decorator';
+import { EventEmitter2, EventEmitterModule, OnEvent } from '@nestjs/event-emitter';
+
+describe(basename(__filename), () => {
+  let testService: RedisEventListenerService;
+  let redisModule: TestingModule;
+  let redisEventEmitterService: RedisEventEmitterService;
+  let eventEmitter: EventEmitter2;
+  const testEvent = faker.lorem.word();
+
+  @Injectable()
+  class TestClass {
+    /**
+     * 注入default连接客户端: 登记装饰器注册表, 使forRootAsync()注册default连接的per-name Provider(下方用例直接通过token获取该客户端)
+     */
+    constructor(@InjectRedisClient('default') public readonly defaultRedisClient: RedisClientType) {}
+
+    @OnEvent(testEvent)
+    test(event: BaseEvent<string, undefined>): void {
+      console.log(event);
+    }
+  }
+
+  beforeAll(async () => {
+    redisModule = await Test.createTestingModule({
+      imports: [
+        EventModule,
+        LoggerModule,
+        EventEmitterModule.forRoot({ global: true }),
+        RedisModule.forRootAsync({
+          useFactory: (configService: ConfigService) => {
+            const redisConfig = configService.getOrThrow<Record<string, IRedisConfiguration>>('redis');
+            return Object.keys(redisConfig).map((name) => ({ name, ...redisConfig[name] }));
+          },
+        }),
+        ConfigModule.forRoot({ isGlobal: true, load: [configurationLoader], ignoreEnvFile: true }),
+      ],
+      providers: [TestClass],
+    }).compile();
+    expect(redisModule);
+    testService = redisModule.get(RedisEventListenerService);
+    expect(testService);
+    redisEventEmitterService = redisModule.get(RedisEventEmitterService);
+    expect(redisEventEmitterService);
+    eventEmitter = redisModule.get(EventEmitter2);
+    expect(eventEmitter);
+  });
+
+  afterAll(async () => {
+    await redisModule.close();
+  });
+
+  describe('onModuleInit()', () => {
+    it('未指定实例ID', async () => {
+      const event = new BaseEvent(randomUUID(), testEvent);
+      await redisEventEmitterService.emit(event);
+    });
+
+    it('指定当前实例ID', async () => {
+      const event = new BaseEvent(randomUUID(), testEvent);
+      await redisEventEmitterService.emit(event, { instanceId: 0 });
+    });
+
+    it('指定非当前实例ID', async () => {
+      const event = new BaseEvent(randomUUID(), testEvent);
+      await redisEventEmitterService.emit(event, { instanceId: faker.number.int({ min: 1, max: 5 }) });
+    });
+
+    it('发布无效格式的事件', async () => {
+      const redisClient: RedisClientType = redisModule.get(getRedisClientToken('default'));
+      expect(redisClient);
+      await redisClient.publish('channel:default', faker.lorem.text());
+    });
+  });
+});
