@@ -1,5 +1,5 @@
 /**
- * 图片扩展选项
+ * 图片文件扩展选项
  */
 export interface IImageExtendOptions {
   /**

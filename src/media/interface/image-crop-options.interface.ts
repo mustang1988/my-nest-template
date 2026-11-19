@@ -1,5 +1,5 @@
 /**
- * 图片裁切选项
+ * 图片文件裁切选项
  */
 export interface IImageCropOptions {
   /**

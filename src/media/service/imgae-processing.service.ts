@@ -5,9 +5,10 @@ import { MediaService } from './media.service';
 import { MediaException } from '../exception/media.exception';
 import { ContextService } from 'src/context/service/context.service';
 import { InjectLogger } from 'src/logger/decorator/inject-logger.decorator';
-import { IImageCropOptions } from '../interface/image-crop-options.interface';
-import { IImageExtendOptions } from '../interface/image-extend-options.interface';
-import { IImageResizeOptions } from '../interface/image-resize-options.interface';
+import type { IImageCropOptions } from '../interface/image-crop-options.interface';
+import type { IImageExtendOptions } from '../interface/image-extend-options.interface';
+import type { IImageResizeOptions } from '../interface/image-resize-options.interface';
+import { LoggingPerformance } from 'src/logger/decorator/logging-performance.decorator';
 
 /**
  * 图片处理服务
@@ -29,6 +30,7 @@ export class ImageProcessingService {
    * @param options 尺寸调整选项
    * @return 输出图片文件路径
    */
+  @LoggingPerformance()
   async resize(inputFilepath: string, outputFilepath: string, options: IImageResizeOptions): Promise<string> {
     const requestId = this.ctx.getRequestId();
     this.logger.debug(
@@ -65,6 +67,7 @@ export class ImageProcessingService {
    * @param options 图片扩展选项/扩展像素数
    * @return 输出图片文件路径
    */
+  @LoggingPerformance()
   async extend(inputFilepath: string, outputFilepath: string, options: number | IImageExtendOptions): Promise<string> {
     const requestId = this.ctx.getRequestId();
     this.logger.debug(
@@ -101,6 +104,7 @@ export class ImageProcessingService {
    * @param options 图片裁切选项
    * @return 输出图片文件路径
    */
+  @LoggingPerformance()
   async crop(inputFilepath: string, outputFilepath: string, options: IImageCropOptions): Promise<string> {
     const requestId = this.ctx.getRequestId();
     this.logger.debug(
