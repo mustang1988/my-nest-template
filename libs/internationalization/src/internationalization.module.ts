@@ -13,13 +13,13 @@ import { AcceptLanguageResolver, CookieResolver, I18nJsonLoader, I18nModule, Que
  *
  * @return 语言包目录绝对路径
  */
-function resolveTranslationsPath(): string {
+const resolveTranslationsPath = (): string => {
   const distTranslationsPath = join(__dirname, 'translations');
   if (existsSync(distTranslationsPath)) {
     return distTranslationsPath;
   }
   return join(process.cwd(), 'libs/internationalization/src/translations');
-}
+};
 
 /**
  * 国际化模块
